@@ -47,13 +47,13 @@ class Trailer():
     
 
 def parseHeader(row):
-    return Header(row[2,14], row[15,22], row[23, 30], row[31, 244])
+    return Header(row[2, 14], row[15, 22], row[23, 30], row[31, 244])
 
 def parseDailyStock(row):
-    return DailyStock(row[2:9], row[10:11], row[12:23], row[24:26], row[27:38], 
-                      row[39:48], row[49:51], row[52:55], row[56:68], row[69:81], row[82:94], 
-                      row[95:107], row[108:120], row[121:133], row[134:146], row[147:151], 
-                      row[152:169], row[170:187], row[188:200], row[201:201], row[202:209], 
+    return DailyStock(row[2:9], row[10:11], row[12:23], row[24:26], row[27:38],
+                      row[39:48], row[49:51], row[52:55], row[56:68], row[69:81], row[82:94],
+                      row[95:107], row[108:120], row[121:133], row[134:146], row[147:151],
+                      row[152:169], row[170:187], row[188:200], row[201:201], row[202:209],
                       row[210:216], row[217:229], row[230:241], row[242:245])
 
 def parseTrailer(row):
@@ -66,30 +66,37 @@ if __name__ == "__main__":
     trailerList = []
     
     myPath = os.path.dirname(os.path.abspath(__file__))
-    stockData = myPath + "/../data/CotacaoHistorica"
+    dataDir = myPath + "/../data"
+    stockDataDir = dataDir + "/CotacaoHistorica"
     
-    zippedStockFiles = glob.glob(stockData + "/COTAHIST_*")
+    zippedStockFiles = glob.glob(stockDataDir + "/COTAHIST_*.zip")
     print zippedStockFiles
     
-    with zipfile.ZipFile(zippedStockFiles[0], "r") as z:
-        z.extractall(myPath + "/../data/")
+    for zipFile in zippedStockFiles:
+        
+        # Extract the stock year file
+        zipfile.ZipFile(zipFile, "r").extractall(myPath + "/../data/")
+            
+        year = zipFile[-8:-4]
+        print year
+        
+        stockYearFile = glob.glob(dataDir + "/*" + year + "*")
+        print stockYearFile
     
-    '''
-    # READ YEAR STOCK FILE
-    # SAVE THE YEAR
+        with open(stockYearFile, "rb") as stockFile:
+            for row in stockFile:
+                rowType = row[0:1]
+                if (rowType == "00"):
+                    headerList.append(parseHeader(row))
+                elif (rowType == "01"):
+                    dailyStockList.append(parseDailyStock(row))
+                elif (rowType == "99"):
+                    trailerList.append(parseTrailer(row))
+                else:
+                    print "Error: nonexistent row type!"
+                    # ERROR
 
-    # FOR EACH ROW
-    row = ""
-    rowType = row[0:1]
-    if (rowType == "00"):
-        headerList.append(parseHeader(row))
-    elif (rowType == "01"):
-        dailyStockList.append(parseDailyStock(row))
-    elif (rowType == "99"):
-        trailerList.append(parseTrailer(row))
-    else:
-        print "Error: nonexistent row type!"
-        # ERROR
-    '''
+        # Remove the file
+        os.remove(stockYearFile)
     
     
