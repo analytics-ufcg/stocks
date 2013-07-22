@@ -1,3 +1,7 @@
+import os.path
+import zipfile
+import glob
+
 class Header():
     def __init__(self, filename, sourceCode, fileCreationDate, booking):
         self.filename = filename
@@ -61,6 +65,16 @@ if __name__ == "__main__":
     dailyStockList = []
     trailerList = []
     
+    myPath = os.path.dirname(os.path.abspath(__file__))
+    stockData = myPath + "/../data/CotacaoHistorica"
+    
+    zippedStockFiles = glob.glob(stockData + "/COTAHIST_*")
+    print zippedStockFiles
+    
+    with zipfile.ZipFile(zippedStockFiles[0], "r") as z:
+        z.extractall(myPath + "/../data/")
+    
+    '''
     # READ YEAR STOCK FILE
     # SAVE THE YEAR
 
@@ -76,5 +90,6 @@ if __name__ == "__main__":
     else:
         print "Error: nonexistent row type!"
         # ERROR
-        
+    '''
+    
     
