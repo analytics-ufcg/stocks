@@ -83,20 +83,20 @@ if __name__ == "__main__":
         stockYearFile = glob.glob(dataDir + "/*" + year + "*")
         print stockYearFile
     
-        with open(stockYearFile, "rb") as stockFile:
-            for row in stockFile:
-                rowType = row[0:1]
-                if (rowType == "00"):
-                    headerList.append(parseHeader(row))
-                elif (rowType == "01"):
-                    dailyStockList.append(parseDailyStock(row))
-                elif (rowType == "99"):
-                    trailerList.append(parseTrailer(row))
-                else:
-                    print "Error: nonexistent row type!"
-                    # ERROR
+#         with open(stockYearFile, "rb") as stockFile:
+#             for row in stockFile:
+#                 rowType = row[0:1]
+#                 if (rowType == "00"):
+#                     headerList.append(parseHeader(row))
+#                 elif (rowType == "01"):
+#                     dailyStockList.append(parseDailyStock(row))
+#                 elif (rowType == "99"):
+#                     trailerList.append(parseTrailer(row))
+#                 else:
+#                     print "Error: nonexistent row type!"
+#                     # ERROR
 
         # Remove the file
-        os.remove(stockYearFile)
+#         os.remove(stockYearFile)
     
     
