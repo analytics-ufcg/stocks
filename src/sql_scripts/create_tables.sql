@@ -39,39 +39,11 @@ CREATE TABLE IF NOT EXISTS contact (
 	zip_code       CHAR(255),
 	city           CHAR(255),
 	state          CHAR(10),
+	phones         CHAR(500),
 	fax            CHAR(50),
+	names          CHAR(1000),
+	emails         CHAR(1000),
 	PRIMARY KEY (contact_id)
-);
-
--- TRADE_CODES TABLE
-CREATE TABLE IF NOT EXISTS trade_code (
-	trade_code_id   INTEGER,
-	trade_code      CHAR(255),
-	PRIMARY KEY (trade_code_id)
-);
-
--- NAMES TABLE
-CREATE TABLE IF NOT EXISTS name (
-	name_id      INTEGER,
-	name         CHAR(255),
-	contact_type CHAR(255),
-	PRIMARY KEY (name_id)
-);
-
--- EMAILS TABLE
-CREATE TABLE IF NOT EXISTS email (
-	email_id     INTEGER,
-	email        CHAR(255),
-	contact_type CHAR(255),
-	PRIMARY KEY (email_id)
-);
-
--- PHONE_NUMBERS TABLE
-CREATE TABLE IF NOT EXISTS phone (
-	phone_id     INTEGER,
-	phone        CHAR(255),
-	contact_type CHAR(255),
-	PRIMARY KEY (phone_id)
 );
 
 CREATE TABLE IF NOT EXISTS enterprise_contact (
@@ -92,38 +64,3 @@ CREATE TABLE IF NOT EXISTS enterprise_classification (
 	FOREIGN KEY         (classification_id) REFERENCES classification (classification_id)
 );
 
-CREATE TABLE IF NOT EXISTS enterprise_trade_code (
-	ent_trade_id    AUTO_INCREMENT,
-	enterprise_id   INTEGER NOT NULL,
-	trade_code_id   INTEGER NOT NULL,
-	PRIMARY KEY     (ent_trade_id),
-	FOREIGN KEY     (enterprise_id) REFERENCES enterprise (enterprise_id),
-	FOREIGN KEY     (trade_code_id) REFERENCES trade_code (trade_code_id)
-);
-
-CREATE TABLE IF NOT EXISTS contact_name (
-	cont_name_id    AUTO_INCREMENT,
-	contact_id      INTEGER NOT NULL,
-	name_id         INTEGER NOT NULL,
-	PRIMARY KEY     (cont_name_id),
-	FOREIGN KEY     (contact_id) REFERENCES contact (contact_id),
-	FOREIGN KEY     (name_id) REFERENCES name (name_id)
-);
-
-CREATE TABLE IF NOT EXISTS contact_email (
-	cont_email_id   AUTO_INCREMENT,
-	contact_id      INTEGER NOT NULL,
-	email_id        INTEGER NOT NULL,
-	PRIMARY KEY     (cont_email_id),
-	FOREIGN KEY     (contact_id) REFERENCES contact (contact_id),
-	FOREIGN KEY     (email_id) REFERENCES email (email_id)
-);
-
-CREATE TABLE IF NOT EXISTS contact_phone (
-	cont_phone_id   AUTO_INCREMENT,
-	contact_id      INTEGER NOT NULL,
-	phone_id        INTEGER NOT NULL,
-	PRIMARY KEY     (cont_phone_id),
-	FOREIGN KEY     (contact_id) REFERENCES contact (contact_id),
-	FOREIGN KEY     (phone_id) REFERENCES phone (phone_id)
-);
