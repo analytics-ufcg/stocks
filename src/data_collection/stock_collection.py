@@ -19,8 +19,8 @@ class CotacaoDiaria():
         self.dataPregao = dataPregao 
         self.codbdi = codbdi 
         self.codneg = codneg
-        self.tpmerc = tpmerc 
-        self.nomerc = nomres 
+        self.tpmerc = tpmerc
+        self.nomres = nomres 
         self.especi = especi
         self.prazot = prazot 
         self.modref = modref 
@@ -74,18 +74,14 @@ def parseTrailer(row):
 
 if __name__ == "__main__":
     
-    headerList = []
-    dailyStockList = []
-    trailerList = []
-    
     myPath = os.path.dirname(os.path.abspath(__file__))
     dataDir = myPath + "/../../data"
     rawStockDataDir = dataDir + "/Historico_Cotacoes_UTF8"
-    csvStockDataDir = dataDir + "/Stock_History_CSV"
+    csvStockDataDir = dataDir + "/Historico_Cotacoes_CSV"
     
     stockFiles = glob.glob(rawStockDataDir + "/COTAHIST*")
-    print "================== STOCK History Parser to CSV =================="
-    print "There are " + str(len(stockFiles)) + " years to parse..."
+    print "================== Parser do Historico de Cotacoes para CSV =================="
+    print "Existem " + str(len(stockFiles)) + " anos de dados..."
      
     for stockFile in stockFiles:
          
@@ -95,7 +91,7 @@ if __name__ == "__main__":
         if not os.path.exists(csvStockDataDir):
             os.makedirs(csvStockDataDir)
         
-        stockYearCsv = csvStockDataDir + "/stock_" + year + ".csv"
+        stockYearCsv = csvStockDataDir + "/acoes_" + year + ".csv"
         
         with open(stockYearCsv, 'w') as csvfile:
             stockWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -111,5 +107,5 @@ if __name__ == "__main__":
                     elif (rowType == "99"):
                         pass
                     else:
-                        print "Error: nonexistent row type(" + row + ")!"
+                        print "Erro: linha de tipo indefinido(" + row + ")!"
  
