@@ -3,19 +3,20 @@ import zipfile
 import glob
 import csv
 
-class Header():
-    def __init__(self, filename, sourceCode, fileCreationDate, booking):
-        self.filename = filename
-        self.sourceCode = sourceCode
-        self.fileCreationDate = fileCreationDate
-        self.booking = booking
 
-class DailyStock():
-    def __init__(self, tradeDate, codbdi, codneg, tpmerc, nomres, especi, prazot,
+class Header():
+    def __init__(self, nomeArquivo, codigoOrigem, dataCriacaoArquivo, reserva):
+        self.nomeArquivo = nomeArquivo
+        self.codigoOrigem = codigoOrigem
+        self.dataCriacaoArquivo = dataCriacaoArquivo
+        self.reserva = reserva
+
+class CotacaoDiaria():
+    def __init__(self, dataPregao, codbdi, codneg, tpmerc, nomres, especi, prazot,
                  modref, preabe, premax, premin, premed, preult, preofc, preofv,
                  totneg, quatot, voltot, preexe, indopc, datven, fatcot, ptoexe,
                  codisi, dismes):
-        self.tradeDate = tradeDate 
+        self.dataPregao = dataPregao 
         self.codbdi = codbdi 
         self.codneg = codneg
         self.tpmerc = tpmerc 
@@ -40,29 +41,33 @@ class DailyStock():
         self.ptoexe = ptoexe  
         self.codisi = codisi 
         self.dismes = dismes
-        self.listAll = [tradeDate, codbdi, codneg, tpmerc, nomres, especi, prazot,
-                 modref, preabe, premax, premin, premed, preult, preofc, preofv,
-                 totneg, quatot, voltot, preexe, indopc, datven, fatcot, ptoexe,
-                 codisi, dismes]
+        
+    def getList(self):
+        return [self.dataPregao, self.codbdi, self.codneg, self.tpmerc, self.nomres, self.especi, self.prazot,
+                self.modref, self.preabe, self.premax, self.premin, self.premed, self.preult, self.preofc, self.preofv,
+                self.totneg, self.quatot, self.voltot, self.preexe, self.indopc, self.datven, self.fatcot, self.ptoexe,
+                self.codisi, self.dismes]
 
 class Trailer():
-    def __init__(self, filename, sourceCode, fileCreationDate, totalRegisters, booking):
-        self.filename = filename
-        self.sourceCode = sourceCode 
-        self.fileCreationDate = fileCreationDate
-        self.totalRegisters = totalRegisters
-        self.booking = booking
+    def __init__(self, nomeArquivo, codigoOrigem, dataCriacaoArquivo, totalRegistros, reserva):
+        self.nomeArquivo = nomeArquivo
+        self.codigoOrigem = codigoOrigem 
+        self.dataCriacaoArquivo = dataCriacaoArquivo
+        self.totalRegistros = totalRegistros
+        self.reserva = reserva
     
 
 def parseHeader(row):
     return [row[2:15], row[15:23], row[23:31], row[31:245]]
 
-def parseDailyStock(row):
-    return [row[2:10], row[10:12], row[12:24], row[24:27], row[27:39],
+def parseCotacaoDiaria(row):
+    cotacaoDiaria = CotacaoDiaria(row[2:10], row[10:12], row[12:24], row[24:27], row[27:39],
             row[39:49], row[49:52], row[52:56], row[56:69], row[69:82], row[82:95],
             row[95:108], row[108:121], row[121:134], row[134:147], row[147:152],
             row[152:170], row[170:188], row[188:201], row[201:202], row[202:210],
-            row[210:217], row[217:230], row[230:242], row[242:245]]
+            row[210:217], row[217:230], row[230:242], row[242:245])
+
+    return cotacaoDiaria.getList()
 
 def parseTrailer(row):
     return [row[2:15], row[15:23], row[23:31], row[31:42], row[42:245]]
@@ -80,7 +85,7 @@ if __name__ == "__main__":
     
     stockFiles = glob.glob(rawStockDataDir + "/COTAHIST*")
     print "================== STOCK History Parser to CSV =================="
-    print "There are " + len(stockFiles) + " years to parse..."
+    print "There are " + str(len(stockFiles)) + " years to parse..."
      
     for stockFile in stockFiles:
          
@@ -102,7 +107,7 @@ if __name__ == "__main__":
                     if (rowType == "00"):
                         pass
                     elif (rowType == "01"):
-                        stockWriter.writerow(parseDailyStock(row))
+                        stockWriter.writerow(parseCotacaoDiaria(row))
                     elif (rowType == "99"):
                         pass
                     else:

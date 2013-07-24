@@ -1,19 +1,20 @@
-Baixar os logos
+DANILO:
+	Baixar os logos
 
-Baixar os dados das empresas
-	* códigos de negociação
-	* telefones
-		* EMAIL: Saber se devemos parear o telefone com o contato (sede, diretor, escriturador)
-	* nomes
-		* EMAIL: Devemos pegar o campo Nome e o campo Contato?
-	* emails
-	
-Fazer o parsing do CSV vindo do PHP para os CSVs no formato do esquema do BD (ver github)
-	* Lembrar de adicionar o caminho das logomarcas no CSV da empresa
-Fazer script de carga dos dados das empresas no BD
+ELIAS:
+	Fazer o parsing do CSV vindo do PHP para os CSVs no formato do esquema do BD (ver github)
+		* Lembrar de adicionar o caminho das logomarcas no CSV da empresa
+	Fazer script de carga dos dados das empresas no BD
 
-Incrementar o modelo do esquema do BD para aceitar os dados históricos
-Fazer o parsing dos dados históricos zipados e gerar os CSVs no formato do esquema do BD
-Fazer script de carga dos dados históricos no BD
+AUGUSTO
+	Incrementar o modelo do esquema do BD para aceitar os dados historicos
+		* TODO: atualizar o tipo de cada campo
+	Fazer o parsing dos dados historicos zipados e gerar os CSVs no formato do esquema do BD
+		* TODO: 
+			* SQL: fazer o parsing de cada campo para seu tipo
+			* PYTHON: mapear os codigos para os nomes das tabelas no fim do dicionario de dados
+			
+	Fazer script de carga dos dados historicos no BD
 
-Implementar o serviço Web
+ALGUEM:
+	Implementar o servico Web
