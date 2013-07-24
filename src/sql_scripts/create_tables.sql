@@ -1,66 +1,96 @@
--- ENTERPRISE TABLE
--- Table columns in portuguese (same order as below):
--- 	<id_empresa>, caminho do ícone(logo), nome da empresa, nome de pregão, 
--- 	códigos de negociação, código isin, código cvm, cnpj, 
--- 	atividade principal, classificação setorial
-CREATE TABLE IF NOT EXISTS enterprise (
-	enterprise_id            INTEGER,
-	logo_server_path         CHAR(1000),
-	enterprise_name          CHAR(255),
-	stock_name               CHAR(255),
-	trade_codes              CHAR(255),
-	isin_code                CHAR(255),
-	cvm_code                 CHAR(255),
-	cnpj                     CHAR(255),
-	main_activity            CHAR(1000),
-	sectoral_classification  CHAR(255),
-	PRIMARY KEY (enterprise_id)
+-- TODO
+-- Definir o tipo da tabela das cotacoes
+
+-------------------------- TABELAS DE DESCRICAO DAS EMPRESAS --------------------------
+
+-- TABELA EMPRESA
+CREATE TABLE IF NOT EXISTS empresa (
+	id_empresa            INTEGER,
+	caminho_logo          CHAR(1000),
+	nome_empresa          CHAR(255),
+	nome_pregao           CHAR(255),
+	cod_negociacao        CHAR(255),
+	cod_isin              CHAR(255),
+	cod_cvm               CHAR(255),
+	cnpj                  CHAR(255),
+	atividade_principal   CHAR(1000),
+	classificao_setorial  CHAR(255),
+	PRIMARY KEY (id_empresa)
 );
 
--- CLASSIFICATION TABLE
--- Table columns in portuguese (same order as below):
--- 	<id_classificacao>, setor, subsetor, segmento
-CREATE TABLE IF NOT EXISTS classification (
-	classification_id   INTEGER,
-	sector              CHAR(255),
-	subsector           CHAR(255),
-	segment             CHAR(255),
-	PRIMARY KEY (classification_id)
+-- TABELA CLASSIFICACAO
+CREATE TABLE IF NOT EXISTS classificacao (
+	id_classificacao    INTEGER,
+	setor              CHAR(255),
+	subsetor           CHAR(255),
+	segmento           CHAR(255),
+	PRIMARY KEY (id_classificacao)
 );
 
--- CONTACT TABLE
--- Table columns in portuguese (same order as below):
--- 	<id_contato>, site, endereços dividido em (Rua, CEP, Cidade, UF), 
--- 	telefones, fax, nomes, emails
-CREATE TABLE IF NOT EXISTS contact (
-	contact_id     INTEGER,
+-- TABELA CONTATO
+CREATE TABLE IF NOT EXISTS contato (
+	id_contato     INTEGER,
 	site           CHAR(500),
-	street         CHAR(255),
-	zip_code       CHAR(255),
-	city           CHAR(255),
-	state          CHAR(10),
-	phones         CHAR(500),
+	rua            CHAR(255),
+	cep            CHAR(255),
+	cidade         CHAR(255),
+	estado         CHAR(10),
+	telefone       CHAR(500),
 	fax            CHAR(50),
-	names          CHAR(1000),
+	nomes          CHAR(1000),
 	emails         CHAR(1000),
-	PRIMARY KEY (contact_id)
+	PRIMARY KEY (id_contato)
 );
 
-CREATE TABLE IF NOT EXISTS enterprise_contact (
-	ent_cont_id     AUTO_INCREMENT,
-	enterprise_id   INTEGER NOT NULL,
-	contact_id      INTEGER NOT NULL,
-	PRIMARY KEY     (ent_cont_id),
-	FOREIGN KEY     (enterprise_id) REFERENCES enterprise (enterprise_id),
-	FOREIGN KEY     (contact_id) REFERENCES contact (contact_id)
+CREATE TABLE IF NOT EXISTS empresa_contato (
+	id_emp_cont     AUTO_INCREMENT,
+	id_empresa      INTEGER NOT NULL,
+	id_contato      INTEGER NOT NULL,
+	PRIMARY KEY     (id_emp_cont),
+	FOREIGN KEY     (id_empresa) REFERENCES empresa (id_empresa),
+	FOREIGN KEY     (id_contato) REFERENCES contato (id_contato)
 );
 
-CREATE TABLE IF NOT EXISTS enterprise_classification (
-	ent_class_id        AUTO_INCREMENT,
-	enterprise_id       INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS empresa_classificacao (
+	id_emp_classe       AUTO_INCREMENT,
+	id_empresa          INTEGER NOT NULL,
 	classification_id   INTEGER NOT NULL,
-	PRIMARY KEY         (ent_class_id),
-	FOREIGN KEY         (enterprise_id) REFERENCES enterprise (enterprise_id),
-	FOREIGN KEY         (classification_id) REFERENCES classification (classification_id)
+	PRIMARY KEY         (id_emp_classe),
+	FOREIGN KEY         (id_empresa) REFERENCES empresa (id_empresa),
+	FOREIGN KEY         (id_classificacao) REFERENCES classificacao (id_classificacao)
 );
+
+
+---------------------------- TABELAS DO HISTORICO COTACOES -----------------------------
+-- Mais informacoes ver o Dicionario de Dados (SeriesHistoricas_Layout.pdf)
+CREATE TABLE IF NOT EXISTS historico_cotacoes (
+	cotacao_id            AUTO_INCREMENT,
+	data_pregao           CHAR(8),
+	cod_bdi               CHAR(02),
+	cod_negociacao        CHAR(12),
+	tipo_mercado          CHAR(3),
+	nome_resumido         CHAR(12),
+	especificacao_papel   CHAR(10),
+	prazo_termo           CHAR(3),
+	moeda_referencia      CHAR(4),
+	preco_abertura        CHAR(11),
+	preco_maximo          CHAR(11),
+	preco_minimo          CHAR(11),
+	preco_medio           CHAR(11),
+	preco_ultimo          CHAR(11),
+	preco_melhor_compra   CHAR(11),
+	preco_melhor_venda    CHAR(11),
+	total_negocios        CHAR(5),
+	qtd_titulos           CHAR(18),
+	volume_titulos        CHAR(18),
+	preco_exercicio       CHAR(11),
+	ind_mercado_opcoes    CHAR(1),
+	data_vencimento       CHAR(8),
+	fator_cotacao         CHAR(7),
+	pontos_exercicio      CHAR(7),
+	cod_isin              CHAR(12),
+	num_distribuicao      CHAR(3),
+	PRIMARY KEY (cotacao_id)
+);
+
 

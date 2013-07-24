@@ -1,6 +1,7 @@
 import os.path
 import zipfile
 import glob
+import csv
 
 class Header():
     def __init__(self, filename, sourceCode, fileCreationDate, booking):
@@ -10,12 +11,15 @@ class Header():
         self.booking = booking
 
 class DailyStock():
-    def __init__(self, tradeDate, codbdi, codneg, tpmerc, nomerc, especi, prazot, modref, preabe, premax, premin, premed, preult, preofc, preofv, totneg, quatot, voltot, preexe, indopc, datven, fatcot, ptoexe, codisi, dismes):
+    def __init__(self, tradeDate, codbdi, codneg, tpmerc, nomres, especi, prazot,
+                 modref, preabe, premax, premin, premed, preult, preofc, preofv,
+                 totneg, quatot, voltot, preexe, indopc, datven, fatcot, ptoexe,
+                 codisi, dismes):
         self.tradeDate = tradeDate 
         self.codbdi = codbdi 
         self.codneg = codneg
         self.tpmerc = tpmerc 
-        self.nomerc = nomerc 
+        self.nomerc = nomres 
         self.especi = especi
         self.prazot = prazot 
         self.modref = modref 
@@ -35,7 +39,11 @@ class DailyStock():
         self.fatcot = fatcot 
         self.ptoexe = ptoexe  
         self.codisi = codisi 
-        self.dismes = dismes 
+        self.dismes = dismes
+        self.listAll = [tradeDate, codbdi, codneg, tpmerc, nomres, especi, prazot,
+                 modref, preabe, premax, premin, premed, preult, preofc, preofv,
+                 totneg, quatot, voltot, preexe, indopc, datven, fatcot, ptoexe,
+                 codisi, dismes]
 
 class Trailer():
     def __init__(self, filename, sourceCode, fileCreationDate, totalRegisters, booking):
@@ -47,17 +55,17 @@ class Trailer():
     
 
 def parseHeader(row):
-    return Header(row[2, 14], row[15, 22], row[23, 30], row[31, 244])
+    return [row[2:15], row[15:23], row[23:31], row[31:245]]
 
 def parseDailyStock(row):
-    return DailyStock(row[2:9], row[10:11], row[12:23], row[24:26], row[27:38],
-                      row[39:48], row[49:51], row[52:55], row[56:68], row[69:81], row[82:94],
-                      row[95:107], row[108:120], row[121:133], row[134:146], row[147:151],
-                      row[152:169], row[170:187], row[188:200], row[201:201], row[202:209],
-                      row[210:216], row[217:229], row[230:241], row[242:245])
+    return [row[2:10], row[10:12], row[12:24], row[24:27], row[27:39],
+            row[39:49], row[49:52], row[52:56], row[56:69], row[69:82], row[82:95],
+            row[95:108], row[108:121], row[121:134], row[134:147], row[147:152],
+            row[152:170], row[170:188], row[188:201], row[201:202], row[202:210],
+            row[210:217], row[217:230], row[230:242], row[242:245]]
 
 def parseTrailer(row):
-    return Trailer(row[2:14], row[15:22], row[23:30], row[31:41], row[42:244])
+    return [row[2:15], row[15:23], row[23:31], row[31:42], row[42:245]]
 
 if __name__ == "__main__":
     
@@ -66,37 +74,37 @@ if __name__ == "__main__":
     trailerList = []
     
     myPath = os.path.dirname(os.path.abspath(__file__))
-    dataDir = myPath + "/../data"
-    stockDataDir = dataDir + "/CotacaoHistorica"
+    dataDir = myPath + "/../../data"
+    rawStockDataDir = dataDir + "/Historico_Cotacoes_UTF8"
+    csvStockDataDir = dataDir + "/Stock_History_CSV"
     
-    zippedStockFiles = glob.glob(stockDataDir + "/COTAHIST_*.zip")
-    print zippedStockFiles
-    
-    for zipFile in zippedStockFiles:
+    stockFiles = glob.glob(rawStockDataDir + "/COTAHIST*")
+    print "================== STOCK History Parser to CSV =================="
+    print "There are " + len(stockFiles) + " years to parse..."
+     
+    for stockFile in stockFiles:
+         
+        year = stockFile[-8:-4]
+        print "  " + year
         
-        # Extract the stock year file
-        zipfile.ZipFile(zipFile, "r").extractall(myPath + "/../data/")
-            
-        year = zipFile[-8:-4]
-        print year
+        if not os.path.exists(csvStockDataDir):
+            os.makedirs(csvStockDataDir)
         
-        stockYearFile = glob.glob(dataDir + "/*" + year + "*")
-        print stockYearFile
-    
-#         with open(stockYearFile, "rb") as stockFile:
-#             for row in stockFile:
-#                 rowType = row[0:1]
-#                 if (rowType == "00"):
-#                     headerList.append(parseHeader(row))
-#                 elif (rowType == "01"):
-#                     dailyStockList.append(parseDailyStock(row))
-#                 elif (rowType == "99"):
-#                     trailerList.append(parseTrailer(row))
-#                 else:
-#                     print "Error: nonexistent row type!"
-#                     # ERROR
-
-        # Remove the file
-#         os.remove(stockYearFile)
-    
-    
+        stockYearCsv = csvStockDataDir + "/stock_" + year + ".csv"
+        
+        with open(stockYearCsv, 'w') as csvfile:
+            stockWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        
+            with open(stockFile, "rb") as file:
+                file.readline()
+                for row in file:
+                    rowType = row[0:2]
+                    if (rowType == "00"):
+                        pass
+                    elif (rowType == "01"):
+                        stockWriter.writerow(parseDailyStock(row))
+                    elif (rowType == "99"):
+                        pass
+                    else:
+                        print "Error: nonexistent row type(" + row + ")!"
+ 
