@@ -13,7 +13,7 @@ for($i = 1; $i <= count($empresas); $i++){
 	
 	$href = split(" ", $empresa);
 	$site = split("\"", $href[1]);
-	echo $site[1];//pegando certo o complemento do site
+	
 	
 	$empresaSemEspacos = trim($empresa);
 	$linhaTitle = split("title=", $empresaSemEspacos);
@@ -25,9 +25,9 @@ for($i = 1; $i <= count($empresas); $i++){
 	$siteImagem = file_get_contents('http://www.infomoney.com.br/' . $site[1]);
 
 	$f = split("figColor", $siteImagem);
-	$d = split("<", $f[1]);
-	$e = split("src=", $d[1]);
-	$linkImagem = trim($e[1]);
+	$codigoImagem = split("<", $f[1]);
+	$quebraLink = split("src=", $codigoImagem[1]);
+	$linkImagem = trim($quebraLink[1]);
 	$url = substr($linkImagem, 1, -4);
 
 	$urlInicio = "http://www.infomoney.com.br/";
