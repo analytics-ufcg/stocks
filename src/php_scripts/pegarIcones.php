@@ -11,7 +11,7 @@ for($i = 1; $i <= count($empresas); $i++){
 	$empresa = $empresas[$i];
 	
 	
-	$href = split(" ", $empresa);//não ta certo quebra por espaço, tem empresas com nome composto.
+	$href = split(" ", $empresa);
 	$site = split("\"", $href[1]);
 	echo $site[1];//pegando certo o complemento do site
 	
