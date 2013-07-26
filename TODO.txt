@@ -1,28 +1,16 @@
 US 1 até US 4:
-
-	DANILO:
-		Baixar os logos
 	
-	ELIAS:
-		Fazer o parsing do CSV vindo do PHP para os CSVs no formato do esquema do BD (ver github)
-			* Adicionar a coluna do caminho para as logomarcas (nesse formato: /home/stocks/web_gui/<cnpj>)
-			* Tira o header do csv
-			* Quando não tiver dado adicionar NA
-		
 	AUGUSTO
-		Adicionar zip do ano de 2007
 		Fazer o parsing dos dados historicos zipados e gerar os CSVs no formato do esquema do BD
 			* TODO: 
-				* PYTHON: fazer o parsing de cada campo para seu tipo
-				* SQL: definir o tipo dos campos (baseado no que foi enviado pelo python)
 				* SQL: definir chave estrangeira entre tabelas do Banco
 		
-		Fazer script de carga dos dados das acoes no BD
-		Fazer script de carga dos dados das empresas no BD
+		Testar script de carga dos dados das acoes no BD
+		Testar script de carga dos dados das empresas no BD
 
 US 5:
 	
-	ELIAS:
+	ELIAS e DANILO:
 		Implementar o servico Web
 
-
+Documentacoes
