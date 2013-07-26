@@ -17,29 +17,29 @@ class CotacaoDiaria():
                  totneg, quatot, voltot, preexe, indopc, datven, fatcot, ptoexe,
                  codisi, dismes):
         self.dataPregao = dataPregao 
-        self.codbdi = codbdi 
+        self.codbdi = codbdi
         self.codneg = codneg
-        self.tpmerc = tpmerc
+        self.tpmerc = int(tpmerc)
         self.nomres = nomres 
         self.especi = especi
         self.prazot = prazot 
         self.modref = modref 
-        self.preabe = preabe
-        self.premax = premax 
-        self.premin = premin 
-        self.premed = premed 
-        self.preult = preult 
-        self.preofc = preofc 
-        self.preofv = preofv 
-        self.totneg = totneg 
-        self.quatot = quatot 
-        self.voltot = voltot 
-        self.preexe = preexe 
-        self.indopc = indopc 
-        self.datven = datven 
-        self.fatcot = fatcot 
-        self.ptoexe = ptoexe  
-        self.codisi = codisi 
+        self.preabe = float(preabe)/100
+        self.premax = float(premax)/100 
+        self.premin = float(premin)/100 
+        self.premed = float(premed)/100 
+        self.preult = float(preult)/100 
+        self.preofc = float(preofc)/100 
+        self.preofv = float(preofv)/100 
+        self.totneg = int(totneg) 
+        self.quatot = int(quatot) 
+        self.voltot = float(voltot)/100
+        self.preexe = float(preexe)/100 
+        self.indopc = int(indopc)
+        self.datven = datven
+        self.fatcot = int(fatcot) 
+        self.ptoexe = float(ptoexe)/1000000
+        self.codisi = codisi
         self.dismes = dismes
         
     def getList(self):
