@@ -3,13 +3,10 @@ import zipfile
 import glob
 import csv
 
-
-class Header():
-    def __init__(self, nomeArquivo, codigoOrigem, dataCriacaoArquivo, reserva):
-        self.nomeArquivo = nomeArquivo
-        self.codigoOrigem = codigoOrigem
-        self.dataCriacaoArquivo = dataCriacaoArquivo
-        self.reserva = reserva
+'''
+    Classe que faz a conversao dos tipos de cada coluna e retorna a lista de 
+    colunas na ordem esperada.
+'''
 
 class CotacaoDiaria():
     def __init__(self, dataPregao, codbdi, codneg, tpmerc, nomres, especi, prazot,
@@ -24,21 +21,21 @@ class CotacaoDiaria():
         self.especi = especi
         self.prazot = prazot 
         self.modref = modref 
-        self.preabe = float(preabe)/100
-        self.premax = float(premax)/100 
-        self.premin = float(premin)/100 
-        self.premed = float(premed)/100 
-        self.preult = float(preult)/100 
-        self.preofc = float(preofc)/100 
-        self.preofv = float(preofv)/100 
+        self.preabe = float(preabe) / 100
+        self.premax = float(premax) / 100 
+        self.premin = float(premin) / 100 
+        self.premed = float(premed) / 100 
+        self.preult = float(preult) / 100 
+        self.preofc = float(preofc) / 100 
+        self.preofv = float(preofv) / 100 
         self.totneg = int(totneg) 
         self.quatot = int(quatot) 
-        self.voltot = float(voltot)/100
-        self.preexe = float(preexe)/100 
+        self.voltot = float(voltot) / 100
+        self.preexe = float(preexe) / 100 
         self.indopc = int(indopc)
         self.datven = datven
         self.fatcot = int(fatcot) 
-        self.ptoexe = float(ptoexe)/1000000
+        self.ptoexe = float(ptoexe) / 1000000
         self.codisi = codisi
         self.dismes = dismes
         
@@ -47,18 +44,6 @@ class CotacaoDiaria():
                 self.modref, self.preabe, self.premax, self.premin, self.premed, self.preult, self.preofc, self.preofv,
                 self.totneg, self.quatot, self.voltot, self.preexe, self.indopc, self.datven, self.fatcot, self.ptoexe,
                 self.codisi, self.dismes]
-
-class Trailer():
-    def __init__(self, nomeArquivo, codigoOrigem, dataCriacaoArquivo, totalRegistros, reserva):
-        self.nomeArquivo = nomeArquivo
-        self.codigoOrigem = codigoOrigem 
-        self.dataCriacaoArquivo = dataCriacaoArquivo
-        self.totalRegistros = totalRegistros
-        self.reserva = reserva
-    
-
-def parseHeader(row):
-    return [row[2:15], row[15:23], row[23:31], row[31:245]]
 
 def parseCotacaoDiaria(row):
     cotacaoDiaria = CotacaoDiaria(row[2:10], row[10:12], row[12:24], row[24:27], row[27:39],
@@ -69,9 +54,10 @@ def parseCotacaoDiaria(row):
 
     return cotacaoDiaria.getList()
 
-def parseTrailer(row):
-    return [row[2:15], row[15:23], row[23:31], row[31:42], row[42:245]]
-
+'''
+    Main que leh os arquivos em UTF-8, realiza a conversao de tipos e gera os 
+    arquivos CSV prontos para serem carregados para o banco de dados
+'''
 if __name__ == "__main__":
     
     myPath = os.path.dirname(os.path.abspath(__file__))
@@ -91,7 +77,7 @@ if __name__ == "__main__":
         if not os.path.exists(csvStockDataDir):
             os.makedirs(csvStockDataDir)
         
-        stockYearCsv = csvStockDataDir + "/acoes_" + year + ".csv"
+        stockYearCsv = csvStockDataDir + "/cotacoes_" + year + ".csv"
         
         with open(stockYearCsv, 'w') as csvfile:
             stockWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)

@@ -1,16 +1,8 @@
-US 1 até US 4:
+US 2 (ELIAS e DANILO):
+	Documentar o codigo
 	
-	AUGUSTO
-		Fazer o parsing dos dados historicos zipados e gerar os CSVs no formato do esquema do BD
-			* TODO: 
-				* SQL: definir chave estrangeira entre tabelas do Banco
-		
-		Testar script de carga dos dados das acoes no BD
-		Testar script de carga dos dados das empresas no BD
+US 5 (ELIAS e DANILO:):
+	Implementar o servico Web
+	Conectar-se com o Banco de Dados
 
-US 5:
-	
-	ELIAS e DANILO:
-		Implementar o servico Web
-
-Documentacoes
+Compactar todos os artefatos gerados e adicionar ao Github

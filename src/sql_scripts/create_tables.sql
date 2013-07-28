@@ -17,15 +17,15 @@ CREATE TABLE IF NOT EXISTS empresa (
 	-- Atributos de Classificacao
 	classificao_setorial  CHAR(255),
 	setor                 CHAR(255),
-	subsetor              CHAR(255),
+	sub_setor             CHAR(255),
 	segmento              CHAR(255),
 
 	-- Atributos de Contato
 	site                  CHAR(500),
 	rua                   CHAR(255),
-	cep                   CHAR(255),
+	cep                   CHAR(50),
 	cidade                CHAR(255),
-	estado                CHAR(10),
+	estado                CHAR(20),
 	telefone              CHAR(500),
 	fax                   CHAR(50),
 	nomes                 CHAR(1000),
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS empresa (
 CREATE TABLE IF NOT EXISTS cotacao (
 	id_cotacao            AUTO_INCREMENT,
 	data_pregao           DATE,
-	cod_bdi               CHAR(02),
+	cod_bdi               CHAR(2),
 	cod_negociacao        CHAR(12),
 	tipo_mercado          INTEGER, 
 	nome_resumido         CHAR(12) NOT NULL,
@@ -79,3 +79,16 @@ CREATE TABLE IF NOT EXISTS cotacao (
 	FOREIGN KEY           (nome_resumido) REFERENCES empresa (nome_pregao)
 );
 
+/*
+	Para resovermos temporariamente o problema da existencia de cotacoes sem
+	a sua correspondente empresa na tabela 'empresa', criamos uma tabela 
+	com os 'nome_pregao' das empresas inexistentes. 
+*/
+
+CREATE TABLE IF NOT EXISTS empresas_inexistentes (
+	id                    AUTO_INCREMENT,
+	-- 'nome_pregao' aceita um CHAR um pouco maior que o tamanho fixado 
+	-- para aceitar eventuais caracteres adicionais
+	nome_pregao           CHAR(20), 
+	PRIMARY KEY           (id)
+);
