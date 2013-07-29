@@ -2,12 +2,12 @@
 
 /*
  * @author Elias Paulino
- * Script para coleta de informaçoes de empresas listada na Bovespa.
+ * Script para coleta de informacoes de empresas listada na Bovespa.
  * A coleta acontece em 3 passos:
- * 	Passo 1 - Leitura do HTML onde existe URL's de todas as empresas listadas.
+ * 	Passo 1 - Leitura do HTML onde existe URLs de todas as empresas listadas.
  * 	Passo 2 - Leitura do HTML por empresa.
- * 	Passo 3 - Leitura do HTML do campo de informaçoes lincado na pagina individual da empresa.
- * 			  Com esse HTML pega-se todas as informaçoes necessarias.  
+ * 	Passo 3 - Leitura do HTML do campo de informacoes lincado na pagina individual da empresa.
+ * 			  Com esse HTML pega-se todas as informacoes necessarias.  
  */
 
 //Cria arquivo de saida com todas as informacoes para cada empresa.
@@ -60,7 +60,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	fclose($file);
  	
  	/*
- 	 * Método retorna pagina html de uma empresa.
+ 	 * Metodo retorna pagina html de uma empresa.
  	 * Argumento: campo com informacao da empresa na pagina html da lista de empresas.
  	 */
  	function getHTMLPorEmpresa($empresa){
@@ -76,7 +76,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna pagina html do campo de informacoes anexa na pagina principal da empresa.
+ 	 * Metodo retorna pagina html do campo de informacoes anexa na pagina principal da empresa.
  	 * Argumento: pagina html principal da empresa.
  	 */
  	function getHTMLcampoInformacoes($htmlEmpresa){
@@ -92,7 +92,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna nome da empresa.
+ 	 * Metodo retorna nome da empresa.
  	 * Argumento: campo com informacao da empresa na pagina html da lista de empresas.
  	 */
  	function getNomeEmpresa($empresa){
@@ -105,7 +105,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna nome da empresa no pregao.
+ 	 * Metodo retorna nome da empresa no pregao.
  	 * Argumento: campo com informacao da empresa na pagina html da lista de empresas.
  	 */
  	function getNomePregao($empresa){
@@ -116,7 +116,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna codigo de negociacao da empresa.
+ 	 * Metodo retorna codigo de negociacao da empresa.
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getCodigoNegociacao($paginaHTML){
@@ -154,7 +154,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna o codigo ISIN da empresa.
+ 	 * Metodo retorna o codigo ISIN da empresa.
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getCodigoISIN($paginaHTML){
@@ -177,7 +177,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna codigo CVM da empresa.
+ 	 * Metodo retorna codigo CVM da empresa.
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getCodigoCVM($paginaHTML){
@@ -201,7 +201,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna cnpj da empresa.
+ 	 * Metodo retorna cnpj da empresa.
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getCNPJ($paginaHTML){
@@ -227,7 +227,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna principal atividade da empresa.
+ 	 * Metodo retorna principal atividade da empresa.
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getAtividadePrincipal($paginaHTML){
@@ -249,7 +249,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna a classificacao setorial da empresa.Esse campo é uma string com o setor 
+ 	 * Metodo retorna a classificacao setorial da empresa.Esse campo e uma string com o setor 
  	 * subsetor e segmento da empresa separados por "/".
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
@@ -271,7 +271,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna o setor de atuacao da empresa.
+ 	 * Metodo retorna o setor de atuacao da empresa.
  	 * Argumento: classificacao setorial da empresa.
  	 */
  	function getSetor($classifSetorial){
@@ -288,7 +288,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna o subsetor de atuacao da empresa.
+ 	 * Metodo retorna o subsetor de atuacao da empresa.
  	* Argumento: classificacao setorial da empresa.
  	*/
  	function getSubSetor($classifSetorial){
@@ -305,7 +305,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna o segmento de atuacao da empresa.
+ 	 * Metodo retorna o segmento de atuacao da empresa.
  	* Argumento: classificacao setorial da empresa.
  	*/
  	function getSegmento($classifSetorial){
@@ -323,7 +323,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna site da empresa.
+ 	 * Metodo retorna site da empresa.
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getSite($paginaHTML){
@@ -347,7 +347,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna nome da rua do campo de endereco da empresa
+ 	 * Metodo retorna nome da rua do campo de endereco da empresa
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getRua($paginaHTML){
@@ -370,7 +370,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna o codigo UF do campo de endereco da empresa
+ 	 * Metodo retorna o codigo UF do campo de endereco da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getUF($paginaHTML){
@@ -392,7 +392,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna nome da cidade do campo de endereco da empresa
+ 	 * Metodo retorna nome da cidade do campo de endereco da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getCidade($paginaHTML){
@@ -416,7 +416,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna o CEP do campo de endereco da empresa
+ 	 * Metodo retorna o CEP do campo de endereco da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getCep($paginaHTML){
@@ -437,7 +437,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna telefone da empresa
+ 	 * Metodo retorna telefone da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getTelefone($paginaHTML){
@@ -463,7 +463,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna o numero de fax da empresa
+ 	 * Metodo retorna o numero de fax da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getFax($paginaHTML){
@@ -488,7 +488,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna endereco de email da empresa
+ 	 * Metodo retorna endereco de email da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getEmail($paginaHTML){
@@ -513,7 +513,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna nome do contato da empresa
+ 	 * Metodo retorna nome do contato da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getNome($paginaHTML){
@@ -532,7 +532,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna nome do escriturador da empresa
+ 	 * Metodo retorna nome do escriturador da empresa
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	* Nome de contato da empresa
  	*/
@@ -556,7 +556,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	/*
- 	 * Método retorna um caminho no servidor criado para cada logomarca.
+ 	 * Metodo retorna um caminho no servidor criado para cada logomarca.
  	* Argumento: cnpj da empresa.
  	*/
  	function getCaminhoLogo($cnpj){
