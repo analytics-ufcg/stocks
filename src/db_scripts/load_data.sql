@@ -1,5 +1,7 @@
 ------------------ SCRIPT DE "BULK LOAD" DOS DADOS ------------------ 
 
+-- Todos os arquivos de dados estao no servidor na pasta "/home/stocks/data"
+
 -- ================= CARGA da tabela EMPRESA =================
 -- CARREGA os dados das empresas a partir de um arquivo CSV local 
 COPY empresa

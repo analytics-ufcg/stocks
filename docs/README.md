@@ -4,10 +4,9 @@ stocks - Documentação
 Sprint 01
 ---------
 
- * Relatório 01
- * Relatório 02
+ * Critério de Seleção do Banco de Dados.pdf
+ * Modelo de Dados - stock_db.png
+ * Sketch - Stocks.png
 
 Sprint 02
 ---------
-
-
