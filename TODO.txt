@@ -1,20 +1,8 @@
-DANILO:
-	Baixar os logos
-
-ELIAS:
-	Fazer o parsing do CSV vindo do PHP para os CSVs no formato do esquema do BD (ver github)
-		* Lembrar de adicionar o caminho das logomarcas no CSV da empresa
-	Fazer script de carga dos dados das empresas no BD
-
-AUGUSTO
-	Incrementar o modelo do esquema do BD para aceitar os dados historicos
-		* TODO: atualizar o tipo de cada campo
-	Fazer o parsing dos dados historicos zipados e gerar os CSVs no formato do esquema do BD
-		* TODO: 
-			* SQL: fazer o parsing de cada campo para seu tipo
-			* PYTHON: mapear os codigos para os nomes das tabelas no fim do dicionario de dados
-			
-	Fazer script de carga dos dados historicos no BD
-
-ELIAS:
+US 2 (ELIAS e DANILO):
+	Documentar o codigo
+	
+US 5 (ELIAS e DANILO:):
 	Implementar o servico Web
+	Conectar-se com o Banco de Dados
+
+Compactar todos os artefatos gerados e adicionar ao Github
