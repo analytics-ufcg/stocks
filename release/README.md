@@ -1,6 +1,7 @@
 # stocks - Releases
 
 ## Sprint 01
+
 ### Documentação:
  * Critério de Seleção do Banco de Dados.pdf
  * Modelo de Dados - stock_db.png
