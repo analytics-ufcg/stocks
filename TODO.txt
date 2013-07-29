@@ -1,8 +1,0 @@
-US 2 (ELIAS e DANILO):
-	Documentar o codigo
-	
-US 5 (ELIAS e DANILO:):
-	Implementar o servico Web
-	Conectar-se com o Banco de Dados
-
-Compactar todos os artefatos gerados e adicionar ao Github
