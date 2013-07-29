@@ -11,9 +11,9 @@
  */
 
 //Cria arquivo de saida com todas as informacoes para cada empresa.
-$file = fopen("DadosEmpresas.csv","a+");
+$file = fopen("data/DadosEmpresas.csv","a+");
 //Lê arquivo HTML com a lista de empresas.
-$arquivo = file_get_contents("C:\\wamp\\www\\htmlPagina.txt");
+$arquivo = file_get_contents("data/htmlPagina.txt");
 //Divide pagina HTML da lista de empresas para pegar campo de informacao de cada empresa.
 $array_text = preg_split("/table/i",$arquivo);
 $array_emp = preg_split("/<tr class=/i", $array_text[2]);
