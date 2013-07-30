@@ -80,7 +80,7 @@ if __name__ == "__main__":
         stockYearCsv = csvStockDataDir + "/cotacoes_" + year + ".csv"
         
         with open(stockYearCsv, 'w') as csvfile:
-            stockWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            stockWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
         
             with open(stockFile, "rb") as file:
                 file.readline()
