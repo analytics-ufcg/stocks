@@ -1,8 +1,7 @@
 <?php
 
-	$teste = "outro teste";
-	echo <b>"".$teste.""</b>;
-    # Turn on error reporting
+	
+    # Turn on error reportin
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
     # A simple function to trap errors from queries
