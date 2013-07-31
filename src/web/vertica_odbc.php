@@ -39,11 +39,11 @@
 //    $values = array(2,2.28,'abcdefg1234567890','1901-01-01','23:12:34','1901-01-01 09:00:09');
 //    $statement = odbc_prepare($conn,"INSERT into test values(?,?,?,?,?,?)");
    
-    if(!$result = odbc_execute($statement, $values)) {
-        echo "odbc_execute Failed!" . "\n";
-    } else {
-        echo "Success: odbc_execute." . "\n";
-    }
+//    if(!$result = odbc_execute($statement, $values)) {
+//        echo "odbc_execute Failed!" . "\n";
+//    } else {
+//        echo "Success: odbc_execute." . "\n";
+//    }
    
     # Get the data from the table and display it
     $sql = "SELECT * FROM EMPRESA WHERE cnpj = 01547749000116";
@@ -55,7 +55,7 @@
 
 
     # Drop the table and projection
-    $sql = "DROP TABLE TEST CASCADE";
+//    $sql = "DROP TABLE TEST CASCADE";
     $result = errortrap_odbc($conn, $sql);
     # Close the ODBC connection
     odbc_close($conn);
