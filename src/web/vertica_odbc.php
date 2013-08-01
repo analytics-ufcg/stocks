@@ -1,6 +1,6 @@
 <?php
 
-	
+function BDconect(){
     # Turn on error reportin
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
@@ -59,3 +59,5 @@
     $result = errortrap_odbc($conn, $sql);
     # Close the ODBC connection
     odbc_close($conn);
+	return $row[1];
+}
