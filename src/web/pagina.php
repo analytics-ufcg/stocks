@@ -1,11 +1,4 @@
-<?php # Turn on error reportin
-   // error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-	//# Connect to the Database
-    //$dsn = "StocksDSN";
-    //$conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
-   // echo "Connected with DSN: $dsn" . "\n";
-   $d = "sdgfd";
-?>
+
 
 
 
@@ -180,20 +173,29 @@
   
   
   <body>
-	<iframe src="vertica_odbc.php" id="resultQuery" marginwidth=0 marginheigth=0 hspace=0 space=0 frameborder=0 scrolling=no width=largura heigth=altura></iframe>
 	
-<!--		$nome_empresa = "BCO SOFISA S.A.";
-//		//$resulset = odbc_prepare($conn,"SELECT * FROM EMPRESA WHERE nome_empresa = ?");
-//		//$sucess = odbc_execute($resultset,array($nome_empresa));
-//		
-//		//while($row = odbc_fetch_array($resultset)){
-//		//	print_r( $row);
-//		//}
-//		$d ="sdfsdgsdf";
-//		
-//		//odbc_close($conn); -->
-	<?php echo $d; ?>
-	<td><?php include("vertica_odbc.php"); ?></td>
+	
+
+<?php # Turn on error reportin
+   error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+	//# Connect to the Database
+    $dsn = "StocksDSN";
+    $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
+	$nome_empresa = "BCO SOFISA S.A.";
+	$resulset = odbc_prepare($conn,"SELECT * FROM EMPRESA WHERE nome_empresa = ?");
+	$sucess = odbc_execute($resultset,array($nome_empresa));
+		
+	while($row = odbc_fetch_array($resultset)){
+		print_r( $row);
+	}
+	$d ="sdfsdgsdf";
+		
+	odbc_close($conn);
+   
+   
+?>
+	
+	
     <!-- Part 1: Wrap all page content here -->
     <div id="wrap">
 
