@@ -15,12 +15,16 @@ Method1 <- function(ts){
 # MAIN
 # -----------------------------------------------------------------------------
 
-# READ TS FROM BIG_EMPRESAS
+# READ TS FROM BIG_COTACOES
 ts.data <- read.csv("data/time_series/ts_big_cotacoes.csv")
 
+# TODO: DESCRIPTIVE ANALYSIS for all ts's
+serie <- subset(ts.data, id == 1)
+# plot(serie$premed, type = "l")
+# b <- diff(serie$premed, lag=1)
+# plot(b, type = "l")
+# hist(b, breaks = 100)
 
 # APPLY AN ALGORITHM FOR EACH EMPRESA (use plyr)
 
-# CREATE A LINE PLOT PER EMPRESA WITH THE BURST HIGHLIGHTED
-
-
+# CREATE A LINE PLOT PER TS WITH THE BURST HIGHLIGHTED
