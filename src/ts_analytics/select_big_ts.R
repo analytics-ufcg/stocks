@@ -48,7 +48,7 @@ SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 	isin.2013 <- unique(ts.data[year(ts.data$dataPregao) == 2013, "codisi"])
   
   cat("Count the quantity of cotacoes...\n")
-	cotacao.size <- ddply(subset(ts.data, codisi %in% isin.2013), 
+	cotacao.size <- ddply(subset(ts.data, codisi %in% isin.2013, pk.cols), 
 	                      pk.cols, function(df){
 	                        size <- nrow(df)
 	                        return(data.frame(codisi = df$codisi[1], 
@@ -64,7 +64,7 @@ SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 	cotacao.size <- cotacao.size[order(cotacao.size$size, decreasing = T),]
   
   # Select the cotacoes and merge with the complete ts.data
-  selected.cotacoes <- cotacao.size[1:num.cotacoes, pk.cols]
+  selected.cotacoes <- cotacao.size[1:num.cotacoes,]
 	selected.cotacoes$id <- 1:num.cotacoes
 	final.data <- merge(ts.data, selected.cotacoes, all.x = F, all.y = T,
 	                    by = pk.cols)
