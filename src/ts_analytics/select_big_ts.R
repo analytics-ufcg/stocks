@@ -11,10 +11,12 @@ SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 	cat("Reading data...\n")
 	ts.data <- NULL
 
-	years <- 1986:2013
-	for (year in years){
-		cat ("  ", year, "\n")
-		data <- read.csv(paste("data/Historico_Cotacoes_CSV/cotacoes_", year,".csv", sep = ""), 
+  cotacoes.dir <- "data/Historico_Cotacoes_CSV"
+  cotacoes.csvs <- list.files(cotacoes.dir)
+
+  for (csv.file in cotacoes.csvs){
+		cat ("  ", csv.file, "\n")
+		data <- read.csv(paste(cotacoes.dir, csv.file, sep = "/"), 
 		                 # Define the column names
 		                 col.names = c("dataPregao", "codbdi", "codneg", "tpmerc", 
 		                               "nomres", "especi", "prazot", "modref", "preabe", "premax", 
@@ -47,7 +49,7 @@ SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 	cat("Select the ISINs in 2013...\n")
 	isin.2013 <- unique(ts.data[year(ts.data$dataPregao) == 2013, "codisi"])
   
-  cat("Count the quantity of cotacoes with BDI: 02 or 96...\n")
+  cat("Count the quantity of cotacoes per selected ISIN with BDI: 02 or 96...\n")
 	cotacao.size <- ddply(subset(ts.data, (codbdi == "02" | codbdi == "96") & codisi %in% isin.2013, pk.cols), 
 	                      pk.cols, function(df){
 	                        size <- nrow(df)

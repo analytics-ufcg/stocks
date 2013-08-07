@@ -8,6 +8,9 @@ rm(list = ls())
 Method1 <- function(ts){
   is.burst <- rep(F, length(ts))
   
+  # TODO: Add method
+  is.burst <- sample(c(T, T, T, T, F), length(ts))
+  
   return (is.burst)
 }
 
