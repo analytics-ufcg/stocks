@@ -1,15 +1,22 @@
+-- TODO: Novo modelo de dados:
+-- empresa (PK as cnpj)
+-- empresa_isin (PK auto-increment)
+-- cotacoes (PK auto_increment)
+-- TODO: Add the FKs
+
 ------------------ SCRIPT DE CRIACAO DE TABELAS ------------------ 
 
 -- =========== TABELA DE DESCRICAO DAS EMPRESAS =========== 
 
+-- TODO: Atualizar depois do novo modelo de dados
 CREATE TABLE IF NOT EXISTS empresa (
 	-- Atributos Gerais
---	id_empresa            AUTO_INCREMENT,
+	id_empresa            AUTO_INCREMENT,
 	caminho_logo          CHAR(1000),
 	nome_empresa          CHAR(255),
 	nome_pregao           CHAR(100),
 	cod_negociacao        CHAR(255),
-	cod_isin              CHAR(12),
+	cod_isin              CHAR(1000),
 	cod_cvm               CHAR(255),
 	cnpj                  CHAR(255),
 	atividade_principal   CHAR(1000),
@@ -31,9 +38,8 @@ CREATE TABLE IF NOT EXISTS empresa (
 	nomes                 CHAR(1000),
 	emails                CHAR(1000),
 
-	PRIMARY KEY           (cod_isin)
+	PRIMARY KEY           (id_empresa)
 );
-
 
 -- =========== TABELAS DO HISTORICO DE COTACOES =========== 
 /* 
@@ -48,6 +54,7 @@ CREATE TABLE IF NOT EXISTS empresa (
 -- Chave estrangeira:
 -- 		cotacao.nome_resumido REFERENCIA empresa.nome_pregao 
 */
+-- TODO: Atualizar depois do novo modelo de dados
 CREATE TABLE IF NOT EXISTS cotacao (
 	id_cotacao            AUTO_INCREMENT,
 	data_pregao           DATE,
@@ -75,16 +82,17 @@ CREATE TABLE IF NOT EXISTS cotacao (
 	pontos_exercicio      NUMERIC(7, 6),
 	cod_isin              CHAR(12),
 	num_distribuicao      CHAR(3),
-	PRIMARY KEY           (id_cotacao),
-	FOREIGN KEY           (cod_isin) REFERENCES empresa (cod_isin)
+	PRIMARY KEY           (id_cotacao)
+--	FOREIGN KEY           (cod_isin) REFERENCES empresa (cod_isin)
 );
+
 
 /*
 	Para resovermos temporariamente o problema da existencia de cotacoes sem
 	a sua correspondente empresa na tabela 'empresa', criamos uma tabela 
 	com os 'nome_pregao' das empresas inexistentes. 
 */
-
+ -- TODO: Atualizar depois do novo modelo de dados
 CREATE TABLE IF NOT EXISTS empresas_inexistentes (
 	id                    AUTO_INCREMENT,
 	-- 'nome_pregao' aceita um CHAR um pouco maior que o tamanho fixado 

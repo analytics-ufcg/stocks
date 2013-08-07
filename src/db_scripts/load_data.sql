@@ -8,21 +8,11 @@ COPY empresa
 FROM '/home/stocks/git/stocks/data/DadosEmpresas.csv'
 DELIMITER ','    -- Delimitador das colunas
 ENCLOSED BY '"'  -- Caractere que abre e fecha strings
-NULL 'NA'        -- Como o NULL eh definido
-NO COMMIT;       -- Nao faz o commit (ver explicacao abaixo)
-
-/*
-	O Vertica nao realiza checagem de chaves na hora da carga de dados, 
-	apenas na consulta. Entao nao fazemos COMMIT para que possamos 
-	checar se houve quebra de restricoes com a funcao abaixo que checa
-	se houve quebra de qualquer restricao (incluindo as chaves) da 
-	tabela empresa
-*/
+ESCAPE AS '\'   -- Caractere de escape
+NULL AS 'NA';    -- Como o NULL eh definido
 
 select ANALYZE_CONSTRAINTS('empresa');
 
--- Termine a transacao apenas se nao existir PKs (nome_pregao) duplicadas
--- COMMIT;
 
 -- ================= CARGA da tabela COTACAO =================
 -- CARREGA os dados das cotacoes a partir dos arquivos CSV locais 
@@ -38,3 +28,13 @@ INSERT INTO empresas_inexistentes (nome_pregao)
 	SELECT load_results.'Column Values' as nome_pregao 
 	FROM (select ANALYZE_CONSTRAINTS('cotacao')) as load_results;
 COMMIT;
+
+
+/*
+	ATENCAO:
+	Eh importante checar os arquivos de log de excecoes ao termino de cada carga. 
+	O Vertica rejeita linhas se houver alguma excecao na leitura (mais colunas, menos colunas, etc.)
+	Ver arquivos de log abaixo:
+		<db_dir>/<catalog_dir>/CopyErrorLogs/<tablename-filename-of-source>-copy-from-exceptions
+		<db_dir>/<catalog_dir>/CopyErrorLogs/<tablename-filename-of-source>-copy-from-rejected-data
+*/
