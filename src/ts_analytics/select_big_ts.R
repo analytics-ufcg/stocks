@@ -36,15 +36,15 @@ SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 		# Select the the ts data (average price in stock)
 		ts.data <- rbind(ts.data, data)
 	}
-  rm(data, year)
+  rm(data)
   
 	# Cast dataPregao to date object
 	cat("Cast dataPregao to Date...\n")
 	ts.data$dataPregao <- as.Date(ts.data$dataPregao, "%Y%m%d")
 
-	# Get the days and sort them
-	days <- sort(unique(ts.data$dataPregao))
-
+	# Order the ts.data per dataPregao
+	ts.data <- ts.data[order(ts.data$dataPregao),]
+    
 	# Select the cotacoes
 	cat("Select the ISINs in 2013...\n")
 	isin.2013 <- unique(ts.data[year(ts.data$dataPregao) == 2013, "codisi"])

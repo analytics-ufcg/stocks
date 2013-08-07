@@ -8,7 +8,7 @@ COPY empresa
 FROM '/home/stocks/git/stocks/data/DadosEmpresas.csv'
 DELIMITER ','    -- Delimitador das colunas
 ENCLOSED BY '"'  -- Caractere que abre e fecha strings
-ESCAPE AS '\'   -- Caractere de escape
+ESCAPE AS '\'    -- Caractere de escape
 NULL AS 'NA';    -- Como o NULL eh definido
 
 select ANALYZE_CONSTRAINTS('empresa');

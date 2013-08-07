@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS cotacao (
 	cod_bdi               CHAR(2),
 	cod_negociacao        CHAR(12),
 	tipo_mercado          INTEGER, 
-	nome_resumido         CHAR(12) NOT NULL,
+	nome_resumido         CHAR(12),
 	especificacao_papel   CHAR(10),
 	prazo_termo           CHAR(3),
 	moeda_referencia      CHAR(4),
