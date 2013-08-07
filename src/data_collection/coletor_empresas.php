@@ -17,7 +17,9 @@ $arquivo = file_get_contents("data/htmlPagina.txt");
 //Divide pagina HTML da lista de empresas para pegar campo de informacao de cada empresa.
 $array_text = preg_split("/table/i",$arquivo);
 $array_emp = preg_split("/<tr class=/i", $array_text[2]);
-
+for($i = 1;$i < count($array_text);$i++){
+ #echo $array_text[i];
+}
 set_time_limit (0); 
 ignore_user_abort(true);
 
