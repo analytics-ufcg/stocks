@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -176,7 +172,8 @@
 	
 	
 
-<?php # Turn on error reportin
+<?php 
+	# Turn on error reportin
    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 	//# Connect to the Database
     $dsn = "StocksDSN";
