@@ -2,6 +2,7 @@ import os.path
 import zipfile
 import glob
 import csv
+from numpy.core.defchararray import startswith
 
 '''
     Classe que faz a conversao dos tipos de cada coluna e retorna a lista de 
@@ -39,6 +40,31 @@ class CotacaoDiaria():
         self.codisi = codisi
         self.dismes = dismes
         
+    def convertePrecosPorMoeda(self):
+        if self.modref == 'R$  ':
+            return
+        elif self.modref == 'CR$ ':
+            if startswith(self.dataPregao, "1986"):
+                conversorReal = 2750.0 * 10**9
+            else:
+                conversorReal = 2750.0 * 10**0
+        elif self.modref == 'NCZ$':
+            conversorReal = 2750.0 * 10**3
+        elif self.modref == 'CZ$ ':
+            conversorReal = 2750.0 * 10**6
+        else:
+            print("Opcao Inexistente.");
+            
+        self.modref = 'R$  '
+        self.preabe /= conversorReal
+        self.preexe /= conversorReal
+        self.premax /= conversorReal
+        self.premed /= conversorReal
+        self.premin /= conversorReal
+        self.preofc /= conversorReal
+        self.preofv /= conversorReal
+        self.preult /= conversorReal
+        
     def getList(self):
         return [self.dataPregao, self.codbdi, self.codneg, self.tpmerc, self.nomres, self.especi, self.prazot,
                 self.modref, self.preabe, self.premax, self.premin, self.premed, self.preult, self.preofc, self.preofv,
@@ -51,6 +77,8 @@ def parseCotacaoDiaria(row):
             row[95:108], row[108:121], row[121:134], row[134:147], row[147:152],
             row[152:170], row[170:188], row[188:201], row[201:202], row[202:210],
             row[210:217], row[217:230], row[230:242], row[242:245])
+
+    cotacaoDiaria.convertePrecosPorMoeda()
 
     return cotacaoDiaria.getList()
 

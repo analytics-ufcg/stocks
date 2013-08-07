@@ -6,7 +6,7 @@ rm(list = ls())
 # ======================================================================
 # FUNCTIONS
 # ======================================================================
-SelectBigEmpresas <- function(number.empresas){
+SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 	# Put data in memory
 	cat("Reading data...\n")
 	ts.data <- NULL
@@ -29,10 +29,10 @@ SelectBigEmpresas <- function(number.empresas){
 		                 # Define the file encoding
                      fileEncoding="latin1",
                      # The strings are characters not factors (improve time performance)
-		                 stringsAsFactors = F)  
+		                 stringsAsFactors = F)
 
 		# Select the the ts data (average price in stock)
-		ts.data <- rbind(ts.data, data[,c("dataPregao", "nomres", "premed")])
+		ts.data <- rbind(ts.data, data)
 	}
   rm(data, year)
   
@@ -43,34 +43,55 @@ SelectBigEmpresas <- function(number.empresas){
 	# Get the days and sort them
 	days <- sort(unique(ts.data$dataPregao))
 
-	# Select the empresas
-	cat("Select the empresas with cotacoes in (1986 AND 2013)...\n")
-	big.empresas <- unique(ts.data[year(ts.data$dataPregao) == 1986 |
-	                                 year(ts.data$dataPregao) == 2013, "nomres"])
+	# Select the cotacoes
+	cat("Select the ISINs in 2013...\n")
+	isin.2013 <- unique(ts.data[year(ts.data$dataPregao) == 2013, "codisi"])
   
-  cat("Count the quantity of cotacoes per empresa...")
-	emp.size <- ddply(subset(ts.data, nomres %in% big.empresas), "nomres", function(df){
-	  size <- nrow(df)
-    return(data.frame(nomres = df$nomres[1], size = size))
-	}, .progress = "text")
+  cat("Count the quantity of cotacoes with BDI: 02 or 96...\n")
+	cotacao.size <- ddply(subset(ts.data, (codbdi == "02" | codbdi == "96") & codisi %in% isin.2013, pk.cols), 
+	                      pk.cols, function(df){
+	                        size <- nrow(df)
+	                        return(data.frame(codisi = df$codisi[1], 
+	                                          codbdi = df$codbdi[1], 
+                                            size = size))
+	                      }, .progress = "text")
   
-  # Order the empresas
-	emp.size <- emp.size[order(emp.size$size, decreasing = T),]
+  cat("Return the largest cotacoes from those...\n")
+  
+  # Order the ISINs by cotacoes
+	cotacao.size <- cotacao.size[order(cotacao.size$size, decreasing = T),]
+  
+  # Select the cotacoes
+  selected.cotacoes <- cotacao.size[1:num.cotacoes,]
+	selected.cotacoes$id <- 1:num.cotacoes
+  
+  # Merge with the complete ts.data
+	final.data <- merge(ts.data, selected.cotacoes, all.x = F, all.y = T,
+	                    by = pk.cols)
+  
+  # Organize the data columns and order by date
+	final.data <- final.data[order(final.data$dataPregao),]
+  initial.cols <- c("dataPregao", pk.cols, "nomres")
+	final.data <- final.data[,c(initial.cols, 
+	                            colnames(final.data)[!colnames(final.data) %in% initial.cols])]
   
 	# Return the desired number of empresas
-	return(subset(ts.data, nomres %in% emp.size$nomres[1:number.empresas]))
+	return(final.data)
 }
 
 # MAIN
-number.empresas <- 10
-ts.data.big.empresas <- SelectBigEmpresas(number.empresas)
-cat("Selected empresas (nome_pregao):\n")
-cat(unique(ts.data.big.empresas$nomres))
+num.cotacoes <- 10
+pk.cols <- c("codisi", "codbdi")
 
-cat("\nPersist the time-series for the", number.empresas, "empresas...\n")
+ts.data.big.cotacoes <- SelectBigCotacoes(num.cotacoes, pk.cols)
+
+cat("Selected cotacoes:\n")
+print(ts.data.big.cotacoes[!duplicated(ts.data.big.cotacoes[,pk.cols]), pk.cols])
+
+cat("\nPersist the time-series...\n")
 
 ts.dir <- "data/time_series"
 dir.create(ts.dir, showWarnings=F)
 
-write.csv(ts.data.big.empresas, paste(ts.dir, "/ts_big_empresas.csv", sep = ""),
+write.csv(ts.data.big.cotacoes, paste(ts.dir, "/ts_big_cotacoes.csv", sep = ""),
           row.names = F)
