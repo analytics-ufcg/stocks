@@ -1,6 +1,6 @@
 function mudarVisibilidadeDivTable() {
-	var divTable = document.getElementById("exibeTable");
-	divTable.style.visibility = 'block';
+	var divTable = document.getElementById("main_table");
+	divTable.style.display = '';
 
 }
 function echoConsulta() {

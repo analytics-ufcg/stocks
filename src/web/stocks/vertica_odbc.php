@@ -34,7 +34,7 @@
 
   
    while($row = odbc_fetch_array($resultset)){
-  	 $table = $table."<td>".$row['caminho_logo']."</td><td>Nome Empresa: ".$row['nome_empresa']."<br>Nome de Pregao: ".$row['NOME_PREGAO']."<br>Codigos de Negociacao <br>Codigo ISIN: ".$row['cod_isin']."<br>Codigo CVM: ".$row['cod_cvm']."<br>CNPJ: ".$row['cnpj']."<br>Atividade Principal: ".$row['atividade_principal']."</td><td>"."Site:".$row['site']."<br>Rua: ".$row['rua']."<br>CEP: ".$row['cep']."<br>Cidade: ".$row['cidade']."<br>Telefones: ".$row['telefone']."<br>Fax: ".$row['fax']."<br>Nomes:".$row['nomes']."<br>Emails: ".$row['emails']."</td><td>Setor: ".$row['setor']."<br>Subsetor: ".$row['sub_setor']."<br>Segmento: ".$row['segmento']."</td></tr>";
+  	 $table = $table."<td><img src='./images/logos/3M.jpg'></td><td>Nome Empresa: ".$row['nome_empresa']."<br>Nome de Pregao: ".$row['NOME_PREGAO']."<br>Codigos de Negociacao <br>Codigo ISIN: ".$row['cod_isin']."<br>Codigo CVM: ".$row['cod_cvm']."<br>CNPJ: ".$row['cnpj']."<br>Atividade Principal: ".$row['atividade_principal']."</td><td>"."Site:".$row['site']."<br>Rua: ".$row['rua']."<br>CEP: ".$row['cep']."<br>Cidade: ".$row['cidade']."<br>Telefones: ".$row['telefone']."<br>Fax: ".$row['fax']."<br>Nomes:".$row['nomes']."<br>Emails: ".$row['emails']."</td><td>Setor: ".$row['setor']."<br>Subsetor: ".$row['sub_setor']."<br>Segmento: ".$row['segmento']."</td></tr>";
 }
   $table = $table."</tbody></table>";
 	#echo json_encode($table);

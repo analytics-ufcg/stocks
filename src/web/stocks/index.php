@@ -40,7 +40,7 @@
 	odbc_close($conn);
 	}
 	# Turn on error reportin
-        #require_once 'vertica_odbc.php';
+    #require_once 'vertica_odbc.php';
 	#$$output = require_once("vertica_odbc.php");
   	#$output = call_page('vertica_odbc.php');
 	#echo 'Go for it!<br>';
@@ -95,28 +95,12 @@
 			</div>
 		</div>
 		
-<div id="exibeTable" style="visibility:block" >
+<div id="main_table" style="display:none" >
 <?php
 	include("vertica_odbc.php");
 ?>
 </div>
 </form>
 		</div>
-      
-	  
-
-      <div id="push"></div>
-    </div>
-	
-	
-
-	<div class="span6">
-          
-	</div>
-    <div id="footer">
-      <div class="container">
-        <p class="muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p>
-      </div>
-    </div>
   </body>
 </html>
