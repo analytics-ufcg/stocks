@@ -44,3 +44,7 @@ html,body {
 .container .credit {
 	margin: 20px 0;
 }
+
+div.hidden {
+	display: none;
+}

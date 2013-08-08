@@ -1,6 +1,6 @@
-function mudarVisibilidadeDivTable() {
-	var divTable = document.getElementById("exibeTable");
-	divTable.style.visibility = 'block';
+function show_main_table() {
+	var divTable = document.getElementById("main_table");
+	divTable.className = 'teste';
 
 }
 function echoConsulta() {
@@ -47,7 +47,7 @@ function removeOptions(selectbox) {
 	}
 }
 
-function addCombo1(nome1, nome2, nome3) {
+function fill_combo_options(nome1, nome2, nome3) {
 
 	removeOptions(document.getElementById("combo"));
 	var textb = 1;
@@ -59,31 +59,6 @@ function addCombo1(nome1, nome2, nome3) {
 	option2.text = nome2;
 	var option3 = document.createElement("option");
 	option3.text = nome3;
-
-	//option.value = textb.value;
-	try {
-		combo.add(option1, null); //Standard
-		combo.add(option2, null);
-		combo.add(option3, null);
-	} catch (error) {
-		combo.add(option1); // IE only
-	}
-
-	textb.value = "";
-}
-
-function addCombo2() {
-
-	removeOptions(document.getElementById("combo"));
-	var textb = 1;
-	var combo = document.getElementById("combo");
-	//combo.empty();
-	var option1 = document.createElement("option");
-	option1.text = "Setor";
-	var option2 = document.createElement("option");
-	option2.text = "Sub-Setor";
-	var option3 = document.createElement("option");
-	option3.text = "Seguinte";
 
 	//option.value = textb.value;
 	try {
