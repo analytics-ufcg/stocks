@@ -42,38 +42,39 @@ SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 	cat("Cast dataPregao to Date...\n")
 	ts.data$dataPregao <- as.Date(ts.data$dataPregao, "%Y%m%d")
 
-	# Order the ts.data per dataPregao
-	ts.data <- ts.data[order(ts.data$dataPregao),]
-    
 	# Select the cotacoes
 	cat("Select the ISINs in 2013...\n")
 	isin.2013 <- unique(ts.data[year(ts.data$dataPregao) == 2013, "codisi"])
   
   cat("Count the quantity of cotacoes per selected ISIN with BDI: 02 or 96...\n")
-	cotacao.size <- ddply(subset(ts.data, (codbdi == "02" | codbdi == "96") & codisi %in% isin.2013, pk.cols), 
+	cotacao.size <- ddply(subset(ts.data, (codbdi == "02" | codbdi == "96") & codisi %in% isin.2013, 
+                               c(pk.cols, "nomres")), 
 	                      pk.cols, function(df){
 	                        size <- nrow(df)
-	                        return(data.frame(codisi = df$codisi[1], 
+	                        return(data.frame(nomres = df$nomres[1], 
+                                            codisi = df$codisi[1], 
 	                                          codbdi = df$codbdi[1], 
                                             size = size))
 	                      }, .progress = "text")
-  
+
   cat("Return the largest cotacoes from those...\n")
   
   # Order the ISINs by cotacoes
 	cotacao.size <- cotacao.size[order(cotacao.size$size, decreasing = T),]
   
   # Select the cotacoes
-  selected.cotacoes <- cotacao.size[1:num.cotacoes,]
+	# 	selected.cotacoes <- cotacao.size[1:num.cotacoes,] # Select by ISIN and BDI
+	#   selected.cotacoes <- cotacao.size[head(which(!duplicated(cotacao.size$codisi)), num.cotacoes),] # Select by ISIN
+	selected.cotacoes <- cotacao.size[head(which(!duplicated(cotacao.size$nomres)), num.cotacoes),] # Select by NOMRES
 	selected.cotacoes$id <- 1:num.cotacoes
   
   # Merge with the complete ts.data
 	final.data <- merge(ts.data, selected.cotacoes, all.x = F, all.y = T,
-	                    by = pk.cols)
+	                    by = c(pk.cols, "nomres"))
   
   # Organize the data columns and order by date
 	final.data <- final.data[order(final.data$dataPregao),]
-  initial.cols <- c("dataPregao", pk.cols, "nomres")
+  initial.cols <- c("dataPregao", "nomres", pk.cols)
 	final.data <- final.data[,c(initial.cols, 
 	                            colnames(final.data)[!colnames(final.data) %in% initial.cols])]
   

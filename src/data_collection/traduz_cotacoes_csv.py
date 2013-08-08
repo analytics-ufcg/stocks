@@ -5,7 +5,9 @@ import csv
 
 '''
     Classe que faz a conversao dos tipos de cada coluna e retorna a lista de 
-    colunas na ordem esperada.
+    colunas na ordem esperada. Caso algum campo nao esteja de acordo com as convencoes 
+    estabelecidas (moeda: R$ e; BDI: Lote_padrao ou Lote Fracionario, codigos 02 e 96, 
+    respectivamente) a conversao retorna uma lista vazia.
 '''
 
 class CotacaoDiaria():
@@ -52,10 +54,11 @@ def parseCotacaoDiaria(row):
             row[152:170], row[170:188], row[188:201], row[201:202], row[202:210],
             row[210:217], row[217:230], row[230:242], row[242:245])
 
-    if cotacaoDiaria.modref != 'R$  ':
+    if cotacaoDiaria.modref != 'R$  ' or not cotacaoDiaria.codbdi in ['02', '96']:
         return []
     else:
         return cotacaoDiaria.getList()
+
 
 '''
     Main que leh os arquivos em UTF-8, realiza a conversao de tipos e gera os 
