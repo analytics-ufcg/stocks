@@ -1,5 +1,3 @@
-<html>
-<body>
 <?php
     
        
@@ -46,6 +44,3 @@
     odbc_close($conn);
 ?>	
 <div><? echo $table;?></div>
-
-</body>
-</html>
