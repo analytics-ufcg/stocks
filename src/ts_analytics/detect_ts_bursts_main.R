@@ -4,6 +4,7 @@ rm(list = ls())
 # SOURCE() and LIBRARY()
 # =============================================================================
 library(zoo)
+source("src/ts_analytics/detect_ts_bursts_methods.R")
 
 # =============================================================================
 # FUNCTIONs
@@ -40,16 +41,25 @@ ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir)
   # PNG file
   #   png(paste(burst.ts.dir, "/", serie.name, ".png", sep = ""), width = 1200, height = 1000)
   # PDF file
-  pdf(paste(burst.ts.dir, "/", serie.name, ".pdf", sep = ""), width = 30, height = 24)
-  par(mfrow = c(length(methods)+1, 1), mar=c(0,4,0.5,0.5), oma = c(.75, .75, .75, .75))
+  pdf(paste(burst.ts.dir, "/", serie.name, ".pdf", sep = ""), 
+      width = 35, height = (10 * length(methods)))
+  
+  par(mfrow = c(length(methods), 1), mar=c(0,4,0.5,0.5), oma = c(.75, .75, .75, .75))
   
   # Predicted Burst series
-  for(method in methods){
-    result <- method(serie.data$premed)
+  for(i in 1:length(methods)){
+    result <- methods[[i]](serie.data$premed)
     
     # Plot the TS
-    plot(serie, xaxt="n", type = "n", 
-         xlab = "", ylab = paste("Preco Medio (", result$method_name, ")", sep =""))
+    if (i >= length(methods)){
+      # Change the margins and the add the x-axis and x-label
+      par(mar=c(4,4,0.5,0.5))
+      plot(serie, 
+           xlab = "Ano", ylab = paste("Preco Medio (", result$method_name, ")", sep =""))
+    }else{
+      plot(serie, xaxt="n", type = "n", 
+           xlab = "", ylab = paste("Preco Medio (", result$method_name, ")", sep =""))
+    }
     
     # Highlight the bursts
     colour <- ifelse(result$is.burst, "red", "black")
@@ -60,43 +70,11 @@ ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir)
   }
   
   # Change the margins
-  par(mar=c(4,4,0.5,0.5))
+  #   par(mar=c(4,4,0.5,0.5))
   # Plot Normal serie
-  plot(serie, xlab = "Ano", ylab = "Preco Medio", lwd = 2)
+  #   plot(serie, xlab = "Ano", ylab = "Preco Medio", lwd = 2)
   
   dev.off()
-}
-
-
-# -----------------------------------------------------------------------------
-# BURST SELECTION - METHODS
-# -----------------------------------------------------------------------------
-MethodBaseline <- function(serie, base.quantile = .95){
-  # This method should return an array of logic (TRUE or FALSE) with 
-  # length = length(ts) - 1
-  # The default base.quantile is liberal, that means, we dont want to lose a burst
-  
-  #   serie <- serie[!is.na(serie)]
-  
-  diff.serie <- diff(serie, lag=1)
-  positive.serie <- sqrt(diff.serie^2)
-  
-  is.burst <- (positive.serie > quantile(positive.serie, base.quantile))
-  
-  # This method return a list with two variables: is.burst and method_name
-  return (list(is.burst = is.burst, method_name = "Baseline"))
-}
-
-Method2 <- function(ts){
-  # REMEMBER: The method should return an array of logic (TRUE or FALSE) with 
-  # length = length(ts) - 1
-  is.burst <- rep(F, length(ts) - 1)
-  
-  # TODO: Add method
-  is.burst <- sample(c(F, F, F, F, T), length(is.burst), replace = T)
-  
-  # REMEMBER: The method should return a list with these variables (is.burst and method_name)
-  return (list(is.burst = is.burst, method_name = "Method_2"))
 }
 
 # =============================================================================
@@ -118,7 +96,7 @@ burst.ts.dir <- paste(ts.dir, "burst_ts", sep = "/")
 dir.create(burst.ts.dir, showWarnings=F)
 
 # Define the Burst Selection methods
-methods <- c(MethodBaseline, Method2)
+methods <- c(GlobalBaseline, LocalBaseline, LMMEBasedDetector)
 
 cat("Iterating over series...\n")
 for (id in sort(unique(ts.data$id))){
