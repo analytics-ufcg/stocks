@@ -3,7 +3,7 @@
 -- Todos os arquivos de dados estao no servidor na pasta "/home/stocks/git/stocks/data"
 
 -- ================= CARGA da tabela EMPRESA =================
--- CARREGA os dados das empresas a partir de um arquivo CSV local 
+-- CARREGA os dados das empresas a partir de um arquivo CSV
 COPY empresa
 FROM '/home/stocks/git/stocks/data/DadosEmpresas.csv'
 DELIMITER ','    -- Delimitador das colunas
@@ -13,6 +13,15 @@ NULL AS 'NA';    -- Como o NULL eh definido
 
 select ANALYZE_CONSTRAINTS('empresa');
 
+-- ================= CARGA da tabela EMPRESA_ISIN =================
+-- CARREGA os dados dos ISINs das empresas a partir de um arquivo CSV
+COPY empresa_isin
+FROM '/home/stocks/git/stocks/data/DadosEmpresasISINs.csv'
+DELIMITER ','    -- Delimitador das colunas
+ENCLOSED BY '"'  -- Caractere que abre e fecha strings
+--ESCAPE AS '\'    -- Caractere de escape
+NULL AS 'NA';    -- Como o NULL eh definido
+
 
 -- ================= CARGA da tabela COTACAO =================
 -- CARREGA os dados das cotacoes a partir dos arquivos CSV locais 
@@ -20,12 +29,17 @@ select ANALYZE_CONSTRAINTS('empresa');
 -- OBS.: no futuro podemos refatorar esse SQL para gera-lo e fazer a transacao
 -- 		 automaticamente no proprio codigo python (que leh o UTF e escreve o CSV)
 
-COPY cotacao FROM '/home/stocks/git/stocks/data/cotacoes_*.csv' DELIMITER ',' ENCLOSED BY '"' NULL 'NA';
+COPY cotacao 
+FROM '/home/stocks/git/stocks/data/Historico_Cotacoes_CSV/cotacoes_*.csv' 
+DELIMITER ',' 
+ENCLOSED BY '"' 
+--ESCAPE AS '\'    -- Caractere de escape
+NULL 'NA';
 
 -- A funcao ANALYZE_CONSTRAINST retorna os valores das chaves estrangeiras
 -- (sem repeticao) que não tiverem correspondencia.
-INSERT INTO empresas_inexistentes (nome_pregao) 
-	SELECT load_results.'Column Values' as nome_pregao 
+INSERT INTO isin_inexistente (cod_isin) 
+	SELECT load_results.'Column Values' as cod_isin 
 	FROM (select ANALYZE_CONSTRAINTS('cotacao')) as load_results;
 COMMIT;
 
