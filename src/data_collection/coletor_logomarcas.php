@@ -2,6 +2,13 @@
 /*
  * > Sprint 1 - US 2 > Danilo Gomes > Codigo para pegar as logomarcas das empresas que estão na bolsa de valores no site infomoney > Tem como saida as imagens das logomarcas das empresas que existem no site no formato .jpg, com o nome do arquivo sendo o nome de pregão da empresa
  */
+
+function get_http_response_code($domain1) {
+	$headers = get_headers($domain1);
+	return substr($headers[0], 9, 3);
+}
+
+
 $url = 'http://www.infomoney.com.br/mercados/empresas-bovespa';
 $html = file_get_contents ( 'http://www.infomoney.com.br/mercados/empresas-bovespa' );
 
@@ -18,7 +25,7 @@ foreach ( $links as $link ) {
 	
 	$href = 'http://www.infomoney.com.br/' . $link->getAttribute ( 'href' );
 	
-	if (get_http_response_code ( $href ) != "404") {
+	if (get_http_response_code ( $href ) == 200) {
 		$html = file_get_contents ( $href );
 		
 		$dom = new DOMDocument ();
