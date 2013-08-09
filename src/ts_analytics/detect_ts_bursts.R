@@ -49,14 +49,14 @@ ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir)
     
     # Plot the TS
     plot(serie, xaxt="n", type = "n", 
-         xlab = "Ano", ylab = paste("Preco Medio (", result$method_name, ")", sep =""))
+         xlab = "", ylab = paste("Preco Medio (", result$method_name, ")", sep =""))
     
     # Highlight the bursts
     colour <- ifelse(result$is.burst, "red", "black")
     
     segments(x0=index(serie)[-c(length(serie))], y0=serie[-c(length(serie))], 
              x1=index(serie)[-1], y1=serie[-1], 
-             col = colour[-1], lwd = 2)
+             col = colour, lwd = 2)
   }
   
   # Change the margins
@@ -71,17 +71,20 @@ ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir)
 # -----------------------------------------------------------------------------
 # BURST SELECTION - METHODS
 # -----------------------------------------------------------------------------
-Method1 <- function(ts){
-  # REMEMBER: The method should return an array of logic (TRUE or FALSE) with 
+MethodBaseline <- function(serie, base.quantile = .95){
+  # This method should return an array of logic (TRUE or FALSE) with 
   # length = length(ts) - 1
-  is.burst <- rep(F, length(ts)-1)
+  # The default base.quantile is liberal, that means, we dont want to lose a burst
   
-  # Random Example
-  is.burst <- sample(c(F, F, F, F, T), length(is.burst), replace = T)
- 
-  # REMEMBER: The method should return a list with these variables (is.burst and method_name)
-  return (list(is.burst = is.burst, 
-               method_name = "Method_1"))
+  #   serie <- serie[!is.na(serie)]
+  
+  diff.serie <- diff(serie, lag=1)
+  positive.serie <- sqrt(diff.serie^2)
+  
+  is.burst <- (positive.serie > quantile(positive.serie, base.quantile))
+  
+  # This method return a list with two variables: is.burst and method_name
+  return (list(is.burst = is.burst, method_name = "Baseline"))
 }
 
 Method2 <- function(ts){
@@ -115,7 +118,7 @@ burst.ts.dir <- paste(ts.dir, "burst_ts", sep = "/")
 dir.create(burst.ts.dir, showWarnings=F)
 
 # Define the Burst Selection methods
-methods <- c(Method1, Method2)
+methods <- c(MethodBaseline, Method2)
 
 cat("Iterating over series...\n")
 for (id in sort(unique(ts.data$id))){
@@ -132,9 +135,9 @@ for (id in sort(unique(ts.data$id))){
                       serie.name$codbdi, sep = "_")
   
   # Adding the Dates without PREGAO (to create the GAPS in the TS)
-  all.dates <- data.frame(dataPregao=seq(serie.data$dataPregao[1], 
-                                         serie.data$dataPregao[nrow(serie.data)], 1))
-  serie.data <- merge(serie.data, all.dates, all.y = T)
+  #   all.dates <- data.frame(dataPregao=seq(serie.data$dataPregao[1], 
+  #                                          serie.data$dataPregao[nrow(serie.data)], 1))
+  #   serie.data <- merge(serie.data, all.dates, all.y = T)
   
   # Generate the serie
   serie <- zoo(serie.data$premed, order.by=serie.data$dataPregao)
@@ -149,6 +152,6 @@ for (id in sort(unique(ts.data$id))){
   # Apply the burst selection method
   # -----------------------------------------------------------------------------
   cat("    Applying the Burst Selection Methods...\n")
-  ApplyBurstSelectionMethods(serie, serie.name, methods, burst.ts.dir)  
+  ApplyBurstSelectionMethods(serie, serie.name, methods, burst.ts.dir)
 }
 
