@@ -25,7 +25,9 @@ foreach ( $links as $link ) {
 	
 	$href = 'http://www.infomoney.com.br/' . $link->getAttribute ( 'href' );
 	
-	if (get_http_response_code ( $href ) == 200) {
+	if (get_http_response_code ( $href ) == 404) {
+		echo "error downloading: " . $href;
+	} else {
 		$html = file_get_contents ( $href );
 		
 		$dom = new DOMDocument ();
@@ -41,7 +43,5 @@ foreach ( $links as $link ) {
 			}
 			file_put_contents ( "icons/" . $img_filename, file_get_contents ( 'http://www.infomoney.com.br/' . $img_src ) );
 		}
-	} else {
-		echo "error downloading: " . $href;
 	}
 }
