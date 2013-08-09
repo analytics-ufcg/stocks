@@ -16,38 +16,14 @@
 
 <script type="text/javascript" src="javascript/stocks-main.js"></script>
 
+<script type="text/javascript" src="javascript/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="javascript/jquery-ui.js"></script>
+
+<script type="text/javascript" src="javascript/d3.v3.js"></script>
+
 </head>
 
 <body>
-	<div>
-
-<?php 
-	function executaConsulta(){
-	error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-	$dsn = "StocksDSN";
-	$conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
-		
-	$resultset = odbc_prepare($conn,"fazConsulta()");
-	$sucess = odbc_execute($resultset,array("pegaEntradaTextArea()"));
-	$row = odbc_result($resultset,'cep');
-	
-	if($row != ""){
-		echo $row;
-	}else{
-		echo "consultou";
-	}
-		odbc_close($conn);
-	}
-	
-	# Turn on error reportin
-    #require_once 'vertica_odbc.php';
-	#$$output = require_once("vertica_odbc.php");
-  	#$output = call_page('vertica_odbc.php');
-	#echo 'Go for it!<br>';
-?>
-
-	</div>
-
 	<!-- Part 1: Wrap all page content here -->
 	<div id="wrap">
 
