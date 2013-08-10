@@ -19,7 +19,7 @@ COPY empresa_isin
 FROM '/home/stocks/git/stocks/data/DadosEmpresasISINs.csv'
 DELIMITER ','    -- Delimitador das colunas
 ENCLOSED BY '"'  -- Caractere que abre e fecha strings
---ESCAPE AS '\'    -- Caractere de escape
+ESCAPE AS '\'    -- Caractere de escape
 NULL AS 'NA';    -- Como o NULL eh definido
 
 
@@ -33,7 +33,7 @@ COPY cotacao
 FROM '/home/stocks/git/stocks/data/Historico_Cotacoes_CSV/cotacoes_*.csv' 
 DELIMITER ',' 
 ENCLOSED BY '"' 
---ESCAPE AS '\'    -- Caractere de escape
+ESCAPE AS '\'    -- Caractere de escape
 NULL 'NA';
 
 -- A funcao ANALYZE_CONSTRAINST retorna os valores das chaves estrangeiras

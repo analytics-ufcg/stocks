@@ -42,13 +42,13 @@ ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir)
   #   png(paste(burst.ts.dir, "/", serie.name, ".png", sep = ""), width = 1200, height = 1000)
   # PDF file
   pdf(paste(burst.ts.dir, "/", serie.name, ".pdf", sep = ""), 
-      width = 35, height = (10 * length(methods)))
+      width = 30, height = (10 * length(methods)))
   
   par(mfrow = c(length(methods), 1), mar=c(0,4,0.5,0.5), oma = c(.75, .75, .75, .75))
   
   # Predicted Burst series
   for(i in 1:length(methods)){
-    result <- methods[[i]](serie.data$premed)
+    result <- methods[[i]](serie)
     
     # Plot the TS
     if (i >= length(methods)){
@@ -68,11 +68,6 @@ ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir)
              x1=index(serie)[-1], y1=serie[-1], 
              col = colour, lwd = 2)
   }
-  
-  # Change the margins
-  #   par(mar=c(4,4,0.5,0.5))
-  # Plot Normal serie
-  #   plot(serie, xlab = "Ano", ylab = "Preco Medio", lwd = 2)
   
   dev.off()
 }
@@ -112,24 +107,22 @@ for (id in sort(unique(ts.data$id))){
                       sub(" +$", "", serie.name$codisi), # Replace trailer spaces
                       serie.name$codbdi, sep = "_")
   
-  # Adding the Dates without PREGAO (to create the GAPS in the TS)
-  #   all.dates <- data.frame(dataPregao=seq(serie.data$dataPregao[1], 
-  #                                          serie.data$dataPregao[nrow(serie.data)], 1))
-  #   serie.data <- merge(serie.data, all.dates, all.y = T)
-  
   # Generate the serie
   serie <- zoo(serie.data$premed, order.by=serie.data$dataPregao)
   
+  # Adding the Dates without PREGAO (to create the GAPS in the TS)
+  serie <- merge.zoo(serie, zoo(, seq.Date(start(serie), end(serie), by="day")), all=TRUE)
+
   # ----------------------------------------------------------------------------
   # Describe it
   # -----------------------------------------------------------------------------
   cat("    Describing it...\n")
   DescribeTs(serie, serie.name, descriptive.ts.dir)
-  
+
   # ----------------------------------------------------------------------------
   # Apply the burst selection method
   # -----------------------------------------------------------------------------
-  cat("    Applying the Burst Selection Methods...\n")
+  cat("    Applying the Burst Detection Methods...\n")
   ApplyBurstSelectionMethods(serie, serie.name, methods, burst.ts.dir)
 }
 
