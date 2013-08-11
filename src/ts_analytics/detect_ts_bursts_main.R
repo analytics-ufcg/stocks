@@ -27,6 +27,11 @@ DescribeTs <- function(serie, serie.name, descriptive.ts.dir){
   plot(Ecdf(~ serie.diff, q=c(.6, .7, .8, .9, .95, .99), 
             main = "Funcao de Distribuição Acumulada", 
             xlab = "Diff (lag 1) - Preco Medio", ylab = "Quantile"))
+  
+  plot(Ecdf(~ abs(serie.diff), q=c(.6, .7, .8, .9, .95, .99), 
+            main = "Funcao de Distribuição Acumulada", 
+            xlab = "Abs Diff (lag 1) - Preco Medio", ylab = "Quantile"))
+  
   dev.off()
   
 }
