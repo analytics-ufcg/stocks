@@ -3,18 +3,18 @@ library(zoo)
 # -----------------------------------------------------------------------------
 # BURST DETECTION METHODS
 # -----------------------------------------------------------------------------
+# These method return a list with: a logic (TRUE or FALSE) vector (is.burst) of 
+# length = length(serie) - 1 and the name of the method (method.name) 
 
 GlobalBaseline <- function(serie, limit.quantile = .95){
-  # This method returns an array of logic (TRUE or FALSE) with 
-  # length = length(ts) - 1
 
   diff.serie <- diff(serie, lag=1)
   abs.serie <- abs(diff.serie)
   
   is.burst <- (abs.serie > quantile(abs.serie, limit.quantile, na.rm=T))
   
-  # This method return a list with two variables: is.burst and method_name
-  return (list(is.burst = is.burst, method_name = "Global-Baseline"))
+  # Return the list
+  return (list(is.burst = is.burst, method.name = "Global-Baseline Detector"))
 }
 
 LocalBaseline <- function(serie, window.size = 30, limit.quantile = .95){
@@ -31,11 +31,15 @@ LocalBaseline <- function(serie, window.size = 30, limit.quantile = .95){
   # of the initial values)
   is.burst <- c(rep(F, length(abs.serie) - length(is.burst)), is.burst)
   
-  # This method return a list with two variables: is.burst and method_name
-  return (list(is.burst = is.burst, method_name = "Local-Baseline"))
+  # Return the list
+  return (list(is.burst = is.burst, method.name = "Local-Baseline Detector"))
 }
 
-LMMEBasedDetector <- function(serie, horizon.size = 30, limit.quantile = .95){
+LongTermVisionDetector <- function(serie, horizon.size = 30, horizons.window.size = 10, 
+                                   limit.quantile = .95){
+  
+  # This algorithm is based on the LMME algorithm
+  # More information see: http://www.joics.com/publishedpapers/2013_10_9_2747_2756.pdf
   
   # Split the sequence in horizon.size chunks
   serie.split <- split(serie, ceiling(seq_along(serie)/horizon.size))
@@ -70,7 +74,7 @@ LMMEBasedDetector <- function(serie, horizon.size = 30, limit.quantile = .95){
   extrema.serie <- c(min.max.serie[is.extrema], serie[1], serie[length(serie)])
   
   # Define the bursts
-  result <- LocalBaseline(extrema.serie, window.size=10, limit.quantile)
+  result <- LocalBaseline(extrema.serie, horizons.window.size, limit.quantile)
   is.burst <- as.vector(result$is.burst)
   is.burst <- c(is.burst, is.burst[length(is.burst)]) # Repeat the last value
   
@@ -80,12 +84,13 @@ LMMEBasedDetector <- function(serie, horizon.size = 30, limit.quantile = .95){
   shifted.days <- index(extrema.serie)
   shifted.days[2:(length(shifted.days)-1)] <- shifted.days[2:(length(shifted.days)-1)]+1
   
-  # Merge with the complete serie
+  # ReCreate the extreme.serie now with TRUE or FALSE values, then MERGE it 
+  # with the complete serie adding the intermediate days
   is.burst.complete <- merge.zoo(zoo(is.burst, order.by=shifted.days), 
                                  zoo(,seq(start(serie), end(serie), by="day")), all=TRUE)
   
-  # Repeat the last TRUE or FALSE value to all intermidiate values between the 
-  # extreme points
+  # Replace the NA values of the intermeadiate extreme point values with the last 
+  # extreme point value (TRUE or FALSE), creating the long sight term
   is.burst.complete <- na.locf(is.burst.complete)
   
   # Remove the values unexistent in the original serie
@@ -94,7 +99,14 @@ LMMEBasedDetector <- function(serie, horizon.size = 30, limit.quantile = .95){
   # Remove the first value to agree with the function signature
   is.burst.complete <- is.burst.complete[-1]
   
-  # Return a list with two variables: is.burst and method_name
-  return (list(is.burst = is.burst.complete, method_name = "LMME-Based Detector"))
+  # Return the list
+  return (list(is.burst = is.burst.complete, method.name = "Long-Term Vision Detector"))
 }
 
+# Function used to understand the LMME algorithm
+LMMEStudy <- function(extrema.serie){
+  plot(extrema.serie[1:45])
+  for(val in index(extrema.serie[1:45])){
+    abline(v=val)
+  }
+}

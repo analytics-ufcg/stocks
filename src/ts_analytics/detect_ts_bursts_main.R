@@ -4,6 +4,7 @@ rm(list = ls())
 # SOURCE() and LIBRARY()
 # =============================================================================
 library(zoo)
+library(Hmisc)
 source("src/ts_analytics/detect_ts_bursts_methods.R")
 
 # =============================================================================
@@ -12,54 +13,35 @@ source("src/ts_analytics/detect_ts_bursts_methods.R")
 DescribeTs <- function(serie, serie.name, descriptive.ts.dir){
   # DESCRIPTIVE ANALYSIS
   
-  # PNG file
-  #   png(paste(descriptive.ts.dir, "/", serie.name, ".png", sep = ""), width = 1200, height = 1000)
   # PDF file
-  pdf(paste(descriptive.ts.dir, "/", serie.name, ".pdf", sep = ""), width = 30, height = 24)
-  par(mfrow=c(3,1), mar=c(0,4,0.5,0.5), oma = c(.75, .75, .75, .75))
+  pdf(paste(descriptive.ts.dir, "/", serie.name, ".pdf", sep = ""), width = 30, height = 15)
   
-  plot(serie, ylab = "Preco Medio", xaxt = "n", lwd = 2)
-  
-  # Change the margins
-  par(mar=c(4,4,0.5,0.5))
+  plot(serie, xlab = "Ano", ylab = "Preco Medio", lwd = 2)
   
   serie.diff <- diff(serie, lag=1)
   plot(serie.diff, xlab = "Ano", ylab = "Diff (lag 1) - Preco Medio")
   
-  # Change the margins
-  par(mar=c(4,4,3.5,0.5))
-  
   hist(serie.diff, breaks = 100, main = "Histograma", 
        xlab = "Diff (lag 1) - Preco Medio", ylab = "Frequencia")
   
+  plot(Ecdf(~ serie.diff, q=c(.6, .7, .8, .9, .95, .99), 
+            main = "Funcao de Distribuição Acumulada", 
+            xlab = "Diff (lag 1) - Preco Medio", ylab = "Quantile"))
   dev.off()
   
 }
 
 ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir){
   
-  # PNG file
-  #   png(paste(burst.ts.dir, "/", serie.name, ".png", sep = ""), width = 1200, height = 1000)
   # PDF file
-  pdf(paste(burst.ts.dir, "/", serie.name, ".pdf", sep = ""), 
-      width = 30, height = (10 * length(methods)))
-  
-  par(mfrow = c(length(methods), 1), mar=c(0,4,0.5,0.5), oma = c(.75, .75, .75, .75))
+  pdf(paste(burst.ts.dir, "/", serie.name, ".pdf", sep = ""), width = 30, height = 15)
   
   # Predicted Burst series
   for(i in 1:length(methods)){
     result <- methods[[i]](serie)
     
     # Plot the TS
-    if (i >= length(methods)){
-      # Change the margins and the add the x-axis and x-label
-      par(mar=c(4,4,0.5,0.5))
-      plot(serie, 
-           xlab = "Ano", ylab = paste("Preco Medio (", result$method_name, ")", sep =""))
-    }else{
-      plot(serie, xaxt="n", type = "n", 
-           xlab = "", ylab = paste("Preco Medio (", result$method_name, ")", sep =""))
-    }
+    plot(serie, main = result$method.name, xlab = "Ano", ylab = "Preco Medio")
     
     # Highlight the bursts
     colour <- ifelse(result$is.burst, "red", "black")
@@ -67,6 +49,9 @@ ApplyBurstSelectionMethods <- function(serie, serie.name, methods, burst.ts.dir)
     segments(x0=index(serie)[-c(length(serie))], y0=serie[-c(length(serie))], 
              x1=index(serie)[-1], y1=serie[-1], 
              col = colour, lwd = 2)
+    
+    legend("topright", legend=c("IS solavanco", "ISN'T solavanco"), 
+           col=c("red", "black"), lty = 1, lwd = 2)
   }
   
   dev.off()
@@ -91,7 +76,7 @@ burst.ts.dir <- paste(ts.dir, "burst_ts", sep = "/")
 dir.create(burst.ts.dir, showWarnings=F)
 
 # Define the Burst Selection methods
-methods <- c(GlobalBaseline, LocalBaseline, LMMEBasedDetector)
+methods <- c(GlobalBaseline, LocalBaseline, LongTermVisionDetector)
 
 cat("Iterating over series...\n")
 for (id in sort(unique(ts.data$id))){
