@@ -7,3 +7,11 @@
  * Sketch - Stocks.png
 
 ## Sprint 02
+
+ * US 5 - Como posso visualizar as informações das ações coletadas estruturadas em uma página web?.pdf
+ * US 6 - Sketch do Produto.png
+ * US 7 - O que é um "solavanco"?.png
+ * Novo Modelo de Dados - stock_db.png
+
+## Sprint 03
+

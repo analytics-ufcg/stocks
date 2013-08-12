@@ -105,8 +105,8 @@ LongTermVisionDetector <- function(serie, horizon.size = 30, horizons.window.siz
 
 # Function used to understand the LMME algorithm
 LMMEStudy <- function(extrema.serie){
-  plot(extrema.serie[1:45])
-  for(val in index(extrema.serie[1:45])){
+  plot(extrema.serie[1:80], xlab = "Ano", ylab = "Preco Medio")
+  for(val in index(extrema.serie[1:80])){
     abline(v=val)
   }
 }

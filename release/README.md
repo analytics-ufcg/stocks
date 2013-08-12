@@ -2,7 +2,7 @@
 
 ## Sprint 01
 
-### Documentação:
+### Documentação
  * Critério de Seleção do Banco de Dados.pdf
  * Modelo de Dados - stock_db.png
  * Sketch - Stocks.png
@@ -22,3 +22,13 @@
 
 ## Sprint 02
 
+### Documentação
+ * US 5 - Como posso visualizar as informações das ações coletadas estruturadas em uma página web?.pdf
+ * US 6 - Sketch do Produto.png
+ * US 7 - O que é um "solavanco"?.png
+ * Novo Modelo de Dados - stock_db.png
+
+### Código
+ * Scripts de seleção e detecção de solavancos (R)
+	* src/ts_analytics/* 
+ * Mudanças em todos os scripts anteriomente gerados

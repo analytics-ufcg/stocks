@@ -77,7 +77,7 @@ cat("Creating output directories...\n")
 descriptive.ts.dir <- paste(ts.dir, "describe_ts", sep = "/")
 dir.create(descriptive.ts.dir, showWarnings=F)
 
-burst.ts.dir <- paste(ts.dir, "burst_ts", sep = "/")
+burst.ts.dir <- paste(ts.dir, "solavancos_ts", sep = "/")
 dir.create(burst.ts.dir, showWarnings=F)
 
 # Define the Burst Selection methods
