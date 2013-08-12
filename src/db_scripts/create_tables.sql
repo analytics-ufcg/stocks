@@ -103,6 +103,6 @@ CREATE TABLE IF NOT EXISTS cotacao (
 */
 CREATE TABLE IF NOT EXISTS isin_inexistente (
     id                    AUTO_INCREMENT,
-    cod_isin              CHAR(12) NOT NULL,
+    cod_isin              CHAR(20) NOT NULL,
     PRIMARY KEY           (id)
 );
