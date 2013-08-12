@@ -22,6 +22,7 @@ ENCLOSED BY '"'  -- Caractere que abre e fecha strings
 ESCAPE AS '\'    -- Caractere de escape
 NULL AS 'NA';    -- Como o NULL eh definido
 
+select ANALYZE_CONSTRAINTS('empresa_isin');
 
 -- ================= CARGA da tabela COTACAO =================
 -- CARREGA os dados das cotacoes a partir dos arquivos CSV locais 
