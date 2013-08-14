@@ -22,26 +22,36 @@ $links = $dom->getElementsByTagName ( 'a' );
 
 foreach ( $links as $link ) {
 	echo $link->getAttribute ( 'href' ) . '--' . $link->getAttribute ( 'title' );
+
+	if( !file_exists($link->getAttribute ( 'title' ) . '.jpg') ){
 	
-	$href = 'http://www.infomoney.com.br/' . $link->getAttribute ( 'href' );
+		$href = 'http://www.infomoney.com.br/' . $link->getAttribute ( 'href' );
 	
-	if (get_http_response_code ( $href ) == 404) {
-		echo "error downloading: " . $href;
-	} else {
-		$html = file_get_contents ( $href );
-		
-		$dom = new DOMDocument ();
-		$dom->loadHTML ( $html );
-		
-		$img = $dom->getElementByID ( 'imgLogoCompany' );
-		
-		$img_filename = $img->getAttribute ( 'title' ) . '.jpg';
-		if(!file_exists($img_filename)){
-			$img_src = $img->getAttribute ( 'src' );
-			if (! file_exists ( 'icons' )) {
-				mkdir ( 'icons', 0777, true );
+		if (get_http_response_code ( $href ) == 404) {
+			echo "error downloading: " . $href;
+		} else {
+			$html = file_get_contents ( $href );
+			
+			$dom = new DOMDocument ();
+			$dom->loadHTML ( $html );
+			
+			$img = $dom->getElementByID ( 'imgLogoCompany' );
+			
+			if ($img != NULL){
+				$img_filename = $img->getAttribute ( 'title' ) . '.jpg';
+				if(!file_exists($img_filename)){
+					$img_src = $img->getAttribute ( 'src' );
+					if (! file_exists ( 'icons' )) {
+						mkdir ( 'icons', 0777, true );
+					}
+					file_put_contents ( "icons/" . $img_filename, file_get_contents ( 'http://www.infomoney.com.br/' . $img_src ) );
+				}
+			}else{
+				echo 'image not available for: '. $href;
 			}
-			file_put_contents ( "icons/" . $img_filename, file_get_contents ( 'http://www.infomoney.com.br/' . $img_src ) );
-		}
+	}else{
+		echo 'image already downloaded for: '. $link->getAttribute ( 'title' );
 	}
+
+}
 }
