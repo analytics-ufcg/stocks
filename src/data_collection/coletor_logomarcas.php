@@ -20,12 +20,14 @@ $dom = $xpath->query ( '//div[@class="por-setor ordem-alfa"]' )->item ( 0 );
 
 $links = $dom->getElementsByTagName ( 'a' );
 
+if (! file_exists ( 'icons' )) {
+	mkdir ( 'icons', 0777, true );
+}
+
 foreach ( $links as $link ) {
 	echo $link->getAttribute ( 'href' ) . '--' . $link->getAttribute ( 'title' );
 
 	if( !file_exists('icons/'.$link->getAttribute ( 'title' ) . '.jpg') ){
-	
-		$href = 'http://www.infomoney.com.br/' . $link->getAttribute ( 'href' );
 	
 		if (get_http_response_code ( $href ) == 404) {
 			echo "error downloading: " . $href;
@@ -38,13 +40,10 @@ foreach ( $links as $link ) {
 			$img = $dom->getElementByID ( 'imgLogoCompany' );
 			
 			if ($img != NULL){
-				$img_filename = $img->getAttribute ( 'title' ) . '.jpg';
+				$img_filename = 'icons/'.$img->getAttribute ( 'title' ) . '.jpg';
 				if(!file_exists($img_filename)){
 					$img_src = $img->getAttribute ( 'src' );
-					if (! file_exists ( 'icons' )) {
-						mkdir ( 'icons', 0777, true );
-					}
-					file_put_contents ( "icons/" . $img_filename, file_get_contents ( 'http://www.infomoney.com.br/' . $img_src ) );
+					file_put_contents ( $img_filename, file_get_contents ( 'http://www.infomoney.com.br/' . $img_src ) );
 				}
 			}else{
 				echo 'image not available for: '. $href;
