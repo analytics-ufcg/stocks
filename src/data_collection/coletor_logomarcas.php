@@ -27,7 +27,10 @@ if (! file_exists ( 'icons' )) {
 foreach ( $links as $link ) {
 	echo $link->getAttribute ( 'href' ) . '--' . $link->getAttribute ( 'title' );
 
+	$href = 'http://www.infomoney.com.br/' . $link->getAttribute ( 'href' );
+
 	if( !file_exists('icons/'.$link->getAttribute ( 'title' ) . '.jpg') ){
+		
 	
 		if (get_http_response_code ( $href ) == 404) {
 			echo "error downloading: " . $href;
@@ -39,7 +42,7 @@ foreach ( $links as $link ) {
 			
 			$img = $dom->getElementByID ( 'imgLogoCompany' );
 			
-			if ($img != NULL){
+			if ($img <> NULL){
 				$img_filename = 'icons/'.$img->getAttribute ( 'title' ) . '.jpg';
 				if(!file_exists($img_filename)){
 					$img_src = $img->getAttribute ( 'src' );
