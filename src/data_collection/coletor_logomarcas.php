@@ -23,7 +23,7 @@ $links = $dom->getElementsByTagName ( 'a' );
 foreach ( $links as $link ) {
 	echo $link->getAttribute ( 'href' ) . '--' . $link->getAttribute ( 'title' );
 
-	if( !file_exists($link->getAttribute ( 'title' ) . '.jpg') ){
+	if( !file_exists('icons/'.$link->getAttribute ( 'title' ) . '.jpg') ){
 	
 		$href = 'http://www.infomoney.com.br/' . $link->getAttribute ( 'href' );
 	
