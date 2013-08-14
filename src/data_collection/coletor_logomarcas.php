@@ -49,9 +49,9 @@ foreach ( $links as $link ) {
 			}else{
 				echo 'image not available for: '. $href;
 			}
+		}
 	}else{
 		echo 'image already downloaded for: '. $link->getAttribute ( 'title' );
 	}
 
-}
 }
