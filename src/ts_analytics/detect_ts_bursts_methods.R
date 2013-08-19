@@ -7,32 +7,14 @@ library(zoo)
 # length = length(serie) - 1 and the name of the method (method.name) 
 
 GlobalBaseline <- function(serie, limit.quantile = .95){
-
-  serie.not.na <- serie[!is.na(serie)]
   
-  diff.serie <- diff(serie.not.na, lag=1)
+  diff.serie <- diff(serie, lag=1)
   abs.serie <- abs(diff.serie)
   
   is.burst <- (abs.serie > quantile(abs.serie, limit.quantile, na.rm=T))
   
-  # Como aplicar o método para series sem NA e retornar os solavancos para a serie original
-  # Tira uma data do inicio e coloca no final
-  # Adiciona uma data no inicio
-  # Adiciona os NAs
-  # Shift para frente das datas
-  
-  # TODO: Validate it!
-  shifted.days <- index(is.burst)
-  shifted.days[2:(length(shifted.days))] <- shifted.days[2:(length(shifted.days))]+1
-  
-  is.burst.complete <- merge.zoo(zoo(is.burst, order.by=shifted.days), 
-                                 zoo(,seq((start(serie) + 1), end(serie), by="day")), all=TRUE)
-  
-  is.burst.complete <- na.locf(is.burst.complete)
-  is.burst.complete <- is.burst.complete[-1]
-  
   # Return the list
-  return (list(is.burst = is.burst.complete, method.name = "Global-Baseline Detector"))
+  return (list(is.burst = is.burst, method.name = "Global-Baseline Detector"))
 }
 
 LocalBaseline <- function(serie, window.size = 30, limit.quantile = .95){
