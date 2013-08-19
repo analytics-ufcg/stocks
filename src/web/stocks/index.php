@@ -28,13 +28,9 @@
 	<div id="wrap">
 
 		<!-- Begin page content -->
-		<div class="row-fluid offset5">
-
+		<div class="top_bar">
 			<h1>Stocks</h1>
-
-			<div class="span6"></div>
 		</div>
-
 		<div class="container-fluid offset1">
 			<form action="index.php" method="post">
 				<div>
@@ -42,9 +38,8 @@
 						onclick="fill_combo_options('CNPJ', 'CVM', 'ISIN')" id="optionsRadios1"
 						value="codigo" checked> Busca por código <input
 						type="radio" name="tipo_de_busca"
-						onclick="fill_combo_options('Setor', 'Sub-Setor', 'Seguimento')"
-						id="optionsRadios2" value="classificacao"> Busca por
-					classificacao
+						onclick="fill_combo_options('Setor', 'Sub-Setor', 'Segmento')"
+						id="optionsRadios2" value="classificacao"> Busca por classificação
 				</div>
 				<div>
 					<select name="combo" id="combo"></select>
@@ -52,11 +47,11 @@
 					<input type="submit" value="ok" onclick="show_main_table()">
 				</div>
 				<div id="main_table">
-<?php
-	include("vertica_odbc.php");
-?>
 				</div>
 			</form>
 		</div>
+<?php
+	include("vertica_odbc.php");
+?>
 </body>
 </html>

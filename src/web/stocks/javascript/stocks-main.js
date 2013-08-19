@@ -3,43 +3,6 @@ function show_main_table() {
 	divTable.className = 'teste';
 
 }
-function echoConsulta() {
-	alert("<?php executaConsulta(); ?>");
-}
-
-function pegaEntradaTextArea() {
-	var textArea = document.getElementById("textArea");
-	textoEntrada = textArea.value;
-	return textoEntrada
-}
-
-function pegaEntradaCombo() {
-	var combo = document.getElementById("combo");
-	var x = combo.selectedIndex;
-	nomeSelecionado = combo.options[x].text;
-	if (nomeSelecionado == "ISIN") {
-		nomeSelecionado = "cod_isin";
-	} else if (nomeSelecionado == "CVM") {
-		nomelecionado = "cod_cvm";
-	} else if (nomeSelecionado == "CNPJ") {
-		nomeSelecionado = "cnpj";
-	} else if (nomeSelecionado == "Setor") {
-		nomeSelecionado = "setor";
-	} else if (nomeSelecionado == "Sub-Setor") {
-		nomeSelecionado = "sub_setor";
-	} else if (nomeSelecionado == "Segmento") {
-		nomeSelecionado = "segmento";
-	}
-	return nomeSelecionado
-}
-
-function fazConsulta() {
-	var consulta = "select * from Empresa where ".concat(pegaEntradaCombo(),
-			" = ?", ";");
-	alert(consulta);
-	return consulta;
-}
-
 function removeOptions(selectbox) {
 	var i;
 	for (i = selectbox.options.length - 1; i >= 0; i--) {

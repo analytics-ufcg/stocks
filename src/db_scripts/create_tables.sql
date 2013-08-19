@@ -4,30 +4,28 @@
 
 CREATE TABLE IF NOT EXISTS empresa (
     -- Atributos Gerais
-    caminho_logo          CHAR(1000),
-    nome_empresa          CHAR(255),
-    nome_pregao           CHAR(100),
-    cod_negociacao        CHAR(255),
-    cod_cvm               CHAR(255),
+    nome_empresa          CHAR(60),
+    nome_pregao           CHAR(15),
+    cod_negociacao        CHAR(100),
+    cod_cvm               CHAR(10),
     cnpj                  CHAR(14),
-    atividade_principal   CHAR(1000),
+    atividade_principal   CHAR(250),
     
     -- Atributos de Classificacao
-    classificao_setorial  CHAR(255),
-    setor                 CHAR(255),
-    sub_setor             CHAR(255),
-    segmento              CHAR(255),
+    setor                 CHAR(35),
+    sub_setor             CHAR(40),
+    segmento              CHAR(45),
 
     -- Atributos de Contato
-    site                  CHAR(500),
-    rua                   CHAR(255),
-    cep                   CHAR(50),
-    cidade                CHAR(255),
-    estado                CHAR(20),
-    telefone              CHAR(500),
-    fax                   CHAR(50),
-    nomes                 CHAR(1000),
-    emails                CHAR(1000),
+    site                  CHAR(50),
+    rua                   CHAR(50),
+    cidade                CHAR(30),
+    cep                   CHAR(10),
+    estado                CHAR(2),
+    telefone              CHAR(100),
+    fax                   CHAR(100),
+    nomes                 CHAR(100),
+    emails                CHAR(100),
 
     PRIMARY KEY           (cnpj)
 );
