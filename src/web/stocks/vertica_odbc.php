@@ -30,7 +30,13 @@
     $table = "<table border='1'><tr><th>Logomarca</th><th>Dados Da Empresa</th><th>Contato</th><th>Qualificacao</th></tr><tbody><tr>";
   
     while($row = odbc_fetch_array($resultset)){
-        $table = $table."<td><img src='./images/logos/3M.jpg'></td><td>Nome Empresa: "
+        $icon_filename = "./images/logos/" . $row['cnpj'] . ".jpg";
+
+        if (!file_exists($icon_filename)){
+            $icon_filename = "./images/logos/sem_imagem.jpg";
+        }
+
+        $table = $table."<td><img src=" . $icon_filename . "></td><td>Nome Empresa: "
         .$row['nome_empresa']."<br>Nome de Pregao: ".$row['nome_pregao']
         ."<br>Codigos de Negociacao <br>"."<br>Codigo CVM: ".$row['cod_cvm']."<br>CNPJ: "
         .$row['cnpj']."<br>Atividade Principal: ".$row['atividade_principal']."</td><td>"
