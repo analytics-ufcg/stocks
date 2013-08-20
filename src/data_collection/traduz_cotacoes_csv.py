@@ -2,11 +2,12 @@ import os.path
 import zipfile
 import glob
 import csv
-from numpy.core.defchararray import startswith
 
 '''
     Classe que faz a conversao dos tipos de cada coluna e retorna a lista de 
-    colunas na ordem esperada.
+    colunas na ordem esperada. Caso algum campo nao esteja de acordo com as convencoes 
+    estabelecidas (moeda: R$ e; BDI: Lote_padrao ou Lote Fracionario, codigos 02 e 96, 
+    respectivamente) a conversao retorna uma lista vazia.
 '''
 
 class CotacaoDiaria():
@@ -40,31 +41,6 @@ class CotacaoDiaria():
         self.codisi = codisi
         self.dismes = dismes
         
-    def convertePrecosPorMoeda(self):
-        if self.modref == 'R$  ':
-            return
-        elif self.modref == 'CR$ ':
-            if startswith(self.dataPregao, "1986"):
-                conversorReal = 2750.0 * 10**9
-            else:
-                conversorReal = 2750.0 * 10**0
-        elif self.modref == 'NCZ$':
-            conversorReal = 2750.0 * 10**3
-        elif self.modref == 'CZ$ ':
-            conversorReal = 2750.0 * 10**6
-        else:
-            print("Opcao Inexistente.");
-            
-        self.modref = 'R$  '
-        self.preabe /= conversorReal
-        self.preexe /= conversorReal
-        self.premax /= conversorReal
-        self.premed /= conversorReal
-        self.premin /= conversorReal
-        self.preofc /= conversorReal
-        self.preofv /= conversorReal
-        self.preult /= conversorReal
-        
     def getList(self):
         return [self.dataPregao, self.codbdi, self.codneg, self.tpmerc, self.nomres, self.especi, self.prazot,
                 self.modref, self.preabe, self.premax, self.premin, self.premed, self.preult, self.preofc, self.preofv,
@@ -78,9 +54,11 @@ def parseCotacaoDiaria(row):
             row[152:170], row[170:188], row[188:201], row[201:202], row[202:210],
             row[210:217], row[217:230], row[230:242], row[242:245])
 
-    cotacaoDiaria.convertePrecosPorMoeda()
+    if cotacaoDiaria.modref != 'R$  ' or not cotacaoDiaria.codbdi in ['02', '96']:
+        return []
+    else:
+        return cotacaoDiaria.getList()
 
-    return cotacaoDiaria.getList()
 
 '''
     Main que leh os arquivos em UTF-8, realiza a conversao de tipos e gera os 
@@ -109,7 +87,8 @@ if __name__ == "__main__":
         
         with open(stockYearCsv, 'w') as csvfile:
             stockWriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-        
+            hasRow = False   
+            
             with open(stockFile, "rb") as file:
                 file.readline()
                 for row in file:
@@ -117,9 +96,16 @@ if __name__ == "__main__":
                     if (rowType == "00"):
                         pass
                     elif (rowType == "01"):
-                        stockWriter.writerow(parseCotacaoDiaria(row))
+                        parsedRow = parseCotacaoDiaria(row)
+                        if len(parsedRow) > 0:
+                            hasRow = True
+                            stockWriter.writerow(parsedRow)
                     elif (rowType == "99"):
                         pass
                     else:
                         print "Erro: linha de tipo indefinido(" + row + ")!"
  
+            # If there is no row in the CSV file, we remove it
+            if not hasRow:
+                os.remove(stockYearCsv)
+                

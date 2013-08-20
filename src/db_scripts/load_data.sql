@@ -3,26 +3,26 @@
 -- Todos os arquivos de dados estao no servidor na pasta "/home/stocks/git/stocks/data"
 
 -- ================= CARGA da tabela EMPRESA =================
--- CARREGA os dados das empresas a partir de um arquivo CSV local 
+-- CARREGA os dados das empresas a partir de um arquivo CSV
 COPY empresa
-FROM '/home/stocks/git/stocks/data/DadosEmpresas.csv'
+FROM '/home/stocks/data/DadosEmpresas.csv'
 DELIMITER ','    -- Delimitador das colunas
 ENCLOSED BY '"'  -- Caractere que abre e fecha strings
-NULL 'NA'        -- Como o NULL eh definido
-NO COMMIT;       -- Nao faz o commit (ver explicacao abaixo)
-
-/*
-	O Vertica nao realiza checagem de chaves na hora da carga de dados, 
-	apenas na consulta. Entao nao fazemos COMMIT para que possamos 
-	checar se houve quebra de restricoes com a funcao abaixo que checa
-	se houve quebra de qualquer restricao (incluindo as chaves) da 
-	tabela empresa
-*/
+ESCAPE AS '\'    -- Caractere de escape
+NULL AS 'NA';    -- Como o NULL eh definido
 
 select ANALYZE_CONSTRAINTS('empresa');
 
--- Termine a transacao apenas se nao existir PKs (nome_pregao) duplicadas
--- COMMIT;
+-- ================= CARGA da tabela EMPRESA_ISIN =================
+-- CARREGA os dados dos ISINs das empresas a partir de um arquivo CSV
+COPY empresa_isin
+FROM '/home/stocks/data/DadosEmpresasISINs.csv'
+DELIMITER ','    -- Delimitador das colunas
+ENCLOSED BY '"'  -- Caractere que abre e fecha strings
+ESCAPE AS '\'    -- Caractere de escape
+NULL AS 'NA';    -- Como o NULL eh definido
+
+select ANALYZE_CONSTRAINTS('empresa_isin');
 
 -- ================= CARGA da tabela COTACAO =================
 -- CARREGA os dados das cotacoes a partir dos arquivos CSV locais 
@@ -30,11 +30,25 @@ select ANALYZE_CONSTRAINTS('empresa');
 -- OBS.: no futuro podemos refatorar esse SQL para gera-lo e fazer a transacao
 -- 		 automaticamente no proprio codigo python (que leh o UTF e escreve o CSV)
 
-COPY cotacao FROM '/home/stocks/git/stocks/data/cotacoes_*.csv' DELIMITER ',' ENCLOSED BY '"' NULL 'NA';
+COPY cotacao 
+FROM '/home/stocks/data/cotacoes_*.csv' 
+DELIMITER ',' 
+ENCLOSED BY '"' 
+ESCAPE AS '\'    -- Caractere de escape
+NULL 'NA';
 
 -- A funcao ANALYZE_CONSTRAINST retorna os valores das chaves estrangeiras
 -- (sem repeticao) que não tiverem correspondencia.
-INSERT INTO empresas_inexistentes (nome_pregao) 
-	SELECT load_results.'Column Values' as nome_pregao 
+INSERT INTO isin_inexistente (cod_isin) 
+	SELECT load_results.'Column Values' as cod_isin 
 	FROM (select ANALYZE_CONSTRAINTS('cotacao')) as load_results;
 COMMIT;
+
+
+
+--	ATENCAO:
+--	Eh importante checar os arquivos de log de excecoes ao termino de cada carga. 
+--	O Vertica rejeita linhas se houver alguma excecao na leitura (mais colunas, menos colunas, etc.)
+--	Ver arquivos de log abaixo:
+--		<db_dir>/<catalog_dir>/CopyErrorLogs/<tablename-filename-of-source>-copy-from-exceptions
+--		<db_dir>/<catalog_dir>/CopyErrorLogs/<tablename-filename-of-source>-copy-from-rejected-data
