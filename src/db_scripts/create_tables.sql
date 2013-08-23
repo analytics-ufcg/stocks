@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS empresa (
     fax                   CHAR(100),
     nomes                 CHAR(100),
     emails                CHAR(100),
+    twitter_link          CHAR(50),
+    facebook_link         CHAR(80),   
 
     PRIMARY KEY           (cnpj)
 );
@@ -47,6 +49,16 @@ CREATE TABLE IF NOT EXISTS empresa_isin (
     FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
 );
 
+
+CREATE TABLE IF NOT EXISTS contato_investidor (
+    id_contato            AUTO_INCREMENT,
+    nome                  CHAR(50) NOT NULL,
+    twitter_link          CHAR(50),
+    facebook_link         CHAR(80), 
+    cnpj                  CHAR(14) NOT NULL,
+    PRIMARY KEY           (id_contato),
+    FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
+)
 
 -- =========== TABELAS DO HISTORICO DE COTACOES =========== 
 /* 

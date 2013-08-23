@@ -24,6 +24,19 @@ NULL AS 'NA';    -- Como o NULL eh definido
 
 select ANALYZE_CONSTRAINTS('empresa_isin');
 
+-- ================= CARGA da tabela CONTATO_INVESTIDOR =================
+-- CARREGA os dados dos investidores das empresas a partir de um arquivo CSV
+
+COPY contato_investidor
+FROM '/home/stocks/data/DadosContatosInvestidores.csv'
+DELIMITER ','    -- Delimitador das colunas
+ENCLOSED BY '"'  -- Caractere que abre e fecha strings
+ESCAPE AS '\'    -- Caractere de escape
+NULL AS 'NA';    -- Como o NULL eh definido
+
+select ANALYZE_CONSTRAINTS('contato_investidor');
+
+
 -- ================= CARGA da tabela COTACAO =================
 -- CARREGA os dados das cotacoes a partir dos arquivos CSV locais 
 
