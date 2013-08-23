@@ -13,8 +13,8 @@
     }
 
     $column = strtolower($column);
-    // $column = "sub_setor";
-    // $value = "Transporte";
+    # $column = "cnpj";
+    # $value = "56720428000163";
 
     # Prepare the query
    	$query = "select * from empresa where ". $column . " = ?";
@@ -34,33 +34,24 @@
 
     # Fetch all rows
     $all_table = array();
-	
-    $row = array(); 
-    while (odbc_fetch_into($resultset, $row)) {
 
-        # TODO: Fix Bug HERE. No image being presented.
-        $icon_filename = "./images/logos/" . $row['cnpj'] . ".jpg";
-
+    while ($row = odbc_fetch_array($resultset)) {
+        $icon_filename = "../images/logos/" . $row['cnpj'] . ".jpg";
+        
+        # The client searches from the root.
         if (!file_exists($icon_filename)){
             $icon_filename = "./images/logos/sem_imagem.jpg";
+        }else{
+            $icon_filename = "./images/logos/" . $row['cnpj'] . ".jpg";
         }
         
-        # TODO: This can be improved with array_push with a foreach
-        # (http://stackoverflow.com/questions/5108293/php-array-mapping)
-        $row_as_map = array("nome_empresa" => $row[0], "nome_pregao" => $row[1], 
-                            "cod_negociacao" => $row[2], "cod_cvm" => $row[3],
-                            "cnpj" => $row[4], "atividade_principal" => $row[5],
-                            "setor" => $row[6], "sub_setor" => $row[7], "segmento" => $row[8],
-                            "site" => $row[9], "rua" => $row[10], "cidade" => $row[11], 
-                            "cep" => $row[12], "estado" => $row[13], "telefone" => $row[14], 
-                            "fax" => $row[15], "nomes" => $row[16], "emails" => $row[17], 
-                            "icon_filename" => $icon_filename);
-	    array_push($all_table, $row_as_map);
-	} 
+        $row['icon_filename']  = $icon_filename;
+
+        array_push($all_table, $row);
+    }
 
 	# Close the connection
 	odbc_close($conn);
 
-     echo json_encode(array("success" => $success, "table" => $all_table));
-#}
+    echo json_encode(array("success" => $success, "table" => $all_table));
 ?>

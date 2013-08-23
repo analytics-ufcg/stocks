@@ -9,6 +9,7 @@
 
 	<!-- CSS -->
 	<link href="css/stocks.css" rel="stylesheet">
+	<link href="css/jquery-ui.css" rel="stylesheet">
 	<!--link href="css/bootstrap.css" rel="stylesheet"-->
 	<!--link href="bootstrap2/docs/assets/css/bootstrap-responsive.css" rel="stylesheet"-->
 	
@@ -21,10 +22,6 @@
 	<script type="text/javascript" src="control/controllers.js"></script>
 	<!-- VIEWs -->
 	<script type="text/javascript" src="view/views.js"></script>
-	<!-- MODELs -->
-
-	<!-- OTHER -->
-	<script type="text/javascript" src="javascript/stocks-main.js"></script>
 
 </head>
 <body>
@@ -37,25 +34,31 @@
 		</div>
 		<div class="container-fluid offset1">
 			<form id = "table_form" method="GET">
+				<!-- <div id="search_radio">
+				    <input type="radio" id="radio1" name="radio" checked="checked" /><label for="radio1">Código</label>
+				    <input type="radio" id="radio2" name="radio"/><label for="radio2">Classificação</label>
+				</div> -->
  				<div>
 					<input type="radio" name="tipo_de_busca"
-						onclick="fill_combo_options('CNPJ', 'CVM', 'ISIN')" id="optionsRadios1"
-						value="codigo" checked> Busca por código <input
-						type="radio" name="tipo_de_busca"
-						onclick="fill_combo_options('Setor', 'Sub-Setor', 'Segmento')"
-						id="optionsRadios2" value="classificacao"> Busca por classificação
+						id="search_radio1"
+						value="codigo"> Busca por código 
+					<input type="radio" name="tipo_de_busca"
+						id="search_radio2" 
+						value="classificacao"> Busca por classificação
 				</div> 
 				<div>
 					<select name="combo" id="combo"></select>
 					<input name="textArea" id="textArea" type="text">
-					<input name="ok_button" type="button" id="go" value="ok">
+					<input name="ok_button" type="button" id="go" value="Ok">
 				</div>
 			</form>
+			<br>
 			<div id="main_table">
 			</div>
 		</div>
 </body>
 </html>
 <script type="text/javascript" language="javascript">
-	$(document).ready(control_table())
+	$(document).ready(fill_initial_options());
+	$(document).ready(main_controller());
 </script>
