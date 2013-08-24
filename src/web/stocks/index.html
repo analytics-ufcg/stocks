@@ -2,21 +2,23 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<title>Stocks</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<title>Stocks</title>
-
+	
 	<!-- CSS -->
 	<link href="css/stocks.css" rel="stylesheet">
-	<link href="css/jquery-ui.css" rel="stylesheet">
-	<!--link href="css/bootstrap.css" rel="stylesheet"-->
-	<!--link href="bootstrap2/docs/assets/css/bootstrap-responsive.css" rel="stylesheet"-->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+	<!-- <link href="css/jquery-ui.css" rel="stylesheet"> -->
 	
 	<!-- LIBRARIES -->
-	<script type="text/javascript" src="javascript/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="javascript/jquery-ui.js"></script>
-	<script type="text/javascript" src="javascript/d3.v3.js"></script>
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<!-- <script type="text/javascript" src="js/d3.v3.js"></script> -->
+	<!-- <script type="text/javascript" src="js/jquery-ui.js"></script> -->
 
 	<!-- CONTROLLERs -->
 	<script type="text/javascript" src="control/controllers.js"></script>
@@ -29,19 +31,44 @@
 	<div id="wrap">
 
 		<!-- Begin page content -->
-		<div class="top_bar">
-			<h1>Stocks</h1>
-		</div>
+		<div class="container">
+        	<div class="page-header">
+          		<h1>Stocks</h1>
+        	</div>
+        	<p class="lead">Correlacionando Dados do Mercado Nacional de Ações com Informações de Blogs, Micro-blogs e Notícias</p>
+        	<form class = "form-search">
+        		<fieldset>
+        			<legend>Busca por Empresas</legend>
+        			<label>Label name</label>
+    				<input class = "search-query input-xlarge" type="text" placeholder="Enter text...">
+    				<button type="button" class="btn">Submit</button>
+        		</fieldset>
+        	</form>
+
+	    </div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">Projetado e desenvolvido pelo <em>Stocks Analytics:</em>
+        	<a class='text-info' target='_blank' href='http://br.linkedin.com/pub/augusto-queiroz-de-macedo/22/b98/552'>Augusto Queiroz</a>,
+        	<a class='text-info' target='_blank' href='http://lattes.cnpq.br/6027095454406194 '>Danilo Lacerda</a>,
+        	<a class='muted' target='_blank' href=''>Elias Paulino</a>,
+        	<a class='muted' target='_blank' href=''>Ricardo Araújo</a> (Project Coach),
+        	<a class='muted' target='_blank' href=''>Raquel Lopes</a> (Project Leader), and
+			<a class='muted' target='_blank' href=''>José Gildo</a> (Client)
+        </p>
+      </div>
+    </div>
+
+
+	<!--  	
 		<div class="container-fluid offset1">
 			<form id = "table_form" method="GET">
-				<!-- <div id="search_radio">
-				    <input type="radio" id="radio1" name="radio" checked="checked" /><label for="radio1">Código</label>
-				    <input type="radio" id="radio2" name="radio"/><label for="radio2">Classificação</label>
-				</div> -->
  				<div>
 					<input type="radio" name="tipo_de_busca"
 						id="search_radio1"
-						value="codigo"> Busca por código 
+						value="codigo" checked> Busca por código 
 					<input type="radio" name="tipo_de_busca"
 						id="search_radio2" 
 						value="classificacao"> Busca por classificação
@@ -55,10 +82,14 @@
 			<br>
 			<div id="main_table">
 			</div>
-		</div>
+		</div> -->
 </body>
 </html>
 <script type="text/javascript" language="javascript">
 	$(document).ready(fill_initial_options());
 	$(document).ready(main_controller());
 </script>
+				<!-- <div id="search_radio">
+				    <input type="radio" id="radio1" name="radio" checked="checked" /><label for="radio1">Código</label>
+				    <input type="radio" id="radio2" name="radio"/><label for="radio2">Classificação</label>
+				</div> -->

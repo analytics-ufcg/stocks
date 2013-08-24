@@ -17,7 +17,7 @@ function fill_combo_options() {
 }
 
 function fill_initial_options(){
-    $("#search_radio1")[0].checked = true;
+    // $("#search_radio1")[0].checked = true;
     fill_combo_options();
 }
 
