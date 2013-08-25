@@ -26,20 +26,19 @@
 <body>
 	<!-- Part 1: Wrap all page content here -->
 	<div id="wrap">
-
 		<!-- Begin page content -->
-		<div class="container">
-        	<div class="page-header">
+		<div id="content_bar" class="container">
+        	<div id="top_bar" class="page-header">
           		<h1>Stocks <br>
           			<!-- Subtitle -->
           			<small>Correlacionando Dados do Mercado Nacional de Ações com Informações de Blogs, Micro-blogs e Notícias</small>
           		</h1>
         	</div>
-        	<form class = "form-inline">
+        	<form id ="search_form" class = "form-inline" method="GET">
         		<fieldset>
         			<legend>Empresas Cadastradas</legend>
         			<label> Buscar por </label>
-        			<select style='width:auto;'>
+        			<select name="search_type" style='width:auto;'>
 						<option>CNPJ</option>
 						<option>CVM</option>
 						<option>ISIN</option>
@@ -49,74 +48,56 @@
 						<option>Segmento</option>
 					</select> 
 					<div class="input-append">
-	    				<input class = "input-xlarge" type="text" placeholder="Enter text...">
-    					<button class="btn" type="button">Submit</button>
+	    				<input id="text_area" name="text_area" class = "input-xlarge" type="text" placeholder="Palavra-Chave..." data-provide="typeahead">
+    					<button id="go_search" type="submit" class="btn" data-loading-text="Carregando...">Search</button>
     				</div>
         		</fieldset>
         	</form>
-
+        	<div id="central_bar" class="container"></div>
 	    </div>
     </div>
-
     <div id="footer">
-      <div class="container">
-        <p class="muted credit">Projetado e desenvolvido pelo time <em>Stocks Analytics:</em>
-        	<a class='text-info' target='_blank' href='http://br.linkedin.com/pub/augusto-queiroz-de-macedo/22/b98/552'>Augusto Queiroz</a>,
-        	<a class='text-info' target='_blank' href='http://lattes.cnpq.br/6027095454406194 '>Danilo Lacerda</a>,
-        	<a class='muted' target='_blank' href=''>Elias Paulino</a>,
-        	<a class='muted' target='_blank' href=''>Ricardo Araújo</a> (Scrum Master),
-        	<a class='muted' target='_blank' href=''>Raquel Lopes</a> (Líder Técnico) e 
-			<a class='muted' target='_blank' href=''>José Gildo</a> (Cliente)
-        </p>
-      </div>
+	    <div class="container">
+	        <p class="muted credit">Projetado e Desenvolvido pelo time <em>Stocks Analytics:</em>
+	        	<a class='text-info' target='_blank' href='http://br.linkedin.com/pub/augusto-queiroz-de-macedo/22/b98/552'>Augusto Queiroz</a>,
+	        	<a class='text-info' target='_blank' href='http://lattes.cnpq.br/6027095454406194 '>Danilo Lacerda</a>,
+	        	<a class='muted' target='_blank' href=''>Elias Paulino</a>,
+	        	<a class='muted' target='_blank' href=''>Ricardo Araújo</a> (Scrum Master),
+	        	<a class='muted' target='_blank' href=''>Raquel Lopes</a> (Líder Técnico) e 
+				<a class='muted' target='_blank' href=''>José Gildo</a> (Cliente)
+	        </p>
+	        <p class="muted credit">
+	        	Powered by <a class='text-success' target='_blank' href='http://twitter.github.io/bootstrap/'>Bootstrap</a>,
+	        	<a class='text-success' target='_blank' href='http://www.vertica.com/'>Vertica</a> |
+				<a class='text-success' target='_blank' href='https://github.com/analyticsUfcg/stocks'>View source on GitHub</a>
+			</p>
+        </div>
     </div>
-
-
-	<!--  	
-		<div class="container-fluid offset1">
-			<form id = "table_form" method="GET">
- 				<div>
-					<input type="radio" name="tipo_de_busca"
-						id="search_radio1"
-						value="codigo" checked> Busca por código 
-					<input type="radio" name="tipo_de_busca"
-						id="search_radio2" 
-						value="classificacao"> Busca por classificação
-				</div> 
-				<div>
-					<select name="combo" id="combo"></select>
-					<input name="textArea" id="textArea" type="text">
-					<input name="ok_button" type="button" id="go" value="Ok">
-				</div>
-			</form>
-			<br>
-			<div id="main_table">
-			</div>
-		</div> -->
 </body>
 </html>
 <script type="text/javascript" language="javascript">
-	$(document).ready(fill_initial_options());
 	$(document).ready(main_controller());
+	// TODO: Improve this based on this site: http://tatiyants.com/how-to-use-json-objects-with-twitter-bootstrap-typeahead/ 
+	$('#text_area').typeahead({source: ["alguem", "algo", "aquele"]})
 </script>
 
-
-					<!-- <div class="input-prepend">
-	        			<div class="btn-group" id="search_type">
-						  	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-						    	Action
-						    	<span class="caret"></span>
-						  	</a>
-						  	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-								<li><a tabindex="-1">CNPJ</a></li>
-								<li><a tabindex="-1">CVM</a></li>
-								<li><a tabindex="-1">ISIN</a></li>
-								<li class="divider"></li>
-								<li><a tabindex="-1">Setor</a></li>
-								<li><a tabindex="-1">Sub-Setor</a></li>
-								<li><a tabindex="-1">Segmento</a></li>
-							</ul>
-						</div>
-	    				<input class = "search-query input-xlarge" type="text" placeholder="Enter text...">
-	    			</div> -->
+<!-- EXTRA CODE to change the above list selection per button groups -->
+<!-- <div class="input-prepend">
+	<div class="btn-group" id="search_type">
+	  	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+	    	Action
+	    	<span class="caret"></span>
+	  	</a>
+	  	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+			<li><a tabindex="-1">CNPJ</a></li>
+			<li><a tabindex="-1">CVM</a></li>
+			<li><a tabindex="-1">ISIN</a></li>
+			<li class="divider"></li>
+			<li><a tabindex="-1">Setor</a></li>
+			<li><a tabindex="-1">Sub-Setor</a></li>
+			<li><a tabindex="-1">Segmento</a></li>
+		</ul>
+	</div>
+	<input class = "search-query input-xlarge" type="text" placeholder="Enter text...">
+</div> -->
 

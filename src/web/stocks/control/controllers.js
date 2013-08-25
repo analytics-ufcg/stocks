@@ -1,32 +1,17 @@
 function main_controller(){
 
-	// TODO: Check if this realy works...
-	$(window).keydown(function(event){
-    	if(event.keyCode == 13) {
-      		event.preventDefault();
-      		return false;
-    	}
-  	});
-  	// TODO: Check if this realy works...
-	$("#textArea").keydown(function(e) {console.log(e.keyCode); enter_text_area(e)});
-	
-	// TODO: Check if this realy works...
-	// $("#search_radio").buttonset();
-
-	// TODO: Change this after adding the jQueryUI
-	$("#go").click(function() {click_go_button()});
-	$("#search_radio1").click(function(){fill_combo_options()})
-	$("#search_radio2").click(function(){fill_combo_options()})
+	$("#search_form").submit(function(e){
+		// Avoid refreshing the page
+		e.preventDefault(); 
+		run_search();
+	})
 }
 
-function enter_text_area(e){
-	if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-		return click_go_button();
-	}	
-}
-function click_go_button(){
-	var serializedData = $('#table_form').serialize();
-	
+function run_search(){
+	$("#go_search").button('loading');
+	var serializedData = $('#search_form').serialize();
+	// console.log(serializedData);
+	// show_empresa_table([]);
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
@@ -34,9 +19,12 @@ function click_go_button(){
 		async: true,
 		data: serializedData,
 		success: function(response) {
+			$("go_search").button('reset');
+
 			if (response.table.length > 0){
-				// console.log(response)
 				show_empresa_table(response.table);
+			}else{
+				console.log("Nada foi encontrado.");
 			}
 		}
 	});
