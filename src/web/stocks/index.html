@@ -11,14 +11,11 @@
 	<link href="css/stocks.css" rel="stylesheet">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
-
-	<!-- <link href="css/jquery-ui.css" rel="stylesheet"> -->
 	
 	<!-- LIBRARIES -->
 	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<!-- <script type="text/javascript" src="js/d3.v3.js"></script> -->
-	<!-- <script type="text/javascript" src="js/jquery-ui.js"></script> -->
 
 	<!-- CONTROLLERs -->
 	<script type="text/javascript" src="control/controllers.js"></script>
@@ -33,15 +30,28 @@
 		<!-- Begin page content -->
 		<div class="container">
         	<div class="page-header">
-          		<h1>Stocks</h1>
+          		<h1>Stocks <br>
+          			<!-- Subtitle -->
+          			<small>Correlacionando Dados do Mercado Nacional de Ações com Informações de Blogs, Micro-blogs e Notícias</small>
+          		</h1>
         	</div>
-        	<p class="lead">Correlacionando Dados do Mercado Nacional de Ações com Informações de Blogs, Micro-blogs e Notícias</p>
-        	<form class = "form-search">
+        	<form class = "form-inline">
         		<fieldset>
-        			<legend>Busca por Empresas</legend>
-        			<label>Label name</label>
-    				<input class = "search-query input-xlarge" type="text" placeholder="Enter text...">
-    				<button type="button" class="btn">Submit</button>
+        			<legend>Empresas Cadastradas</legend>
+        			<label> Buscar por </label>
+        			<select style='width:auto;'>
+						<option>CNPJ</option>
+						<option>CVM</option>
+						<option>ISIN</option>
+						<option disabled>- - - - - - - -</option>
+						<option>Setor</option>
+						<option>Sub-Setor</option>
+						<option>Segmento</option>
+					</select> 
+					<div class="input-append">
+	    				<input class = "input-xlarge" type="text" placeholder="Enter text...">
+    					<button class="btn" type="button">Submit</button>
+    				</div>
         		</fieldset>
         	</form>
 
@@ -50,13 +60,13 @@
 
     <div id="footer">
       <div class="container">
-        <p class="muted credit">Projetado e desenvolvido pelo <em>Stocks Analytics:</em>
+        <p class="muted credit">Projetado e desenvolvido pelo time <em>Stocks Analytics:</em>
         	<a class='text-info' target='_blank' href='http://br.linkedin.com/pub/augusto-queiroz-de-macedo/22/b98/552'>Augusto Queiroz</a>,
         	<a class='text-info' target='_blank' href='http://lattes.cnpq.br/6027095454406194 '>Danilo Lacerda</a>,
         	<a class='muted' target='_blank' href=''>Elias Paulino</a>,
-        	<a class='muted' target='_blank' href=''>Ricardo Araújo</a> (Project Coach),
-        	<a class='muted' target='_blank' href=''>Raquel Lopes</a> (Project Leader), and
-			<a class='muted' target='_blank' href=''>José Gildo</a> (Client)
+        	<a class='muted' target='_blank' href=''>Ricardo Araújo</a> (Scrum Master),
+        	<a class='muted' target='_blank' href=''>Raquel Lopes</a> (Líder Técnico) e 
+			<a class='muted' target='_blank' href=''>José Gildo</a> (Cliente)
         </p>
       </div>
     </div>
@@ -89,7 +99,24 @@
 	$(document).ready(fill_initial_options());
 	$(document).ready(main_controller());
 </script>
-				<!-- <div id="search_radio">
-				    <input type="radio" id="radio1" name="radio" checked="checked" /><label for="radio1">Código</label>
-				    <input type="radio" id="radio2" name="radio"/><label for="radio2">Classificação</label>
-				</div> -->
+
+
+					<!-- <div class="input-prepend">
+	        			<div class="btn-group" id="search_type">
+						  	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+						    	Action
+						    	<span class="caret"></span>
+						  	</a>
+						  	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+								<li><a tabindex="-1">CNPJ</a></li>
+								<li><a tabindex="-1">CVM</a></li>
+								<li><a tabindex="-1">ISIN</a></li>
+								<li class="divider"></li>
+								<li><a tabindex="-1">Setor</a></li>
+								<li><a tabindex="-1">Sub-Setor</a></li>
+								<li><a tabindex="-1">Segmento</a></li>
+							</ul>
+						</div>
+	    				<input class = "search-query input-xlarge" type="text" placeholder="Enter text...">
+	    			</div> -->
+
