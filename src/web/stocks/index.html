@@ -38,7 +38,7 @@
         		<fieldset>
         			<legend>Empresas Cadastradas</legend>
         			<label> Buscar por </label>
-        			<select name="search_type" style='width:auto;'>
+        			<select id = "search_type" name="search_type" style='width:auto;'>
 						<option>CNPJ</option>
 						<option>CVM</option>
 						<option>ISIN</option>
@@ -77,8 +77,7 @@
 </html>
 <script type="text/javascript" language="javascript">
 	$(document).ready(main_controller());
-	// TODO: Improve this based on this site: http://tatiyants.com/how-to-use-json-objects-with-twitter-bootstrap-typeahead/ 
-	$('#text_area').typeahead({source: ["alguem", "algo", "aquele"]})
+	// $('#text_area').typeahead({source: ["alguem", "algo", "aquele"]})
 </script>
 
 <!-- EXTRA CODE to change the above list selection per button groups -->

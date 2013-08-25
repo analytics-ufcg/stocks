@@ -1,6 +1,6 @@
 <?php 
 
-    # TODO: This could be handled before sending the GET request
+    # Argument casting...
     $value = $_GET['textArea'];
     $column = $_GET['combo'];
 
