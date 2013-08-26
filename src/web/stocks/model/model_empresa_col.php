@@ -30,6 +30,7 @@
     $name_list = array();
 
     while ($row = odbc_fetch_array($resultset)) {
+        $row[$column] = trim($row[$column]);
         if (! in_array($row[$column], $name_list)){
             array_push($name_list, $row[$column]);
         }

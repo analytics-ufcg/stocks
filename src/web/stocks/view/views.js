@@ -1,5 +1,9 @@
 function show_empresa_table(table_array){
 
+    function is_empty(value){
+        return (value == "--");
+    }
+
     if (table_array.length <= 0){
         $("#central_bar").html("<em>Nenhuma empresa foi encontrada.</em>");
         return false;
@@ -17,11 +21,27 @@ function show_empresa_table(table_array){
             "<tr><td rowspan='6'><img src=" + row['icon_filename'] + "></td>" 
             // Dados gerais | Contatos | Classificação
             // Row 1
-            + "<td>Empresa: <strong>" + row['nome_empresa'] + "</strong></td>"
-            + "<td>Site: " + row['site']
-            + "<br>Twitter: " + row['twitter_link'] 
-            + "<br>Facebook: " + row['facebook_link'] + "</td>"
-            + "<td>Setor: " + row['setor'] + "</td></tr>"
+            + "<td>Empresa: <strong>" + row['nome_empresa'] + "</strong></td>";
+
+        if (! is_empty(row['site'])){
+            table += "<td>Site: <a href=" + row['site'] + ">" + row['site'] + "</a>";
+        }else{
+            table += "<td>Site: " + row['site'];
+        }
+
+        if (! is_empty(row['twitter_link'])){
+            table += "<br>Twitter: <a href=https://" + row['twitter_link'] + ">" + row['twitter_link'] + "</a>";
+        }else{
+            table += "<br>Twitter: " + row['twitter_link'];
+        }
+
+        if (! is_empty(row['facebook_link'])){
+            table += "<br>Facebook: <a href=" + row['facebook_link'] + ">" + row['facebook_link'] + "</a></td>";
+        }else{
+            table += "<br>Facebook: " + row['facebook_link'] + "</td>";
+        }
+
+        table += "<td>Setor: " + row['setor'] + "</td></tr>"
             // Row 2
             + "<tr><td>Nome de Pregão: " + row['nome_pregao'] + "</td>"
             + "<td>Endereço: "+row['endereco'] + "</td>"

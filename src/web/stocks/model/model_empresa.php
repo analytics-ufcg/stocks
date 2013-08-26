@@ -36,6 +36,16 @@
     $all_table = array();
 
     while ($row = odbc_fetch_array($resultset)) {
+
+        # Trim the strings and replace null with --        
+        foreach ($row as $key => $value) {
+            if (is_null($row[$key]) || $row[$key] == ""){
+                $row[$key] = "--";
+            }else{
+                $row[$key] = trim($value);
+            }
+        }
+
         $icon_filename = "../images/logos/" . $row['cnpj'] . ".jpg";
         
         # The client searches from the root.
