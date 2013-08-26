@@ -36,5 +36,5 @@
 	# Close the connection
 	odbc_close($conn);
 
-    echo json_encode(array("success" => $success, "name_list" => $name_list));
+    echo json_encode(array("name_list" => $name_list));
 ?>

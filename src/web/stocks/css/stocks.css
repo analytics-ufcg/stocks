@@ -12,8 +12,8 @@ html,body {
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
-	/* Negative indent footer by it's height */
-	margin: 0 auto -80px;
+	/* No Negative indent footer by it's height */
+	margin: 0 auto 0px;
 }
 
 /* Set the fixed height of the footer here */
@@ -36,11 +36,10 @@ html,body {
 
 /* Custom page CSS
       -------------------------------------------------- */
-.container {
-	/*width: auto;*/
-	/*max-width: 1200px;*/
-}
-
 .container .credit {
 	margin: 5px 0;
+}
+
+.hero-unit {
+  padding: 30px !important; /* default is 60px; */
 }

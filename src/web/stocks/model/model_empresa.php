@@ -53,5 +53,5 @@
 	# Close the connection
 	odbc_close($conn);
 
-    echo json_encode(array("success" => $success, "table" => $all_table));
+    echo json_encode(array("table" => $all_table));
 ?>
