@@ -47,13 +47,3 @@ function show_empresa_table(table_array){
     // Update the central bar with the new table
     $("#central_bar").html(table);
 }
-
-function set_search_typeahed_list(name_list){
-    if (name_list.length <= 0){
-        // console.log("Nada foi encontrado.");
-    }
-
-    $('#text_area').typeahead({
-        source : name_list
-    });
-}

@@ -1,14 +1,14 @@
 <?php 
 
     # Argument casting...
-    $column = $_GET['combo'];
+    $column = $_GET['search_type'];
 
     if($column == 'Sub-Setor'){
        $column = 'sub_setor';
     }
 
-    $column = strtolower($column);
-    # $column = "setor";
+    // $column = strtolower($column);
+    // $column = "setor";
 
     # Prepare the query
    	$query = "select " . $column . " from empresa";
@@ -30,7 +30,9 @@
     $name_list = array();
 
     while ($row = odbc_fetch_array($resultset)) {
-        array_push($all_table, $row[$column]);
+        if (! in_array($row[$column], $name_list)){
+            array_push($name_list, $row[$column]);
+        }
     }
 
 	# Close the connection

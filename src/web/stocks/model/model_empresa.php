@@ -1,8 +1,8 @@
 <?php 
 
     # Argument casting...
-    $value = $_GET['textArea'];
-    $column = $_GET['combo'];
+    $value = $_GET['text_area'];
+    $column = $_GET['search_type'];
 
     if($column == 'ISIN'){
        $column = 'cod_isin';
@@ -13,8 +13,8 @@
     }
 
     $column = strtolower($column);
-    # $column = "cnpj";
-    # $value = "56720428000163";
+    // $column = "cnpj";
+    // $value = "56720428000163";
 
     # Prepare the query
    	$query = "select * from empresa where ". $column . " = ?";
