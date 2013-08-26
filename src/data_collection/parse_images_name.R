@@ -2,8 +2,8 @@ rm(list = ls())
 
 cols <- c("nome_empresa", "nome_pregao", "cod_negociacao", 
           "cod_cvm", "cnpj", "atividade_principal",  
-          "setor", "sub_setor", "segmento", "site", "rua", "cidade", "cep", 
-          "estado", "telefone", "fax", "nomes", "emails")
+          "setor", "sub_setor", "segmento", "site", "endereco", "cidade", "cep", 
+          "estado", "telefone", "fax", "emails", "twitter_link", "facebook_link")
 emp <- read.csv("data/DadosEmpresas.csv", header = F, col.names=cols, 
                 colClasses = rep("character", length(cols)))
 

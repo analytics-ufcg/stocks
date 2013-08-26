@@ -18,11 +18,13 @@ function show_empresa_table(table_array){
             // Dados gerais | Contatos | Classificação
             // Row 1
             + "<td>Empresa: <strong>" + row['nome_empresa'] + "</strong></td>"
-            + "<td>Site: " + row['site'] + "</td>"
+            + "<td>Site: " + row['site']
+            + "<br>Twitter: " + row['twitter_link'] 
+            + "<br>Facebook: " + row['facebook_link'] + "</td>"
             + "<td>Setor: " + row['setor'] + "</td></tr>"
             // Row 2
             + "<tr><td>Nome de Pregão: " + row['nome_pregao'] + "</td>"
-            + "<td>Endereço: "+row['rua'] + "</td>"
+            + "<td>Endereço: "+row['endereco'] + "</td>"
             + "<td>Subsetor: " + row['sub_setor'] + "</td></tr>"
             // Row 3
             + "<tr><td>Códigos<br> - Negociação: " + row['cod_negociacao']
@@ -34,7 +36,7 @@ function show_empresa_table(table_array){
             + "<td rowspan='4'>Segmento: " + row['segmento']+"</td></tr>"
             // Row 4
             + "<tr><td rowspan='3' style='max-width:500px;'>Atividade Principal: "+row['atividade_principal'] + "</td>"
-            + "<td>Investidor: " + row['nomes'] + "</td></tr>" 
+            + "</tr>" 
             // Row 5
             + "<tr><td>Telefones: " + row['telefone'] 
             + "<br>Fax: "+  row['fax'] + "</td></tr>"

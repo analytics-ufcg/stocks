@@ -37,6 +37,7 @@ function run_search(){
 		data: call_data,
 		success: function(response) {
 			$("#go_search").button('reset');
+			// console.log(response);
 			show_empresa_table(response.table);
 		}
 	});

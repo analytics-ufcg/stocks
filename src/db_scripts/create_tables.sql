@@ -18,13 +18,12 @@ CREATE TABLE IF NOT EXISTS empresa (
 
     -- Atributos de Contato
     site                  CHAR(50),
-    rua                   CHAR(50), -- TODO: Change to endereco
+    endereco              CHAR(50),
     cidade                CHAR(30),
     cep                   CHAR(10),
     estado                CHAR(2),
     telefone              CHAR(100),
     fax                   CHAR(100),
-    nomes                 CHAR(100), -- TODO: Delete it from here.
     emails                CHAR(100),
     twitter_link          CHAR(50),
     facebook_link         CHAR(80),   
@@ -58,7 +57,7 @@ CREATE TABLE IF NOT EXISTS contato_investidor (
     cnpj                  CHAR(14) NOT NULL,
     PRIMARY KEY           (id_contato),
     FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
-)
+);
 
 -- =========== TABELAS DO HISTORICO DE COTACOES =========== 
 /* 
