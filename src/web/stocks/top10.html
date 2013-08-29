@@ -20,9 +20,9 @@
 	<!-- <script type="text/javascript" src="js/d3.v3.js"></script> -->
 
 	<!-- CONTROLLERs -->
-	<script type="text/javascript" src="control/controllers.js"></script>
+	<script type="text/javascript" src="control/controllers-Copia.js"></script>
 	<!-- VIEWs -->
-	<script type="text/javascript" src="view/views.js"></script>
+	<script type="text/javascript" src="view/views-Copia.js"></script>
 
 </head>
 <body>
@@ -39,20 +39,25 @@
         	<form id ="search_form" class = "form-inline" method="GET">
         		<fieldset>
 					<legend>TOP 10</legend>
-        			<label> Buscar por </label>
+					<label> Buscar por </label>
         			<select id = "search_type" name="search_type" style='width:auto;'>
+						<option>Setor</option>
+						<option>Sub-Setor</option>
+						<option>Segmento</option>
+					</select> 
+					<input id="text_area" name="text_area" class = "input-xlarge" type="text" placeholder="Palavra-Chave..." data-provide="typeahead">
+        			<select id = "search_type_parametro" name="search_type_parametro" style='width:auto;'>
 						<option>Crescimento</option>
 						<option>Queda</option>
 						<option>Oscilação</option>
 						<option>Maior Liquidez</option>
 						<option>Menor Liquidez</option>
 					</select> 
-					<label> Data Inicio </label>
+					<label> Data Inicial </label>
 					<div class="input-append">
 	    				    
-							
 							  <div id="datetimepicker4" class="input-append">
-								    <input data-format="dd/MM/yyyy" type="text" placeholder="dd/mm/aaaa"></input>
+								    <input id="tADataInicial" name="tADataInicial" style='width:80px;' data-format="yyyy/MM/dd" type="text" placeholder="aaaa/mm/dd"></input>
 
 								<span class="add-on">
 								  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
@@ -71,7 +76,7 @@
 					<label> Data Final </label>
 					<div class="input-append">	
 							  <div id="datetimepicker2" class="input-append date">
-								<input data-format="dd/MM/yyyy" type="text"placeholder="dd/mm/aaaa"></input>
+								<input id="tADataFinal" name="tADataFinal" style='width:80px;' data-format="yyyy/MM/dd" type="text"placeholder="aaaa/mm/dd"></input>
 								<span class="add-on">
 								  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
 								  </i>
