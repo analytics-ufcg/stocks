@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+	
+	<!-- CSS -->
+	<link href="css/stocks.css" rel="stylesheet">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+	
+	<!-- LIBRARIES -->
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<!-- <script type="text/javascript" src="js/d3.v3.js"></script> -->
+	
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <style type="text/css">
+        
+			body {margin: 20px; padding: 0; font-family: Verdana; font-size: 11px;}
+			
+			/* Estilo utilizado no exemplo */
+			
+			div#caixa {display: inline-block; width: 1300px; height: 1000px;}
+				div#caixa p#abas {display: inline-block; width: 790px; height: 40px; margin: 0 10px 0 10px; padding: 0; overflow: hidden; vertical-align: bottom;}
+					div#caixa p#abas a {display: inline-block; font-size: 14px; font-weight: bold; color: #666; text-decoration: none; padding: 12px 26px 12px 26px; margin: 0 5px 0 0; background-color: #f0f0f0;}
+						div#caixa p#abas a:hover {background-color: #999; color: white;}
+						div#caixa p#abas a.selected {background-color: #ffcc00; color: #000;}
+				div#caixa ul#conteudos {display: inline-block; width: 1300px; height: 1100px; margin: 0; padding: 0; border: 1px solid #ccc;}
+					div#caixa ul#conteudos li {display: inline-block; width: 1300px; height: 100%; margin: 10px 20px 10px 20px; padding: 0; overflow: auto;}
+			
+		</style>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript">
+        
+        	/* Função que carrega script das abas */
+        
+        	$.abasSimples = function ()
+        	{
+        	
+        		/* Guarda IDs dos elementos */
+        	
+        		var abas = 'p#abas';
+        		var conteudos = 'ul#conteudos';
+        		
+        		/* Oculta todas as abas */
+        		
+        		$(conteudos + ' li').hide();
+        		
+        		/* Exibe a primeira aba */
+        		
+        		$(conteudos + ' li:first-child').show();
+        		
+        		/* Quando uma aba for clicada */
+        		
+        		$(abas + ' a').click(function()
+        		{
+        		
+        			/* Remove todas as classes de todas as abas */
+        		
+        			$(abas + ' a').removeClass('selected');
+        			
+        			/* Acrescenta uma classe CSS marcando visualmente a aba como selecionada */
+        			
+        			$(this).addClass('selected');
+        			
+        			/* Oculta todas as abas abertas */
+        			
+        			$(conteudos + ' li').hide();
+        			
+        			/* Exibe a aba que foi clicada */
+        			
+        			$(conteudos +  ' ' + $(this).attr('href')).show();
+        			
+        			/* Fim :D */
+        			
+        			return false;
+        			
+        		}); 
+        		
+        	};
+        	
+        	/* Quando o documento estiver carregado… */
+
+			$(document).ready(function()
+			{
+			
+				/* Carrega a função das abas */
+				
+				$.abasSimples();
+			
+			});
+			
+		</script>
+    </head>
+    <body>
+		<div id="top_bar" class="hero-unit">
+          		<h1>Stocks <br>
+          			<!-- Subtitle -->
+          			<small>Correlacionando Dados do Mercado Nacional de Ações com Informações de Blogs, Micro-blogs e Notícias</small>
+          		</h1>
+        	</div>
+    
+    	
+    	<!-- Início: Caixa -->
+    	
+    	<div id="caixa">
+    	
+	    	<!-- Início: Seleção de abas -->
+			
+			<p id="abas">
+				<a href="#aba1" class="selected">Pesquisar Empresas</a>
+				<a href="#aba2">Top 10</a>
+			</p>
+			
+			<!-- Fim: Seleção de abas -->
+			
+			<!-- Início: Conteúdo das abas -->
+			
+			<ul id="conteudos">
+			
+				<!-- Início: Conteúdo da Aba 1 -->
+			
+				<li id="aba1">
+				
+					<IFRAME src="index.html" width="100%" height="100%" scrolling="no" frameborder="0" align="center"></IFRAME> 
+				</li>
+				
+				<!-- Fim: Conteúdo da Aba 1 -->
+				
+				<!-- Início: Conteúdo da Aba 2 -->
+				
+				<li id="aba2">
+				
+					<iframe width="1200" height="1000" src="top10.html" frameborder="0" scrolling="no"></iframe>
+					
+				</li>
+				
+				<!-- Fim: Conteúdo da Aba 2 -->
+				
+
+				
+			</ul>
+			
+			<!-- Fim: Conteúdo das abas -->
+		
+		</div>
+		
+		<!-- Fim: Caixa -->
+		
+        
+    </body>
+    
+</html>
