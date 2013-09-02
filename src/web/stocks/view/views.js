@@ -80,5 +80,5 @@ function show_empresa_table(table_array){
     table += "</tbody></table>";
     
     // Update the central bar with the new table
-    $("#central_bar").html(table);
+    $("#inner_central_bar").html(table);
 }

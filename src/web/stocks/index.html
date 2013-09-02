@@ -11,10 +11,12 @@
 	<link href="css/stocks.css" rel="stylesheet">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 	
 	<!-- LIBRARIES -->
 	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
 	<!-- <script type="text/javascript" src="js/d3.v3.js"></script> -->
 
 	<!-- CONTROLLERs -->
@@ -34,26 +36,85 @@
           			<small>Correlacionando Dados do Mercado Nacional de Ações com Informações de Blogs, Micro-blogs e Notícias</small>
           		</h1>
         	</div>
-        	<form id ="search_form" class = "form-inline" method="GET">
-        		<fieldset>
-        			<legend>Empresas Cadastradas</legend>
-        			<label> Buscar por </label>
-        			<select id = "search_type" name="search_type" style='width:auto;'>
-						<option>CNPJ</option>
-						<option>CVM</option>
-						<option>ISIN</option>
-						<option disabled>- - - - - - - -</option>
-						<option>Setor</option>
-						<option>Sub-Setor</option>
-						<option>Segmento</option>
-					</select> 
-					<div class="input-append">
-	    				<input id="text_area" name="text_area" class = "input-xlarge" type="text" placeholder="Palavra-Chave..." data-provide="typeahead">
-    					<button id="go_search" type="submit" class="btn" data-loading-text="Carregando...">Search</button>
-    				</div>
-        		</fieldset>
-        	</form>
-        	<div id="central_bar" class="container"></div>
+        	<div id="central_bar" class="tabbable">
+				<ul class="nav nav-tabs">
+					<li><a href="#pane1" data-toggle="tab">Pesquisa Empresas</a></li>
+					<li class="active"><a href="#pane2" data-toggle="tab">TOP 10</a></li>
+				</ul>
+				<div class="tab-content">
+					
+					<!-- TAB PESQUISA EMPRESA -->
+					<div id="pane1" class="tab-pane">
+				    	<form id ="search_form" class = "form-inline" method="GET">
+			        		<fieldset>
+			        			<!-- <legend>Empresas Cadastradas</legend> -->
+			        			<label> Buscar por </label>
+			        			<select id = "search_type" name="search_type" style='width:auto;'>
+									<option>CNPJ</option>
+									<option>CVM</option>
+									<option>ISIN</option>
+									<option disabled>- - - - - - - -</option>
+									<option>Setor</option>
+									<option>Sub-Setor</option>
+									<option>Segmento</option>
+								</select> 
+								<div class="input-append">
+				    				<input id="text_area" name="text_area" class = "input-xlarge" type="text" placeholder="Palavra-Chave..." data-provide="typeahead">
+			    					<button id="go_search" type="submit" class="btn" data-loading-text="Carregando...">Search</button>
+			    				</div>
+			        		</fieldset>
+			        	</form>
+			        	<div id="inner_central_bar" class="container"></div>
+				    </div>
+
+					<!-- TAB PESQUISA EMPRESA -->
+				    <div id="pane2" class="tab-pane active">
+				    	<form id ="top10_form" class = "form-inline" method="GET">
+							<fieldset>
+								<!-- <legend>TOP 10</legend> -->
+								<label> Agrupamento </label>
+								<select id = "search_type" name="search_type" style='width:auto;'>
+									<option>Ação</option>
+									<option disabled>- - - - - - - -</option>
+									<option>Setor</option>
+									<option>Sub-Setor</option>
+									<option>Segmento</option>
+								</select> 
+								<!-- <input id="text_area" name="text_area" class = "input-xlarge" type="text" placeholder="Palavra-Chave..." data-provide="typeahead"> -->
+								<label> Métrica </label>
+								<select id = "search_type_parametro" name="search_type_parametro" style='width:auto;'>
+									<option>Crescimento</option>
+									<option>Queda</option>
+									<option>Oscilação</option>
+									<option>Maior Liquidez</option>
+									<option>Menor Liquidez</option>
+								</select> 
+								<!-- <br><br> -->
+								<label> Data Inicial </label>
+								<div class="input-append">
+									<div id="datetimepicker1" class="input-append date">
+										<input id="tADataInicial" name="tADataInicial" style='width:80px;' data-format="dd/MM/yyyy" type="text" placeholder="dd/mm/aaaa"></input>
+										<span class="add-on">
+											<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+										</span>
+									</div>
+								</div>					
+								<label> Data Final </label>
+								<div class="input-append">	
+									<div id="datetimepicker2" class="input-append date">
+										<input id="tADataFinal" name="tADataFinal" style='width:80px;' data-format="dd/MM/yyyy" type="text"placeholder="dd/mm/aaaa"></input>
+										<span class="add-on">
+											<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+										</span>
+									</div>
+								</div>
+								<button id="go_top10" type="submit" class="btn" data-loading-text="Carregando...">Submit</button>
+							</fieldset>
+						</form>
+						<div id="central_bar" class="container"></div>
+				    </div>
+				</div>
+			</div>
 	    </div>
     </div>
     <div id="footer">

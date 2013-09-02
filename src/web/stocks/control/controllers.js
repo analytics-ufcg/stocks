@@ -6,6 +6,7 @@ var typeahed_name_list = Array();
 */
 function main_controller(){
 
+	// TAB BUSCA EMPRESA
 	$("#search_form").submit(function(e){
 		// Avoid refreshing the page
 		e.preventDefault(); 
@@ -20,6 +21,27 @@ function main_controller(){
         source : function(){
             return typeahed_name_list;
     }});
+
+	/*
+		TAB TOP10
+	*/
+	$("#top10_form").submit(function(e){
+		// Avoid refreshing the page
+		e.preventDefault(); 
+		run_top10();
+	});
+
+    $('#datetimepicker1').datetimepicker({
+		language: 'pt-BR',
+	  	pickTime: false,
+	  	maskInput: true
+	});
+
+	$('#datetimepicker2').datetimepicker({
+		language: 'pt-BR',
+	  	pickTime: false,
+	  	maskInput: true
+	});
 }
 
 /*
@@ -37,7 +59,7 @@ function run_search(){
 		data: call_data,
 		success: function(response) {
 			$("#go_search").button('reset');
-			console.log(response);
+			// console.log(response);
 			show_empresa_table(response.table);
 		}
 	});
@@ -59,6 +81,26 @@ function fill_text_area_typeahed(search_type){
 		data: call_data,
 		success: function(response) {		
 			typeahed_name_list = response.name_list;
+		}
+	});
+	return false;
+}
+
+function run_top10(){
+	// $("#go_top10").button('loading');
+	var call_data = $('#top10_form').serialize();
+	console.log(call_data);
+
+	$.ajax({
+		type: 'GET',
+		dataType: 'json',
+		url: 'model/model_top10.php',
+		async: true,
+		data: call_data,
+		success: function(response) {
+			$("#go_top10").button('reset');
+			console.log(response);
+			// show_top10_result(response.table);
 		}
 	});
 	return false;

@@ -48,13 +48,13 @@
             }
         }
 
-        $icon_filename = "../images/logos/" . $row['cnpj'] . ".jpg";
+        $icon_filename = "../img/logos/" . $row['cnpj'] . ".jpg";
         
         # The client searches from the root.
         if (!file_exists($icon_filename)){
-            $icon_filename = "./images/logos/sem_imagem.jpg";
+            $icon_filename = "./img/logos/sem_imagem.jpg";
         }else{
-            $icon_filename = "./images/logos/" . $row['cnpj'] . ".jpg";
+            $icon_filename = "./img/logos/" . $row['cnpj'] . ".jpg";
         }
         
         $row['icon_filename']  = $icon_filename;
