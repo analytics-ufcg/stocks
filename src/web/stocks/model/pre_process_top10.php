@@ -1,11 +1,12 @@
 <?php 
 
-    
+    $data_inicio = "1994-07-05";
+    $data_fim = "1994-07-06";
 
     # Prepare the query
-   	$query_oscillation = "select cod_isin, max(preco_maximo), min(preco_minimo)
-                             from cotacao where (data_pregao between ? and ?) 
-                             group by data_pregao, cod_isin order by cod_isin";
+   	$query = "select data_pregao,cod_isin, preco_abertura, preco_ultimo
+                             from cotacao where (data_pregao = ? or data_pregao = ?) and cod_bdi = 02 
+                              order by cod_isin";
 
 
     
@@ -20,25 +21,30 @@
     $resultset = odbc_prepare($conn, $query);
    
     # Execute the query
-    $success = odbc_execute($resultset, array($value));
-
+    $success = odbc_execute($resultset, array($data_inicio,$data_fim));
+    
     # Fetch all rows
     $all_table = array();
-
+    $map = array();
+    $isin = "";
     while ($row = odbc_fetch_array($resultset)) {
-
-        # Trim the strings and replace null with --        
-        foreach ($row as $key => $value) {
-            if (is_null($row[$key]) || $row[$key] == ""){
-                $row[$key] = "--";
-            }else{
-                $row[$key] = trim($value);
-            }
-        }
-
-        
+	echo $row['data_pregao']." | ".$row['cod_isin']." | ".$row['preco_abertura']." | ".$row['preco_ultimo']."\n";
+       
+	$current_isin = $row['cod_isin'];
+	#$current_preco_abertura = $row['preco_abertura'];
+	$current_preco_ultimo = $row['preco_ultimo'];
+	if($current_isin == $isin){
+		$preco_ultimo = $current_preco_ultimo;	
+		$delta = $preco_ultimo - $preco_abertura;
+		$map[$current_isin] = $delta;
+	}else{
+		$preco_abertura = $row['preco_abertura'];
+	}
+	$isin = $current_isin;
     }
-
+    asort($map);
+    $menor = array_keys($map);
+    echo $menor[count($menor)-1]." | ".$menor[count($menor)-2];
 	# Close the connection
 	odbc_close($conn);
 
