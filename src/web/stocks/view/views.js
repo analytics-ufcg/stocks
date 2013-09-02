@@ -11,7 +11,7 @@ function show_empresa_table(table_array){
 
     // Create the table result as html
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
-                + "<thead><tr bgcolor='#f5f5f5'><th align='center'>Logomarca</th><th>Dados Gerais</th><th>Contatos</th><th>Classificação</th></tr><thead><tbody>";
+                + "<thead><tr bgcolor='#f5f5f5'><th align='center'>Logomarca</th><th>Dados Gerais</th><th>Contatos</th><th>Classificação</th><th>Investidor</th></tr><thead><tbody>";
 
     for (var i = 0; i < table_array.length; i++) {
         row = table_array[i];
@@ -29,21 +29,35 @@ function show_empresa_table(table_array){
             table += "<td>Site: " + row['site'];
         }
 
-        if (! is_empty(row['twitter_link'])){
-            table += "<br>Twitter: <a href=https://" + row['twitter_link'] + ">" + row['twitter_link'] + "</a>";
+        if (! is_empty(row['twitter_empresa'])){
+            table += "<br>Twitter: <a href=https://" + row['twitter_empresa'] + ">" + row['twitter_empresa'] + "</a>";
         }else{
-            table += "<br>Twitter: " + row['twitter_link'];
+            table += "<br>Twitter: " + row['twitter_empresa'];
         }
 
-        if (! is_empty(row['facebook_link'])){
-            table += "<br>Facebook: <a href=" + row['facebook_link'] + ">" + row['facebook_link'] + "</a></td>";
+        if (! is_empty(row['facebook_empresa'])){
+            table += "<br>Facebook: <a href=" + row['facebook_empresa'] + ">" + row['facebook_empresa'] + "</a></td>";
         }else{
-            table += "<br>Facebook: " + row['facebook_link'] + "</td>";
+            table += "<br>Facebook: " + row['facebook_empresa'] + "</td>";
         }
 
-        table += "<td>Setor: " + row['setor'] + "</td></tr>"
+        table += "<td>Setor: " + row['setor'] + "</td>"
+            + "<td rowspan='6' style='max-width:150px; word-wrap:break-word;'>Nome: " + row['nome_contato'];
+
+        if (! is_empty(row['twitter_contato'])){
+            table += "<br>Twitter: <a href=https://" + row['twitter_contato'] + ">" + row['twitter_contato'] + "</a>";
+        }else{
+            table += "<br>Twitter: " + row['twitter_contato'];
+        }
+
+        if (! is_empty(row['facebook_contato'])){
+            table += "<br>Facebook: <a href=" + row['facebook_contato'] + ">" + row['facebook_contato'] + "</a></td>";
+        }else{
+            table += "<br>Facebook: " + row['facebook_contato'] + "</td></tr>";
+        }
+
             // Row 2
-            + "<tr><td>Nome de Pregão: " + row['nome_pregao'] + "</td>"
+        table += "<tr><td>Nome de Pregão: " + row['nome_pregao'] + "</td>"
             + "<td>Endereço: "+row['endereco'] + "</td>"
             + "<td>Subsetor: " + row['sub_setor'] + "</td></tr>"
             // Row 3
@@ -55,14 +69,13 @@ function show_empresa_table(table_array){
             + "<br>CEP: " + row['cep'] + "</td>"
             + "<td rowspan='4'>Segmento: " + row['segmento']+"</td></tr>"
             // Row 4
-            + "<tr><td rowspan='3' style='max-width:500px;'>Atividade Principal: "+row['atividade_principal'] + "</td>"
+            + "<tr><td rowspan='3' style='max-width:500px; word-wrap:break-word;'>Atividade Principal: "+row['atividade_principal'] + "</td>"
             + "</tr>" 
             // Row 5
             + "<tr><td>Telefones: " + row['telefone'] 
             + "<br>Fax: "+  row['fax'] + "</td></tr>"
             // Row 6
             + "<tr><td>Emails: " + row['emails'] + "</td></tr>";
-            
     };
     table += "</tbody></table>";
     

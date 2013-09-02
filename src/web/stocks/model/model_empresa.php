@@ -17,7 +17,9 @@
     // $value = "56720428000163";
 
     # Prepare the query
-   	$query = "select * from empresa where ". $column . " = ?";
+    $query = "SELECT * FROM empresa as emp LEFT JOIN 
+            contato_investidor as cont on emp.cnpj = cont.cnpj 
+            WHERE emp.". $column . " = ? ";
     
     # Turn on error reporting
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);

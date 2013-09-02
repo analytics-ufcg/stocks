@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS empresa (
     telefone              CHAR(100),
     fax                   CHAR(100),
     emails                CHAR(100),
-    twitter_link          CHAR(50),
-    facebook_link         CHAR(80),   
+    twitter_empresa       CHAR(50),
+    facebook_empresa      CHAR(80),   
 
     PRIMARY KEY           (cnpj)
 );
@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS empresa_isin (
 
 CREATE TABLE IF NOT EXISTS contato_investidor (
     id_contato            AUTO_INCREMENT,
-    nome                  CHAR(50) NOT NULL,
-    twitter_link          CHAR(50),
-    facebook_link         CHAR(80), 
+    nome_contato          CHAR(50) NOT NULL,
+    twitter_contato       CHAR(50),
+    facebook_contato      CHAR(80), 
     cnpj                  CHAR(14) NOT NULL,
     PRIMARY KEY           (id_contato),
     FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)

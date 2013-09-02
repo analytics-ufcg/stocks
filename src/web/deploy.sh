@@ -2,12 +2,14 @@
 
 ### EXECUTAR PARA FAZER DEPLOYMENT DA APLICACAO
 
+target_host=$1
+
 rm stocks.zip
 
 zip -r stocks.zip stocks
 
-scp stocks.zip stocks@150.165.15.6:~/
+scp stocks.zip stocks@${target_host}:~/
 
-ssh stocks@150.165.15.6 "cd /var/www/; rm -r stocks/*; unzip ~/stocks.zip -d ."
+ssh stocks@${target_host} "cd /var/www/; rm -r stocks/*; unzip ~/stocks.zip -d ."
 
 rm -rf stocks.zip

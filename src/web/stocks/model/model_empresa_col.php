@@ -7,11 +7,11 @@
        $column = 'sub_setor';
     }
 
-    // $column = strtolower($column);
+    $column = strtolower($column);
     // $column = "setor";
 
     # Prepare the query
-   	$query = "select " . $column . " from empresa";
+   	$query = "SELECT DISTINCT " . $column . " FROM EMPRESA";
     
     # Turn on error reporting
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
@@ -24,16 +24,14 @@
     $resultset = odbc_prepare($conn, $query);
    
     # Execute the query
-    $success = odbc_execute($resultset, array($value));
+    $success = odbc_execute($resultset, array($column));
 
     # Fetch all rows
     $name_list = array();
 
     while ($row = odbc_fetch_array($resultset)) {
         $row[$column] = trim($row[$column]);
-        if (! in_array($row[$column], $name_list)){
-            array_push($name_list, $row[$column]);
-        }
+        array_push($name_list, $row[$column]);
     }
 
 	# Close the connection

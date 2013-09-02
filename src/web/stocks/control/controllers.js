@@ -37,7 +37,7 @@ function run_search(){
 		data: call_data,
 		success: function(response) {
 			$("#go_search").button('reset');
-			// console.log(response);
+			console.log(response);
 			show_empresa_table(response.table);
 		}
 	});
@@ -57,7 +57,7 @@ function fill_text_area_typeahed(search_type){
 		url: 'model/model_empresa_col.php',
 		async: true,
 		data: call_data,
-		success: function(response) {
+		success: function(response) {		
 			typeahed_name_list = response.name_list;
 		}
 	});

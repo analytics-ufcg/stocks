@@ -3,7 +3,7 @@ rm(list = ls())
 cols <- c("nome_empresa", "nome_pregao", "cod_negociacao", 
           "cod_cvm", "cnpj", "atividade_principal",  
           "setor", "sub_setor", "segmento", "site", "endereco", "cidade", "cep", 
-          "estado", "telefone", "fax", "emails", "twitter_link", "facebook_link")
+          "estado", "telefone", "fax", "emails", "twitter_empresa", "facebook_empresa")
 
 emp <- read.csv("data/DadosEmpresas.csv", header = F, col.names=cols, 
                 colClasses = rep("character", length(cols)))
