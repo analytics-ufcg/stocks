@@ -31,13 +31,13 @@ function main_controller(){
 		run_top10();
 	});
 
-    $('#datetimepicker1').datetimepicker({
+    $('#top10_datetimepicker1').datetimepicker({
 		language: 'pt-BR',
 	  	pickTime: false,
 	  	maskInput: true
 	});
 
-	$('#datetimepicker2').datetimepicker({
+	$('#top10_datetimepicker2').datetimepicker({
 		language: 'pt-BR',
 	  	pickTime: false,
 	  	maskInput: true

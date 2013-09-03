@@ -3,7 +3,7 @@
     # Argument casting...
     
     $agrupamento = $_GET['search_type'];
-    $metrica = $_GET['seazch_type_parametro'];
+    $metrica = $_GET['search_type_parametro'];
     $data_inicial = $_GET['tAdata_inicial'];
     $data_final = $_GET['tADataFinal'];
 
