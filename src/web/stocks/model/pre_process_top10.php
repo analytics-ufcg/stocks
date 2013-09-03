@@ -43,11 +43,14 @@
 	$isin = $current_isin;
     }
     asort($map);
-    $menor = array_keys($map);
-    echo $menor[count($menor)-1]." | ".$menor[count($menor)-2];
+    $keys = array_keys($map);
+    echo $keys[count($keys)-3]." | ".$keys[count($keys)-4];
+    $highest = array($keys[count($keys)-1],$keys[count($keys)-2],$keys[count($keys)-3],$keys[count($keys)-4],$keys[count($keys)-5],$keys[count($keys)-6],$keys[count($keys)-7],$keys[count($keys)-8],$keys[count($keys)-9],$keys[count($keys)-10]);
+    $lowest = array($keys[0],$keys[1],$keys[2],$keys[3],$keys[4],$keys[5],$keys[6],$keys[7],$keys[8],$keys[0]);
+
 	# Close the connection
 	odbc_close($conn);
 
     # print_r()
-    echo json_encode(array("table" => $all_table));
+    echo json_encode(array("table" => $highest));
 ?>
