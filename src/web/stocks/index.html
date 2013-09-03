@@ -11,12 +11,12 @@
 	<link href="css/stocks.css" rel="stylesheet">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
-	<link href="css/bootstrap-top10_datetimepicker.min.css" rel="stylesheet">
+	<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 	
 	<!-- LIBRARIES -->
 	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap-top10_datetimepicker.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
 	<!-- <script type="text/javascript" src="js/d3.v3.js"></script> -->
 
 	<!-- CONTROLLERs -->
@@ -73,7 +73,7 @@
 							<fieldset>
 								<!-- <legend>TOP 10</legend> -->
 								<label> Agrupamento </label>
-								<select id = "search_type" name="search_type" style='width:auto;'>
+								<select id = "top10_grouping" name="top10_grouping" style='width:auto;'>
 									<option>Ação</option>
 									<option disabled>- - - - - - - -</option>
 									<option>Setor</option>
@@ -82,7 +82,7 @@
 								</select> 
 								<!-- <input id="text_area" name="text_area" class = "input-xlarge" type="text" placeholder="Palavra-Chave..." data-provide="typeahead"> -->
 								<label> Métrica </label>
-								<select id = "search_type_parametro" name="search_type_parametro" style='width:auto;'>
+								<select id = "top10_metric" name="top10_metric" style='width:auto;'>
 									<option>Crescimento</option>
 									<option>Queda</option>
 									<option>Oscilação</option>
