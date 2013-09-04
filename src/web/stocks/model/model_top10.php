@@ -1,4 +1,8 @@
 <?php 
+    
+    /* ----------------------------------------------------------------------------------------------
+        MAIN
+    */
 
     # Argument casting...
     
@@ -30,16 +34,16 @@
     switch ($metrica) {
         case "Crescimento":
         case "Queda":
-            list($nome_empresas, $isins, $values) = top_cresce_decresce($conn, $agrupamento, 
+            list($nome_empresas, $valores) = top_cresce_decresce($conn, $agrupamento, 
                                                     $metrica, $top, $data_inicial, $data_final);
             break;
         case "Oscilação":
-            list($nome_empresas, $isins, $values) = top_oscilacao($conn, $agrupamento, 
+            list($nome_empresas, $valores) = top_oscilacao($conn, $agrupamento, 
                                                     $metrica, $top, $data_inicial, $data_final);
             break;
         case "Maior Liquidez":
         case "Menor Liquidez":
-            list($nome_empresas, $isins, $values) = top_liquidez($conn, $agrupamento, 
+            list($nome_empresas, $valores) = top_liquidez($conn, $agrupamento, 
                                                     $metrica, $top, $data_inicial, $data_final);
             break;
         default:
@@ -50,18 +54,37 @@
     # Close the connection
     odbc_close($conn);
 
-    // echo print_r(array("rank" => $rank, "nome_empresa" => $nome_empresas, 
-    //     "isins" => $isins, "value" => $values));
-    echo json_encode(array("nome_empresas" => $nome_empresas, 
-        "isins" => $isins, "values" => $values));
+    // echo print_r(array("nomes" => $nomes, "valores" => $valores));
+    echo json_encode(array("nomes" => $nome_empresas, "valores" => $valores));
 
+    /* ----------------------------------------------------------------------------------------------
+        FUNCTIONS
+    */
 
     function top_cresce_decresce ($conn, $agrupamento, $metrica, $top, $data_inicial, $data_final)
     {
          # Prepare the query
-        $query = "select data_pregao,cod_isin, preco_abertura, preco_ultimo
-                                 from cotacao where (data_pregao = ? or data_pregao = ?) and cod_bdi = 02 
-                                  order by cod_isin";
+        $query = "SELECT emp.nome_empresa as nome_empresa, emp_isin.cod_isin as isin, 
+                         cot.data_pregao as data_pregao, cot.preco_abertura as preco_abertura, 
+                         cot.preco_ultimo AS preco_ultimo 
+                  FROM empresa AS emp INNER JOIN empresa_isin emp_isin ON emp.cnpj = emp_isin.cnpj 
+                                      INNER JOIN cotacao AS cot ON emp_isin.cod_isin = cot.cod_isin
+                  WHERE (cot.data_pregao = ? or cot.data_pregao = ?) AND cot.cod_bdi = 02
+                  ORDER BY emp_isin.cod_isin, cot.data_pregao;"
+
+        // With GAP Filling
+        // $query = "SELECT emp.nome_empresa as nome_empresa, emp_isin.cod_isin as isin, 
+        //              cot.data_pregao as data_pregao, cot.preco_abertura as preco_abertura, 
+        //              cot.preco_ultimo AS preco_ultimo 
+        //         FROM empresa AS emp INNER JOIN empresa_isin emp_isin ON emp.cnpj = emp_isin.cnpj 
+        //                           INNER JOIN (
+        //                                       SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_abertura) as preco_abertura, 
+        //                                              TS_FIRST_VALUE(preco_ultimo) as preco_ultimo
+        //                                       FROM cotacao
+        //                                       TIMESERIES slice_time AS '1 day' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
+        //                           ) AS cot ON emp_isin.cod_isin = cot.cod_isin,
+        //         WHERE (cot.data_pregao = '2010-10-1' or cot.data_pregao = '2010-10-11') AND cot.cod_bdi = 02
+        //         ORDER BY emp_isin.cod_isin, cot.data_pregao;"
 
         # Prepare the query
         $resultset = odbc_prepare($conn, $query);
@@ -70,94 +93,87 @@
         $success = odbc_execute($resultset, array($data_inicial,$data_final));
         
         # Fetch all rows
-        $all_table = array();
         $map = array();
-        $isin = "";
+        $prev_acao = "";
         while ($row = odbc_fetch_array($resultset)) {
-        #	echo $row['data_pregao']." | ".$row['cod_isin']." | ".$row['preco_abertura']." | ".$row['preco_ultimo'];
-               
-        	$current_isin = $row['cod_isin'];
+            #echo $row['data_pregao']." | ".$row['cod_isin']." | ".$row['preco_abertura']." | ".$row['preco_ultimo'];
         	#$current_preco_abertura = $row['preco_abertura'];
+               
+            $nome_acao = $row['nome_empresa'] . "(" . $row['cod_isin'] . ")";
         	$current_preco_ultimo = $row['preco_ultimo'];
-        	if($current_isin == $isin){
+        	if($nome_acao == $prev_acao){
         		$preco_ultimo = $current_preco_ultimo;	
         		$delta = $preco_ultimo - $preco_abertura;
-        		$map[$current_isin] = $delta;
+        		$map[$nome_acao] = $delta;
         	}else{
         		$preco_abertura = $row['preco_abertura'];
         	}
-        	$isin = $current_isin;
+        	$prev_acao = $nome_acao;
 
-         #   echo " | " . $delta."\n";
+            #echo " | " . $delta."\n";
         }
         asort($map);
         $keys = array_keys($map);
 
         if($metrica == "Crescimento"){
-            $nome_empresas = range(1, 10);
-            $isins = array_reverse(array_slice($keys, count($keys) - $top, $top));
-            $values = array_reverse(array_slice(array_values($map), count($map) - $top, $top));
+            $nomes = array_reverse(array_slice($keys, count($keys) - $top, $top));
+            $valores = array_reverse(array_slice(array_values($map), count($map) - $top, $top));
         }else{
-            $nome_empresas = range(11, 20);
-            $isins = array_reverse(array_slice($keys, 0, $top));
-            $values = array_reverse(array_slice(array_values($map), 0, $top));
+            $nomes = array_reverse(array_slice($keys, 0, $top));
+            $valores = array_reverse(array_slice(array_values($map), 0, $top));
         }
         
-        return array($nome_empresas, $isins, $values);
+        return array($nomes, $valores);
     }
 
     function top_oscilacao ($conn, $agrupamento, $metrica, $top, $data_inicial, $data_final)
     {
         # TODO
-        // return array($nome_empresas, $isins, $values);
+        // return array($nomes, $valores);
     }
 
     function top_liquidez ($conn, $agrupamento, $metrica, $top, $data_inicial, $data_final)
     {
-      
-      if($metrica == "Menor Liquidez"){
+
+        if($metrica == "Menor Liquidez"){
         $query = "select e.nome_empresa,avg(c.volume_titulos) 
               from cotacao c, empresa_isin e_i,empresa e 
               where c.cod_isin=e_i.cod_isin and e_i.cnpj=e.cnpj 
               and (c.data_pregao between ? and ?) 
               and c.cod_bdi=02 group by e.nome_empresa order by avg LIMIT 10";
-      } else {
+        } else {
         $query = "select e.nome_empresa,avg(c.volume_titulos) 
               from cotacao c, empresa_isin e_i,empresa e 
               where c.cod_isin=e_i.cod_isin and e_i.cnpj=e.cnpj 
               and (c.data_pregao between ? and ?) 
               and c.cod_bdi=02 group by e.nome_empresa order by avg desc LIMIT 10";
-      }# Prepare the query
-    
+        }# Prepare the query
 
 
-    
-    # Turn on error reporting
-    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+        # Turn on error reporting
+        error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
-    # Connect to the Database
-    $dsn = "StocksDSN";
-    $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
+        # Connect to the Database
+        $dsn = "StocksDSN";
+        $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
 
-    # Prepare the query
-    $resultset = odbc_prepare($conn, $query);
-   
-    # Execute the query
-    $success = odbc_execute($resultset, array($data_inicio,$data_fim));
-    
-    # Fetch all rows
-    
-    $nome_empresas = array();
-    $values = array();
-    $isin = "";
-    while ($row = odbc_fetch_array($resultset)) {
-    
-       array_push($nome_empresas, $row['nome_empresa']);
-       array_push($values, $row['avg']);
-    }
-    
+        # Prepare the query
+        $resultset = odbc_prepare($conn, $query);
 
-    # Close the connection
-    return array($nome_empresas,$values);
+        # Execute the query
+        $success = odbc_execute($resultset, array($data_inicio,$data_fim));
+
+        # Fetch all rows
+
+        $nomes = array();
+        $valores = array();
+        $isin = "";
+        while ($row = odbc_fetch_array($resultset)) {
+
+        array_push($nomes, $row['nome_empresa']);
+        array_push($valores, $row['avg']);
+        }
+
+        return array($nomes, $valores);
     }
 ?>
