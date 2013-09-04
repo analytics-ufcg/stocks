@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS contato_investidor (
 
 CREATE TABLE IF NOT EXISTS cotacao (
     id_cotacao            AUTO_INCREMENT,
-    data_pregao           DATE,
+    data_pregao           TIMESTAMP,
     cod_bdi               CHAR(2),
     cod_negociacao        CHAR(12),
     tipo_mercado          INTEGER, 
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS cotacao (
     volume_titulos        NUMERIC(16, 2), 
     preco_exercicio       MONEY(11, 2), 
     ind_mercado_opcoes    INTEGER, 
-    data_vencimento       DATE,
+    data_vencimento       TIMESTAMP,
     fator_cotacao         INTEGER, 
     pontos_exercicio      NUMERIC(7, 6),
     cod_isin              CHAR(12),
