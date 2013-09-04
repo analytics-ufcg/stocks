@@ -114,7 +114,50 @@
 
     function top_liquidez ($conn, $agrupamento, $metrica, $top, $data_inicial, $data_final)
     {
-        # TODO
-        // return array($nome_empresas, $isins, $values);
+      
+      if($metrica == "Menor Liquidez"){
+        $query = "select e.nome_empresa,avg(c.volume_titulos) 
+              from cotacao c, empresa_isin e_i,empresa e 
+              where c.cod_isin=e_i.cod_isin and e_i.cnpj=e.cnpj 
+              and (c.data_pregao between ? and ?) 
+              and c.cod_bdi=02 group by e.nome_empresa order by avg LIMIT 10";
+      } else {
+        $query = "select e.nome_empresa,avg(c.volume_titulos) 
+              from cotacao c, empresa_isin e_i,empresa e 
+              where c.cod_isin=e_i.cod_isin and e_i.cnpj=e.cnpj 
+              and (c.data_pregao between ? and ?) 
+              and c.cod_bdi=02 group by e.nome_empresa order by avg desc LIMIT 10";
+      }# Prepare the query
+    
+
+
+    
+    # Turn on error reporting
+    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+
+    # Connect to the Database
+    $dsn = "StocksDSN";
+    $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
+
+    # Prepare the query
+    $resultset = odbc_prepare($conn, $query);
+   
+    # Execute the query
+    $success = odbc_execute($resultset, array($data_inicio,$data_fim));
+    
+    # Fetch all rows
+    
+    $nome_empresas = array();
+    $values = array();
+    $isin = "";
+    while ($row = odbc_fetch_array($resultset)) {
+    
+       array_push($nome_empresas, $row['nome_empresa']);
+       array_push($values, $row['avg']);
+    }
+    
+
+    # Close the connection
+    return array($nome_empresas,$values);
     }
 ?>
