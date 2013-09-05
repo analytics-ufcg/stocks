@@ -74,17 +74,42 @@
 
         // With GAP Filling
         // $query = "SELECT emp.nome_empresa as nome_empresa, emp_isin.cod_isin as isin, 
-        //              cot.data_pregao as data_pregao, cot.preco_abertura as preco_abertura, 
-        //              cot.preco_ultimo AS preco_ultimo 
-        //         FROM empresa AS emp INNER JOIN empresa_isin emp_isin ON emp.cnpj = emp_isin.cnpj 
-        //                           INNER JOIN (
-        //                                       SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_abertura) as preco_abertura, 
-        //                                              TS_FIRST_VALUE(preco_ultimo) as preco_ultimo
-        //                                       FROM cotacao
-        //                                       TIMESERIES slice_time AS '1 day' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
-        //                           ) AS cot ON emp_isin.cod_isin = cot.cod_isin,
-        //         WHERE (cot.data_pregao = '2010-10-1' or cot.data_pregao = '2010-10-11') AND cot.cod_bdi = 02
-        //         ORDER BY emp_isin.cod_isin, cot.data_pregao;"
+        //                  cot.data_pregao as data_pregao, cot.preco_abertura as preco_abertura, 
+        //                  cot.preco_ultimo AS preco_ultimo 
+        //             FROM empresa AS emp INNER JOIN empresa_isin emp_isin ON emp.cnpj = emp_isin.cnpj 
+        //                               INNER JOIN (
+        //                                           SELECT slice_time as data_pregao, cod_isin, 
+        //                                                  TS_FIRST_VALUE(preco_abertura) as preco_abertura, 
+        //                                                  TS_FIRST_VALUE(preco_ultimo) as preco_ultimo
+        //                                           FROM cotacao
+        //                                           WHERE cod_bdi = 02
+        //                                           TIMESERIES slice_time AS '1 day' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
+        //                               ) AS cot ON emp_isin.cod_isin = cot.cod_isin,
+        //             WHERE (cot.data_pregao = '2010-10-1' OR cot.data_pregao = '2010-10-11')
+        //             ORDER BY emp_isin.cod_isin, cot.data_pregao;"
+
+        // Improved Query with DIFF
+        // SELECT emp.nome_empresa as nome_empresa, emp_isin.cod_isin as isin, 
+        //      cot.data_pregao as data_pregao, cot.preco_abertura as preco_abertura, 
+        //      cot.preco_ultimo AS preco_ultimo,
+        //      COUNT(cot.preco_abertura) OVER (PARTITION BY emp.nome_empresa, emp_isin.cod_isin) AS count_precos,
+        //      CASE count_precos 
+        //         WHEN 2 THEN 
+        //             LAST_VALUE(cot.preco_ultimo) OVER(PARTITION BY emp.nome_empresa, emp_isin.cod_isin ORDER BY cot.data_pregao) - 
+        //             FIRST_VALUE(cot.preco_abertura) OVER(PARTITION BY emp.nome_empresa, emp_isin.cod_isin ORDER BY cot.data_pregao) AS preco_diff
+        //         ELSE
+        //             NULL
+        // FROM empresa AS emp INNER JOIN empresa_isin emp_isin ON emp.cnpj = emp_isin.cnpj 
+        //                   INNER JOIN (
+        //                               SELECT slice_time as data_pregao, cod_isin, 
+        //                                      TS_FIRST_VALUE(preco_abertura) as preco_abertura, 
+        //                                      TS_FIRST_VALUE(preco_ultimo) as preco_ultimo
+        //                               FROM cotacao
+        //                               WHERE cod_bdi = 02
+        //                               TIMESERIES slice_time AS '1 day' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
+        //                   ) AS cot ON emp_isin.cod_isin = cot.cod_isin,
+        // WHERE (cot.data_pregao = '2010-10-1' OR cot.data_pregao = '2010-10-11')
+        // ORDER BY emp_isin.cod_isin, cot.data_pregao;
 
         # Prepare the query
         $resultset = odbc_prepare($conn, $query);
