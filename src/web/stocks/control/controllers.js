@@ -121,17 +121,20 @@ function run_top10(){
 	call_data += "&top=10";
 	console.log(call_data);
 
-	$.ajax({
-		type: 'GET',
-		dataType: 'json',
-		url: 'model/model_top10.php',
-		async: true,
-		data: call_data,
-		success: function(response) {
-			$("#go_top10").button('reset');
-			console.log(response);
-			// show_top10_result(response.table);
-		}
-	});
-	return false;
+	// $.ajax({
+	// 	type: 'GET',
+	// 	dataType: 'json',
+	// 	url: 'model/model_top10.php',
+	// 	async: true,
+	// 	data: call_data,
+	// 	success: function(response) {
+	// 		$("#go_top10").button('reset');
+	// 		console.log(response);
+	var response = {"nomes":["Empresa1","Empresa2","Empresa3","Empresa4","Empresa5","Empresa6","Empresa7","Empresa8","Empresa9","Empresa10"],
+				"valores":["11","21","31","41","51","61","71","81","91","101"]};
+	console.log(response);
+	show_top10_result(response);
+	// 	}
+	// });
+	// return false;
 }
