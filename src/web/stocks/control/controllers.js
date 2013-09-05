@@ -119,7 +119,7 @@ function run_top10(){
 	$("#go_top10").button('loading');
 	var call_data = $('#top10_form').serialize();
 	call_data += "&top=10";
-	console.log(call_data);
+	// console.log(call_data);
 
 	$.ajax({
 	 	type: 'GET',
@@ -129,7 +129,7 @@ function run_top10(){
 	 	data: call_data,
 	 	success: function(response) {
 	 		$("#go_top10").button('reset');
-	 		console.log(response);
+	 		// console.log(response);
 			show_top10_result(response);
 	 	}
 	 });
