@@ -116,7 +116,7 @@ function fill_text_area_typeahed(search_type){
 }
 
 function run_top10(){
-	// $("#go_top10").button('loading');
+	$("#go_top10").button('loading');
 	var call_data = $('#top10_form').serialize();
 	call_data += "&top=10";
 	console.log(call_data);

@@ -6,17 +6,17 @@
 
     # Argument casting...
     
-    // $agrupamento = $_GET['top10_grouping'];
-    // $metrica = $_GET['top10_metric'];
-    // $top = $_GET['top'];
-    // $data_inicial = $_GET['start_date_wrapper'];
-    // $data_final = $_GET['end_date_wrapper'];
+    $agrupamento = $_GET['top10_grouping'];
+    $metrica = $_GET['top10_metric'];
+    $top = $_GET['top'];
+    $data_inicial = $_GET['start_date_top10'];
+    $data_final = $_GET['end_date_top10'];
     
-    $agrupamento = "Ação";
-    $metrica = "Maior Liquidez";
-    $top = 10;
-    $data_inicial = "03/09/2012";
-    $data_final = "04/09/2012"; 
+    // $agrupamento = "Ação";
+    // $metrica = "Maior Liquidez";
+    // $top = 10;
+    // $data_inicial = "03/09/2012";
+    // $data_final = "04/09/2012"; 
 	
     list ($dia_inicial, $mes_inicial, $ano_inicial) = split("/", $data_inicial);
     $data_inicial = $ano_inicial . "-" . $mes_inicial . "-" . $dia_inicial;
