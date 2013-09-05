@@ -47,7 +47,7 @@ function main_controller(){
 		}
 	}).data('datepicker');
 
-	$("#start_date_wrapper").datepicker('setValue', new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0));
+	$("#start_date_wrapper").datepicker('setValue', new Date(2010, 0, 1, 0, 0, 0, 0));
 	$("#start_date").click(function() {
 		$("start_date_wrapper").datepicker('show');
 	});
@@ -66,7 +66,7 @@ function main_controller(){
 		}
 	}).data('datepicker');
 
-	$("#end_date_wrapper").datepicker('setValue', upperBound);
+	$("#end_date_wrapper").datepicker('setValue', new Date(2010, 0, 10, 0, 0, 0, 0));
 	$("#end_date").click(function() {
 		$("end_date_wrapper").datepicker('show');
 	});

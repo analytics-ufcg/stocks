@@ -4,8 +4,7 @@
         MAIN
     */
 
-    # Argument casting...
-    
+    # Reading Arguments...
     $agrupamento = $_GET['top10_grouping'];
     $metrica = $_GET['top10_metric'];
     $top = $_GET['top'];
@@ -13,11 +12,12 @@
     $data_final = $_GET['end_date_top10'];
     
     // $agrupamento = "Ação";
-    // $metrica = "Maior Liquidez";
+    // $metrica = "Queda";
     // $top = 10;
     // $data_inicial = "03/09/2012";
-    // $data_final = "04/09/2012"; 
-	
+    // $data_final = "03/09/2012"; 
+    
+    # Argument casting...
     list ($dia_inicial, $mes_inicial, $ano_inicial) = split("/", $data_inicial);
     $data_inicial = $ano_inicial . "-" . $mes_inicial . "-" . $dia_inicial;
 
@@ -70,6 +70,8 @@
                                 WHEN 2 THEN 
                                     LAST_VALUE(cot.preco_ultimo) OVER (w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) - 
                                     FIRST_VALUE(cot.preco_abertura) OVER(w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+                                WHEN (1 AND ? = ?) THEN -- Same initial and final dates
+                                    cot.preco_ultimo - cot.preco_abertura
                                 ELSE
                                     NULL
                      END AS preco_diff
@@ -90,7 +92,7 @@
         $resultset = odbc_prepare($conn, $query);
        
         # Execute the query
-        $success = odbc_execute($resultset, array($data_inicial, $data_final));
+        $success = odbc_execute($resultset, array($data_inicial, $data_final, $data_inicial, $data_final));
         
         # Fetch all rows
         $map = array();
@@ -126,8 +128,38 @@
 
     function top_oscilacao ($conn, $agrupamento, $metrica, $top, $data_inicial, $data_final)
     {
-        # TODO
-        // return array($nomes, $valores);
+
+        # Prepare the query
+        $query = "SELECT emp.nome_empresa AS nome_empresa, emp_isin.cod_isin AS isin, SUM(ABS(ISNULL(acao.diff_preco_medio, 0))) AS sum_abs_diff_preco_medio
+                    FROM empresa AS emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj
+                         INNER JOIN (
+                                    SELECT data_pregao, 
+                                            cod_isin,
+                                            preco_medio - LAG(preco_medio, 1, NULL) OVER (PARTITION BY cod_isin ORDER BY data_pregao) AS diff_preco_medio
+                                    FROM cotacao
+                                    WHERE cod_bdi = 02 
+                                    ORDER BY cod_isin, data_pregao
+                         ) AS acao ON emp_isin.cod_isin = acao.cod_isin
+                    WHERE (acao.data_pregao BETWEEN ? AND ?)
+                    GROUP BY emp.nome_empresa, emp_isin.cod_isin
+                    ORDER BY sum_abs_diff_preco_medio DESC
+                    LIMIT ?;";
+
+        # Prepare the query
+        $resultset = odbc_prepare($conn, $query);
+
+        # Execute the query
+        $success = odbc_execute($resultset, array($data_inicial, $data_final, $top));
+
+        # Fetch all rows
+        $nomes = array();
+        $valores = array();
+        while ($row = odbc_fetch_array($resultset)) {
+            array_push($nomes, $row['nome_empresa'] . "(" . $row['isin'] . ")");
+            array_push($valores, $row['sum_abs_diff_preco_medio']);
+        }
+
+        return array($nomes, $valores);
     }
 
     function top_liquidez ($conn, $agrupamento, $metrica, $top, $data_inicial, $data_final)
@@ -146,13 +178,6 @@
         if($metrica == "Maior Liquidez"){
             $query = str_replace("sum_volume_titulos ASC", "sum_volume_titulos DESC", $query);
         } 
-
-        # Turn on error reporting
-        error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-
-        # Connect to the Database
-        $dsn = "StocksDSN";
-        $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
 
         # Prepare the query
         $resultset = odbc_prepare($conn, $query);
