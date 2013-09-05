@@ -82,3 +82,42 @@ function show_empresa_table(table_array){
     // Update the central bar with the new table
     $("#inner_central_bar").html(table);
 }
+
+
+function show_top10_result(table_array){
+
+    function is_empty(value){
+        return (value == "--");
+    }
+
+    if (table_array.length <= 0){
+        $("#central_bar").html("<em>Nada foi encontrado.</em>");
+        return false;
+    }
+    //alert(table_array.nomes.length)
+    // Create the table result as html
+    var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
+                + "<thead><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>Nomes</th><th>Valores</th></tr><thead><tbody>";
+
+    for (var i = 0; i < table_array.nomes.length; i++) {
+        row = table_array[i];
+        nome = table_array.nomes[i];
+        valor = table_array.valores[i];
+        pos_ranking = i + 1;
+        table += 
+            // Logomarca only
+           // "<tr><td rowspan='6'><img src=" + row['icon_filename'] + "></td>" 
+            // Dados gerais | Contatos | Classificação
+            // Row 1
+             "<tr><td>"+ pos_ranking + "</strong></td>";
+
+      
+        table += "<td>" + nome;
+        table += "<td>" + valor;
+       
+    };
+    table += "</tbody></table>";
+    
+    // Update the central bar with the new table
+    $("#central_bar_top").html(table);
+}
