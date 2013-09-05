@@ -56,7 +56,7 @@ function main_controller(){
 
 	var end_field = $("#end_date_wrapper").datepicker({
 		onRender : function(date) {
-			return date.valueOf() <= start_field.date.valueOf() || date.valueOf() > upperBound.valueOf() ? 'disabled' : '';
+			return date.valueOf() < start_field.date.valueOf() || date.valueOf() > upperBound.valueOf() ? 'disabled' : '';
 		}
 	}).on('changeDate', function(ev) {
 		if ( ev.date.valueOf() < start_field.date.valueOf() ){
