@@ -54,8 +54,8 @@
     # Close the connection
     odbc_close($conn);
 
-    echo print_r(array("nomes" => $nomes, "valores" => $valores));
-    // echo json_encode(array("nomes" => $nomes, "valores" => $valores));
+    // echo print_r(array("nomes" => $nomes, "valores" => $valores));
+    echo json_encode(array("nomes" => $nomes, "valores" => $valores));
 
     /* ----------------------------------------------------------------------------------------------
         FUNCTIONS

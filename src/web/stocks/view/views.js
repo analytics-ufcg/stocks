@@ -90,11 +90,11 @@ function show_top10_result(table_array){
         return (value == "--");
     }
 
-    if (table_array.length <= 0){
-        $("#central_bar").html("<em>Nada foi encontrado.</em>");
+    if (table_array.nomes.length <= 0){
+        $("#central_bar_top").html("<em>Nada foi encontrado.</em>");
         return false;
     }
-    //alert(table_array.nomes.length)
+
     // Create the table result as html
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
                 + "<thead><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>Nomes</th><th>Valores</th></tr><thead><tbody>";
@@ -105,16 +105,10 @@ function show_top10_result(table_array){
         valor = table_array.valores[i];
         pos_ranking = i + 1;
         table += 
-            // Logomarca only
-           // "<tr><td rowspan='6'><img src=" + row['icon_filename'] + "></td>" 
-            // Dados gerais | Contatos | Classificação
             // Row 1
              "<tr><td>"+ pos_ranking + "</strong></td>";
-
-      
         table += "<td>" + nome;
         table += "<td>" + valor;
-       
     };
     table += "</tbody></table>";
     
