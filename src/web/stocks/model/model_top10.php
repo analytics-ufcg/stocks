@@ -7,17 +7,17 @@
     */
 
     # Reading Arguments...
-    $agrupamento = $_GET['top10_grouping'];
-    $metrica = $_GET['top10_metric'];
-    $top = $_GET['top'];
-    $data_inicial = $_GET['start_date_top10'];
-    $data_final = $_GET['end_date_top10'];
+    // $agrupamento = $_GET['top10_grouping'];
+    // $metrica = $_GET['top10_metric'];
+    // $top = $_GET['top'];
+    // $data_inicial = $_GET['start_date_top10'];
+    // $data_final = $_GET['end_date_top10'];
     
-    // $agrupamento = "Setor";
-    // $metrica = "Oscilação";
-    // $top = 10;
-    // $data_inicial = "03/09/2012";
-    // $data_final = "03/09/2012"; 
+    $agrupamento = "Ação";
+    $metrica = "Queda";
+    $top = 10;
+    $data_inicial = "03/09/2012";
+    $data_final = "03/09/2012"; 
     
     # Argument casting...
     $agrupamento = strtolower(str_replace("-", "_", $agrupamento));
@@ -70,40 +70,60 @@
         # Prepare the query
         $query = $query_map['top_crescimento_acao'];
 
+        if($metrica == "Crescimento"){
+            $query = str_replace("preco_diff ASC", "preco_diff DESC", $query);
+        }
+
         # Prepare the query
         $resultset = odbc_prepare($conn, $query);
        
         # Execute the query
         $success = odbc_execute($resultset, array($data_inicial, $data_final, $data_inicial, $data_final));
         
-        # Fetch all rows
-        $map = array();
-        $prev_nome = "";
+        # Fetch the $top rows
+        $nomes = array();
+        $valores = array();
+        $counter = 0;
         while ($row = odbc_fetch_array($resultset)) {
-               
-            $nome = $row['nome_empresa'] . "(" . $row['isin'] . ")";
-        	$preco_diff = $row['preco_diff'];
-        	if($nome != $prev_nome){
-                if ($preco_diff != NULL){
-        		    $map[$nome] = $preco_diff;
-                }else{
-                    // We do nothing by now.
-                }
-        	}else{
-        		// The second name is not used
-        	}
-        	$prev_nome = $nome;
+            if($counter >= $top){
+                break;
+            }
+            array_push($nomes, $row['nome_grupo']);
+            array_push($valores, $row['preco_diff']);
         }
-        asort($map);
-        $keys = array_keys($map);
 
-        if($metrica == "Crescimento"){
-            $nomes = array_reverse(array_slice($keys, count($keys) - $top, $top));
-            $valores = array_reverse(array_slice(array_values($map), count($map) - $top, $top));
-        }else{
-            $nomes = array_reverse(array_slice($keys, 0, $top));
-            $valores = array_reverse(array_slice(array_values($map), 0, $top));
-        }
+        // $map = array();
+        // // $prev_nome = "";
+        // $counter = 0;
+        // while ($row = odbc_fetch_array($resultset)) {
+        //     if($counter >= $top){
+        //         break;
+        //     }
+        //     $map[$row['nome_grupo']] = $row['preco_diff'];
+        //     $counter++;
+        //  //    $nome = ;
+        //     // $preco_diff = ;
+        //     // if($nome != $prev_nome){
+        //  //        if ($preco_diff != NULL){
+        //     //      
+        //  //        }else{
+        //  //            // We do nothing by now.
+        //  //        }
+        //     // }else{
+        //     //  // The second name is not used
+        //     // }
+        //     // $prev_nome = $nome;
+        // }
+        // asort($map);
+        // $keys = array_keys($map);
+
+        // if($metrica == "Crescimento"){
+        //     $nomes = array_reverse(array_slice($keys, count($keys) - $top, $top));
+        //     $valores = array_reverse(array_slice(array_values($map), count($map) - $top, $top));
+        // }else{
+        //     $nomes = array_reverse(array_slice($keys, 0, $top));
+        //     $valores = array_reverse(array_slice(array_values($map), 0, $top));
+        // }
         
         return array($nomes, $valores);
     }
