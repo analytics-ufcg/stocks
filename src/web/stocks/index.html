@@ -17,10 +17,13 @@
 	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
+	<script type="text/javascript" src="js/bootstrap-tooltip.js"></script>
+	<script type="text/javascript" src="js/bootstrap-popover.js"></script>	
 	<!-- <script type="text/javascript" src="js/d3.v3.js"></script> -->
 
 	<!-- CONTROLLERs -->
 	<script type="text/javascript" src="control/controllers.js"></script>
+	<script type="text/javascript" src="control/funcoes.js"></script>
 	<!-- VIEWs -->
 	<script type="text/javascript" src="view/views.js"></script>
 
@@ -90,14 +93,15 @@
 									<option>Oscilação</option>
 								</select> 
 								<!-- <br><br> -->
-								<label> Data Inicial </label>
+								<!--<label> Data Inicial </label> --> 
+									<a href="#" id="example" data-placement="top" rel="popover">Data Inicial</a>  
 									<div class="input-append date" id="start_date_wrapper" data-date data-date-format="dd/mm/yyyy">
-										<input id="start_date" name="start_date_top10" type="text" value='dd/mm/aaaa'>
+										<input id="start_date" name="start_date_top10" type="text" value='dd/mm/aaaa' maxlength="10" OnKeyPress="barra(this)">
 										<span class="add-on"><i class="icon-calendar"></i></span>
 									</div>
 								<label> Data Final </label>
 									<div class="input-append date date_div" id="end_date_wrapper" data-date data-date-format="dd/mm/yyyy"> 
-										<input id="end_date" name="end_date_top10" type="text" value='dd/mm/aaaa'>
+										<input id="end_date" name="end_date_top10" type="text" value='dd/mm/aaaa' maxlength="10" OnKeyPress="barra(this)">
 										<span class="add-on"><i class="icon-calendar"></i></span>
 									</div>
 								<button id="go_top10" type="submit" class="btn" data-loading-text="Carregando...">Submit</button>

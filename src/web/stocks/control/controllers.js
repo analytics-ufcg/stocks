@@ -22,13 +22,25 @@ function main_controller(){
             return typeahed_name_list;
     }});
 
+    //apagar
+    $(function ()  
+	{ $("#example").popover({title: 'Calculo da metrica', content: "Para o calculo foi utilizado a diferença do valor final e inicial"});  
+	});  
+	$(".alert").alert();
+
+	//
+
 	/*
 		TAB TOP10
 	*/
 	$("#top10_form").submit(function(e){
 		// Avoid refreshing the page
 		e.preventDefault(); 
-		run_top10();
+		if(isValidDate(document.getElementById('start_date').value, "inicial") && isValidDate(document.getElementById('end_date').value, "final") )
+		{
+			run_top10();
+		}
+		
 	});
 
 	var lowerBound = new Date(1950, 1, 1, 0, 0, 0, 0);
@@ -45,6 +57,8 @@ function main_controller(){
 			newDate.setDate(newDate.getDate());
 			end_field.setValue(newDate);
 		}
+		//barra(ev);
+		
 	}).data('datepicker');
 
 	$("#start_date_wrapper").datepicker('setValue', new Date(2010, 0, 1, 0, 0, 0, 0));
