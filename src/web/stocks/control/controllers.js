@@ -22,13 +22,7 @@ function main_controller(){
             return typeahed_name_list;
     }});
 
-    //apagar
-    $(function ()  
-	{ $("#example").popover({title: 'Calculo da metrica', content: "Para o calculo foi utilizado a diferença do valor final e inicial"});  
-	});  
-	$(".alert").alert();
-
-	//
+    
 
 	/*
 		TAB TOP10
@@ -85,6 +79,13 @@ function main_controller(){
 		$("end_date_wrapper").datepicker('show');
 	});
 
+    $(function ()  { 
+    	$("#top_metrica_col").popover({
+    		title: 'Calculo da metrica',
+    		content: "Para o calculo foi utilizado a diferença do valor final - inicial"
+    	});  
+	});  
+	// $(".alert").alert();
 }
 
 /*

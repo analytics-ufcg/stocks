@@ -16,33 +16,6 @@
         	'SELECT DISTINCT [EMP_COLUMN] FROM EMPRESA',
 
 		// USED BY: model_top10.php 
-	  //   "top_crescimento_acao" =>
-	  //   	'SELECT nome_empresa AS nome_grupo, MAX(preco_diff) AS preco_diff
-			// FROM (SELECT CONCAT(CONCAT(CONCAT (emp.nome_empresa,\' (\'), emp_isin.cod_isin), \')\') AS nome_empresa, 
-			// 	     CASE (COUNT(cot.preco_abertura) OVER (PARTITION BY emp.nome_empresa, emp_isin.cod_isin))
-			// 	                WHEN 2 THEN 
-			// 	                    LAST_VALUE(cot.preco_ultimo) OVER (w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) - 
-			// 	                    FIRST_VALUE(cot.preco_abertura) OVER(w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
-			// 	                WHEN (1 AND ? = ?) THEN -- Same initial and final dates
-			// 	                    cot.preco_ultimo - cot.preco_abertura
-			// 	                ELSE
-			// 	                    NULL
-			// 	     END AS preco_diff
-			// 	FROM empresa AS emp INNER JOIN empresa_isin emp_isin ON emp.cnpj = emp_isin.cnpj 
-			// 	                  INNER JOIN (
-			// 	                              SELECT slice_time as data_pregao, cod_isin, 
-			// 	                                     TS_FIRST_VALUE(preco_abertura IGNORE NULLS, \'const\') as preco_abertura, 
-			// 	                                     TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') as preco_ultimo
-			// 	                              FROM cotacao
-			// 	                              WHERE cod_bdi = 02
-			// 	                              TIMESERIES slice_time AS \'1 day\' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
-			// 	                  ) AS cot ON emp_isin.cod_isin = cot.cod_isin
-			// 	WHERE cot.data_pregao = ? OR cot.data_pregao = ?
-			// 	WINDOW w_part_emp_isin_order_date AS (PARTITION BY emp.nome_empresa, emp_isin.cod_isin ORDER BY cot.data_pregao)
-			// 	) AS sub_query
-			// WHERE preco_diff is not NULL -- We delete the groups which the difference was not calculated
-			// GROUP BY nome_empresa
-			// ORDER BY preco_diff ASC;',
 	    "top_crescimento" =>
 	    	'SELECT [SELECT_NOME_GRUPO_COL] AS nome_grupo, MAX(preco_diff) AS preco_diff
 			FROM (SELECT [SUB_SELECT_EXTRA_COL]CONCAT(CONCAT(CONCAT (emp.nome_empresa,\' (\'), emp_isin.cod_isin), \')\') AS nome_empresa, 

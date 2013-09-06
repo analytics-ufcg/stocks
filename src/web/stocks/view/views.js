@@ -86,9 +86,12 @@ function show_empresa_table(table_array){
 
 function show_top10_result(table_array){
 
-    function is_empty(value){
-        return (value == "--");
-    }
+    var metric_explanation_map = 
+        {'Crescimento' : '', 
+        'Queda' : '', 
+        'Maior Liquidez' : '', 
+        'Menor Liquidez' : '',
+        'Oscilação' : ''};
 
     if (table_array.nomes.length <= 0){
         $("#central_bar_top").html("<em>Nada foi encontrado.</em>");
@@ -96,8 +99,13 @@ function show_top10_result(table_array){
     }
 
     // Create the table result as html
+    grouping = $("#top10_grouping").val();
+    metric = $("#top10_metric").val();
+
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
-                + "<thead><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>Nomes</th><th>Valores</th></tr><thead><tbody>";
+                + "<thead><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
+                + grouping + "</th><th id = 'top_metrica_col' data-placement='right' rel='popover'>" 
+                + metric + "</th></tr><thead><tbody>";
 
     for (var i = 0; i < table_array.nomes.length; i++) {
         row = table_array[i];
@@ -114,4 +122,10 @@ function show_top10_result(table_array){
     
     // Update the central bar with the new table
     $("#central_bar_top").html(table);
+
+    // Set the popover in the metric column
+    $("#top_metrica_col").popover({
+        title: 'O que é ' + metric + '?',
+        content: metric_explanation_map[metric]
+    });  
 }
