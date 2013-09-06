@@ -1,5 +1,7 @@
 <?php 
 
+    include 'global_model.php';
+
     # Argument casting...
     $column = $_GET['search_type'];
 
@@ -11,13 +13,12 @@
     // $column = "setor";
 
     # Prepare the query
-   	$query = "SELECT DISTINCT " . $column . " FROM EMPRESA";
+   	$query = str_replace("[EMP_COLUMN]", $column, $query_map['get_col_empresa']);
     
     # Turn on error reporting
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
     # Connect to the Database
-    $dsn = "StocksDSN";
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
 
     # Prepare the query
