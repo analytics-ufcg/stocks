@@ -7,17 +7,17 @@
     */
 
     # Reading Arguments...
-    // $agrupamento = $_GET['top10_grouping'];
-    // $metrica = $_GET['top10_metric'];
-    // $top = $_GET['top'];
-    // $data_inicial = $_GET['start_date_top10'];
-    // $data_final = $_GET['end_date_top10'];
+    $agrupamento = $_GET['top10_grouping'];
+    $metrica = $_GET['top10_metric'];
+    $top = $_GET['top'];
+    $data_inicial = $_GET['start_date_top10'];
+    $data_final = $_GET['end_date_top10'];
     
-    $agrupamento = "Ação";
-    $metrica = "Queda";
-    $top = 10;
-    $data_inicial = "03/09/2012";
-    $data_final = "03/09/2012"; 
+    // $agrupamento = "Setor";
+    // $metrica = "Queda";
+    // $top = 10;
+    // $data_inicial = "03/09/2012";
+    // $data_final = "03/09/2012"; 
     
     # Argument casting...
     $agrupamento = strtolower(str_replace("-", "_", $agrupamento));
@@ -32,7 +32,6 @@
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
     # Connect to the Database
-    // $dsn = "StocksDSN";
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
 
     switch ($metrica) {
@@ -68,12 +67,32 @@
     function top_cresce_decresce ($conn, $query_map, $agrupamento, $metrica, $top, $data_inicial, $data_final)
     {
         # Prepare the query
-        $query = $query_map['top_crescimento_acao'];
+        $query = $query_map['top_crescimento'];
+        switch ($agrupamento) {
+            case 'ação':
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", "nome_empresa", $query);
+                $query = str_replace("[SUB_SELECT_EXTRA_COL]", "", $query);
+                $query = str_replace("[GROUP_BY_COLS]", "nome_empresa", $query);
+                break;
+            case 'setor':
+            case 'sub_setor':
+            case 'segmento':
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", $agrupamento, $query);
+                $query = str_replace("[SUB_SELECT_EXTRA_COL]", "emp.$agrupamento AS $agrupamento, ", $query);
+                $query = str_replace("[GROUP_BY_COLS]", $agrupamento, $query);
+
+                // We aggregate the differences by summing all differences from a group
+                $query = str_replace("MAX(preco_diff)", "SUM(preco_diff)", $query);
+                break;
+            default:
+                echo "Grupo inexistente.";
+                break;
+        }
 
         if($metrica == "Crescimento"){
             $query = str_replace("preco_diff ASC", "preco_diff DESC", $query);
         }
-
+        
         # Prepare the query
         $resultset = odbc_prepare($conn, $query);
        
@@ -84,47 +103,11 @@
         $nomes = array();
         $valores = array();
         $counter = 0;
-        while ($row = odbc_fetch_array($resultset)) {
-            if($counter >= $top){
-                break;
-            }
+        while (($row = odbc_fetch_array($resultset)) && ($counter < $top)) {
             array_push($nomes, $row['nome_grupo']);
             array_push($valores, $row['preco_diff']);
+            $counter++;
         }
-
-        // $map = array();
-        // // $prev_nome = "";
-        // $counter = 0;
-        // while ($row = odbc_fetch_array($resultset)) {
-        //     if($counter >= $top){
-        //         break;
-        //     }
-        //     $map[$row['nome_grupo']] = $row['preco_diff'];
-        //     $counter++;
-        //  //    $nome = ;
-        //     // $preco_diff = ;
-        //     // if($nome != $prev_nome){
-        //  //        if ($preco_diff != NULL){
-        //     //      
-        //  //        }else{
-        //  //            // We do nothing by now.
-        //  //        }
-        //     // }else{
-        //     //  // The second name is not used
-        //     // }
-        //     // $prev_nome = $nome;
-        // }
-        // asort($map);
-        // $keys = array_keys($map);
-
-        // if($metrica == "Crescimento"){
-        //     $nomes = array_reverse(array_slice($keys, count($keys) - $top, $top));
-        //     $valores = array_reverse(array_slice(array_values($map), count($map) - $top, $top));
-        // }else{
-        //     $nomes = array_reverse(array_slice($keys, 0, $top));
-        //     $valores = array_reverse(array_slice(array_values($map), 0, $top));
-        // }
-        
         return array($nomes, $valores);
     }
 
@@ -135,7 +118,6 @@
         $query = $query_map['top_oscilacao'];
         switch ($agrupamento) {
             case 'ação':
-                // $query = $query_map['top_oscilacao_acao'];
                 $query = str_replace("[SELECT_NOME_GRUPO_COL]", 
                     "CONCAT(CONCAT(CONCAT (emp.nome_empresa,' ('), emp_isin.cod_isin), ')')", $query);
                 $query = str_replace("[GROUP_BY_COLS]", "emp.nome_empresa, emp_isin.cod_isin", $query);
@@ -143,9 +125,8 @@
             case 'setor':
             case 'sub_setor':
             case 'segmento':
-                // $query = str_replace("[EMP_COLUMN]", $agrupamento, $query_map['top_oscilacao']);
-                $query = str_replace("[SELECT_NOME_GRUPO_COL]", "emp." . $agrupamento, $query);
-                $query = str_replace("[GROUP_BY_COLS]", "emp." . $agrupamento, $query);
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", "emp.$agrupamento", $query);
+                $query = str_replace("[GROUP_BY_COLS]", "emp.$agrupamento", $query);
                 break;
             default:
                 echo "Grupo inexistente.";
@@ -183,8 +164,8 @@
             case 'setor':
             case 'sub_setor':
             case 'segmento':
-                $query = str_replace("[SELECT_NOME_GRUPO_COL]", "emp." . $agrupamento, $query);
-                $query = str_replace("[GROUP_BY_COLS]", "emp." . $agrupamento, $query);
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", "emp.$agrupamento", $query);
+                $query = str_replace("[GROUP_BY_COLS]", "emp.$agrupamento", $query);
                 break;
             default:
                 echo "Grupo inexistente.";
