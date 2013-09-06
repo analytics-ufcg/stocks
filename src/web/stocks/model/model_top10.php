@@ -112,14 +112,20 @@
     {
 
         # Prepare the query
+        $query = $query_map['top_oscilacao'];
         switch ($agrupamento) {
             case 'ação':
-                $query = $query_map['top_oscilacao_acao'];
+                // $query = $query_map['top_oscilacao_acao'];
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", 
+                    "CONCAT(CONCAT(CONCAT (emp.nome_empresa,' ('), emp_isin.cod_isin), ')')", $query);
+                $query = str_replace("[GROUP_BY_COLS]", "emp.nome_empresa, emp_isin.cod_isin", $query);
                 break;
             case 'setor':
             case 'sub_setor':
             case 'segmento':
-                $query = str_replace("[EMP_COLUMN]", $agrupamento, $query_map['top_oscilacao_by_grupo']);
+                // $query = str_replace("[EMP_COLUMN]", $agrupamento, $query_map['top_oscilacao']);
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", "emp." . $agrupamento, $query);
+                $query = str_replace("[GROUP_BY_COLS]", "emp." . $agrupamento, $query);
                 break;
             default:
                 echo "Grupo inexistente.";
@@ -147,14 +153,18 @@
     {
 
         # Prepare the query
+        $query = $query_map['top_liquidez'];
         switch ($agrupamento) {
             case 'ação':
-                $query = $query_map['top_liquidez_acao'];
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", 
+                    "CONCAT(CONCAT(CONCAT (emp.nome_empresa,' ('), emp_isin.cod_isin), ')')", $query);
+                $query = str_replace("[GROUP_BY_COLS]", "emp.nome_empresa, emp_isin.cod_isin", $query);
                 break;
             case 'setor':
             case 'sub_setor':
             case 'segmento':
-                $query = str_replace("[EMP_COLUMN]", $agrupamento, $query_map['top_liquidez_by_grupo']);
+                $query = str_replace("[SELECT_NOME_GRUPO_COL]", "emp." . $agrupamento, $query);
+                $query = str_replace("[GROUP_BY_COLS]", "emp." . $agrupamento, $query);
                 break;
             default:
                 echo "Grupo inexistente.";
