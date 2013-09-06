@@ -5,7 +5,7 @@ function show_empresa_table(table_array){
     }
 
     if (table_array.length <= 0){
-        $("#central_bar").html("<em>Nenhuma empresa foi encontrada.</em>");
+        $("#inner_central_bar").html("<em>Nenhuma empresa foi encontrada.</em>");
         return false;
     }
 
@@ -103,7 +103,7 @@ function show_top10_result(table_array){
     metric = $("#top10_metric").val();
 
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
-                + "<thead><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
+                + "<thead><tr bgcolor='#f5f5f5'><td colspan='3' style='text-align:center;font-weight:bold'>Ranking de " + grouping + " por " + metric + "</td></tr><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
                 + grouping + "</th><th id = 'top_metrica_col' data-placement='right' rel='popover'>" 
                 + metric + "</th></tr><thead><tbody>";
 
