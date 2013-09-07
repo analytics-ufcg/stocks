@@ -30,7 +30,8 @@ function main_controller(){
 	$("#top10_form").submit(function(e){
 		// Avoid refreshing the page
 		e.preventDefault(); 
-		if(isValidDate(document.getElementById('start_date').value, "inicial") && isValidDate(document.getElementById('end_date').value, "final") )
+		if(isValidDate($('#start_date').val(), "inicial") && 
+		 	isValidDate($('#end_date').val(), "final"))
 		{
 			run_top10();
 		}
@@ -78,14 +79,6 @@ function main_controller(){
 	$("#end_date").click(function() {
 		$("end_date_wrapper").datepicker('show');
 	});
-
-    $(function ()  { 
-    	$("#top_metrica_col").popover({
-    		title: 'Calculo da metrica',
-    		content: "Para o calculo foi utilizado a diferença do valor final - inicial"
-    	});  
-	});  
-	// $(".alert").alert();
 }
 
 /*
