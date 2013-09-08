@@ -6,6 +6,7 @@ rm(list = ls())
 library(lubridate)
 library(plyr)
 library(zoo)
+library(dtw)
 
 # =============================================================================
 # MAIN
@@ -159,26 +160,37 @@ emp.ts.list <- dlply(emp.data, "cod_isin", function(df){
 # Calculate the similarity metrics
 # -----------------------------------------------------------------------------
 
-# TODO (Elias)
-# A ideia é gerar uma matriz de similaridade entre cada serie temporal
-# O nome das séries será o nome da empresa (já que já filtrei para ter apenas 
-# o ISIN com a maior série por empresa)
+# Observations:
+# * The time-serie name is the empresa's name
+# * Each time-serie is compared with the others in pairs, considering only the time
+# both exist
 
-# Vamos usar a similaridade pelo cosseno
+# DTW - Dynamic Time Warping - Distance Metric
+library(dtw)
 
-# Aqui estah a primeira série temporal (descomenta abaixo)
-# print(emp.ts.list[[1]])
-
+ts.dtw.distances <- ldply(emp.ts.list, function(emp.list, all.emps){
+  result <- c()
+  for(i in 1:length(all.emps)){
+    # TODO: Compare the time-series in the same time interval (exclude the initial
+    # part of the second that do not match the first)
+    dtw.align <- dtw(emp.list$norm_preco_medio_ts, all.emps[[i]]$norm_preco_medio_ts, 
+                     step.pattern=asymmetric, open.end=T,open.begin=T)
+    result <- c(result, dtw.align$normalizedDistance)
+  }
+  return(result)
+}, .progress = "text", emp.ts.list)
 
 # -----------------------------------------------------------------------------
 # Plot the similarity visualizations 
 # -----------------------------------------------------------------------------
 
-# Elias: Fique a vontade pra implementar o que quiser aqui, dei algumas ideias abaixo
-
 # HEATMAP of SIMILARTY METRICs between TIME-SERIES
 # CONFIDENCE INTERVAL of SIMILARTY METRIC between TIME-SERIES per SEGMENTO
 
+# PLOT THE ALIGNMENT between the MOST SIMILAR time-series (excluding itself) and 
+# the MOST DISTANT ones
+
+# dtwPlotTwoWay(align)
 
 # =============================================================================
 # EXTRA! 
