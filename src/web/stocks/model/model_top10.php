@@ -82,7 +82,7 @@
                 $query = str_replace("[GROUP_BY_COLS]", $agrupamento, $query);
 
                 // We aggregate the differences by summing all differences from a group
-                $query = str_replace("MAX(preco_diff)", "SUM(preco_diff)", $query);
+                $query = str_replace("MAX(preco_diff)", "AVG(preco_diff)", $query);
                 break;
             default:
                 echo "Grupo inexistente.";

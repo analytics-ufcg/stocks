@@ -6,9 +6,15 @@ function barra(objeto){
 }
 
 function isValidDate(s, saida) {
-  
+  var now = new Date();
+  //var upperBound = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
   var bits = s.split('/');
-  if(bits[0].length != 2 || bits[1].length != 2 || bits[2].length != 4)
+  if(bits.length != 3)
+  {
+    alert("Data " + saida + " invalida");
+    return false;
+  }
+  if(bits[0].length != 2 || bits[1].length != 2 || bits[2].length != 4 || bits[1] > now.getMonth() || bits[2] > now.getFullYear())
   {
   	alert("Data " + saida + " invalida");
   	return false;

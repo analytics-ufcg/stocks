@@ -17,12 +17,13 @@
 
 		// USED BY: model_top10.php 
 	    "top_crescimento" =>
-	    	'SELECT [SELECT_NOME_GRUPO_COL] AS nome_grupo, MAX(preco_diff) AS preco_diff
+	    	'SELECT [SELECT_NOME_GRUPO_COL] AS nome_grupo, ROUND(MAX(preco_diff), 2) AS preco_diff
 			FROM (SELECT [SUB_SELECT_EXTRA_COL]CONCAT(CONCAT(CONCAT (emp.nome_empresa,\' (\'), emp_isin.cod_isin), \')\') AS nome_empresa, 
 				     CASE (COUNT(cot.preco_abertura) OVER (PARTITION BY emp.nome_empresa, emp_isin.cod_isin))
 				                WHEN 2 THEN 
-				                    LAST_VALUE(cot.preco_ultimo) OVER (w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) - 
-				                    FIRST_VALUE(cot.preco_abertura) OVER(w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+				                    ((LAST_VALUE(cot.preco_ultimo) OVER (w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) - 
+	                    			FIRST_VALUE(cot.preco_abertura) OVER(w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING))/
+	                    			FIRST_VALUE(cot.preco_abertura) OVER(w_part_emp_isin_order_date RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)) * 100
 				                WHEN (1 AND ? = ?) THEN -- Same initial and final dates
 				                    cot.preco_ultimo - cot.preco_abertura
 				                ELSE

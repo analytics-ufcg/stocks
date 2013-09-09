@@ -6,7 +6,9 @@ var typeahed_name_list = Array();
 */
 function main_controller(){
 
-	// TAB BUSCA EMPRESA
+	/*
+		TAB SEARCH
+	*/
 	$("#search_form").submit(function(e){
 		// Avoid refreshing the page
 		e.preventDefault(); 
@@ -23,15 +25,14 @@ function main_controller(){
     }});
 
     
-
 	/*
-		TAB TOP10
+		TAB TOP
 	*/
 	$("#top10_form").submit(function(e){
 		// Avoid refreshing the page
 		e.preventDefault(); 
 		if(isValidDate($('#start_date').val(), "inicial") && 
-		 	isValidDate($('#end_date').val(), "final"))
+			isValidDate($('#end_date').val(), "final") )
 		{
 			run_top10();
 		}
@@ -79,6 +80,7 @@ function main_controller(){
 	$("#end_date").click(function() {
 		$("end_date_wrapper").datepicker('show');
 	});
+
 }
 
 /*
