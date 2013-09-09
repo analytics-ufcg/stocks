@@ -165,20 +165,35 @@ emp.ts.list <- dlply(emp.data, "cod_isin", function(df){
 # * Each time-serie is compared with the others in pairs, considering only the time
 # both exist
 
-# DTW - Dynamic Time Warping - Distance Metric
-library(dtw)
-
-ts.dtw.distances <- ldply(emp.ts.list, function(emp.list, all.emps){
-  result <- c()
+emp.ts.distances <- ldply(emp.ts.list[1], function(emp.list, all.emps){
+  result <- NULL
+  emp.ts <- emp.list$norm_preco_medio_ts
   for(i in 1:length(all.emps)){
-    # TODO: Compare the time-series in the same time interval (exclude the initial
-    # part of the second that do not match the first)
-    dtw.align <- dtw(emp.list$norm_preco_medio_ts, all.emps[[i]]$norm_preco_medio_ts, 
-                     step.pattern=asymmetric, open.end=T,open.begin=T)
-    result <- c(result, dtw.align$normalizedDistance)
+    other.ts <- emp.ts.list[[i]]$norm_preco_medio_ts
+    
+    other.ts.intersect <- merge(other.ts, zoo(,seq(start(emp.ts), end(emp.ts), by="day")), all = F)
+    emp.ts.intersect <- window(emp.ts, start = start(other.ts.intersect), end = end(other.ts.intersect))
+
+    emp.data <- as.vector(emp.ts.intersect)
+    other.data <- as.vector(other.ts.intersect)
+    
+    ts.distance <- proxy::dist(rbind(emp.data, other.data), method="Euclidean")
+    ts.similarity <- proxy::simil(rbind(emp.data, other.data), method="cosine")
+    
+    result <- rbind(result, data.frame(nome_empresa_A = emp.list$nome_empresa,
+                                       nome_empresa_B = all.emps[[i]]$nome_empresa, 
+                                       dist_euclidean = ts.distance[1],
+                                       simil_cosine = ts.similarity[1]))
   }
   return(result)
 }, .progress = "text", emp.ts.list)
+
+
+# DTW - Dynamic Time Warping - Distance Metric
+# library(dtw)
+# dtw.align <- dtw(emp.list$norm_preco_medio_ts, all.emps[[i]]$norm_preco_medio_ts, 
+#                  step.pattern=asymmetric, open.end=T,open.begin=T, distance.only=T)
+# dtwPlotTwoWay(align)
 
 # -----------------------------------------------------------------------------
 # Plot the similarity visualizations 
