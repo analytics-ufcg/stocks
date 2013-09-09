@@ -86,24 +86,41 @@ function show_empresa_table(table_array){
 
 function show_top10_result(table_array){
 
-    var metric_explanation_map = 
-        {'Crescimento' : '', 
-        'Queda' : '', 
-        'Maior Liquidez' : '', 
-        'Menor Liquidez' : '',
-        'Oscilação' : ''};
-
-    if (table_array.nomes.length <= 0){
-        $("#central_bar_top").html("<em>Nada foi encontrado.</em>");
+   if (table_array.nomes.length <= 0){
+        $("#TOP_central_bar").html("<em>Nada foi encontrado.</em>");
         return false;
     }
+
+    var metric_explanation_map = 
+        {"Crescimento" : "O 'Crescimento' de uma ação é calculado através da diferença entre \
+                        o último preço da 'Data Final' e preço de abertura da 'Data Inicial'. \
+                        O 'Crescimento' de um grupo de ações é dado pela soma dessas diferenças \
+                        para todas as ações. Assim, as TOP ações/grupos são aqueles com maior \
+                        diferença positiva.", 
+        "Queda" : "A 'Queda' de uma ação é calculada através da diferença entre \
+                    o último preço da 'Data Final' e preço de abertura da 'Data Inicial'. \
+                    A 'Queda' de um grupo de ações é dado pela soma dessas diferenças \
+                    para todas as ações. Assim, as TOP ações/grupos são aqueles com maior \
+                    diferença negativa.", 
+        "Maior Liquidez" : "A Liquidez de uma ação/grupo é dada pela soma do volume de títulos \
+                            negociados no intervalo entre e inclusive da 'Data Inicial' e \
+                            'Data Final'. As ações/grupos com 'Maior Liquidez' são aquelas com \
+                            maior volume de títulos negociados.", 
+        "Menor Liquidez" : "A Liquidez de uma ação/grupo é dada pela soma do volume de títulos \
+                            negociados no intervalo entre e inclusive da 'Data Inicial' e \
+                            'Data Final'. As ações/grupos com 'Menor Liquidez' são aquelas com \
+                            menor volume de títulos negociados.",
+        "Oscilação" : "A 'Oscilação' de uma ação/grupo é dada pela soma das diferenças entre os \
+                        preços dia-a-dia (i.e. o preço de hoje menos o de ontem). As TOP ações/grupos \
+                        em 'Oscilação' são aquelas com maior soma."};
 
     // Create the table result as html
     grouping = $("#top10_grouping").val();
     metric = $("#top10_metric").val();
 
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
-                + "<thead><tr bgcolor='#f5f5f5'><td colspan='3' style='text-align:center;font-weight:bold'>Ranking de " + metric + " por " + grouping + "</td></tr><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
+                + "<thead><tr bgcolor='#f5f5f5'><td colspan='3' style='text-align:center;font-weight:bold'>Ranking de "
+                 + metric + " por " + grouping + "</td></tr><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
                 + grouping + "</th><th id = 'top_metrica_col' data-placement='right' rel='popover'>" 
                 + metric + "<i class='icon-info-sign'></i></th></tr><thead><tbody>";
 
