@@ -80,10 +80,7 @@ function main_controller(){
 	});
 
     $(function ()  { 
-    	$("#top_metrica_col").popover({
-    		title: 'Calculo da metrica',
-    		content: "Para o calculo foi utilizado a diferença do valor final - inicial"
-    	});  
+    	
 	});  
 	// $(".alert").alert();
 }
