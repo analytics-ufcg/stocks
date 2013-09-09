@@ -8,6 +8,11 @@ function barra(objeto){
 function isValidDate(s, saida) {
   
   var bits = s.split('/');
+  if(bits.length != 3)
+  {
+    alert("Data " + saida + " invalida");
+    return false;
+  }
   if(bits[0].length != 2 || bits[1].length != 2 || bits[2].length != 4)
   {
   	alert("Data " + saida + " invalida");

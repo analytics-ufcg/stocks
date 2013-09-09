@@ -103,9 +103,9 @@ function show_top10_result(table_array){
     metric = $("#top10_metric").val();
 
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
-                + "<thead><tr bgcolor='#f5f5f5'><td colspan='3' style='text-align:center;font-weight:bold'>Ranking de " + grouping + " por " + metric + "</td></tr><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
-                + grouping + "</th><th id = 'top_metrica_col' data-placement='right' rel='popover'>" 
-                + metric + "</th></tr><thead><tbody>";
+                + "<thead><tr bgcolor='#f5f5f5'><td colspan='3' style='text-align:center;font-weight:bold'>Ranking de " + metric + " por " + metric + "</td></tr><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
+                + grouping + "</th><th id = 'top_metrica_col' data-placement='right' >" 
+                + metric + "<i class='icon-info-sign' rel='popover'></i></th></tr><thead><tbody>";
 
     for (var i = 0; i < table_array.nomes.length; i++) {
         row = table_array[i];
