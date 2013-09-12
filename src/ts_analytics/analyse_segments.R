@@ -10,10 +10,110 @@ library(ggplot2)
 library(reshape2)
 
 # =============================================================================
+# FUNCTIONS
+# =============================================================================
+SelectLargestCotacaoPerCNPJ <- function(df){
+  largest.isin <- NA
+  largest.size <- -1
+  for (isin in df$cod_isin){
+    tmp <- subset(emp.ts.joined, cod_isin == isin, "dataPregao")
+    
+    if (!is.na(tmp[1,])){
+      diff.days <- tmp[nrow(tmp),] - tmp[1,]
+      
+      if (diff.days[[1]] > largest.size){
+        largest.size <- diff.days[[1]]
+        largest.isin <- isin
+      }
+    }
+  }
+  return(subset(emp.isin.full, cod_isin == largest.isin))
+}
+
+FillSmoothReturnTheCotacao <- function(df, days.to.smooth){
+  
+  PriceToReturn <- function(serie){
+    # Based on http://www.portfolioprobe.com/2010/10/04/a-tale-of-two-returns/
+    diff(serie)/serie[-length(serie)]
+  }
+  
+  one.isin <- df$cod_isin[1]
+  
+  # Merge the "gapped" TS with a complete TS by days
+  one.ts <- zoo(df$premed, df$dataPregao)
+  one.ts.complete <- merge.zoo(one.ts, 
+                               zoo(, seq(start(one.ts), end(one.ts), by="day")), all=TRUE)
+  
+  # Fill the created gaps
+  one.ts.complete <- na.locf(one.ts.complete)
+  
+  # Apply the Moving Average of 7 days to smooth the time-serie
+  complete.ts <- one.ts.complete
+  if (length(one.ts.complete) > days.to.smooth + 2){
+    one.ts.complete <- rollmean(one.ts.complete, days.to.smooth)
+  }
+  
+  # Price to Return 
+  return.ts <- PriceToReturn(one.ts.complete)
+  
+  return(list(segmento = df$segmento[1], 
+              nome_empresa = df$nome_empresa[1],
+              nome_pregao = df$nome_pregao[1],
+              cnpj = df$cnpj[1], 
+              cod_isin = df$cod_isin[1], 
+              preco_medio_ts = complete.ts,
+              # smoothed_preco_medio_ts = one.ts.complete,
+              return_ts = return.ts))
+  
+}
+
+CalcReturnCorrelations <- function(emp.ts.list){
+  emp.ts.distances <- NULL
+  
+  for (j in 1:length(emp.ts.list)){
+    cat("    ", emp.ts.list[[j]]$nome_pregao, "\n")
+    
+    emp.ts <- emp.ts.list[[j]]$return_ts
+    if (length(emp.ts) > 1){
+      for(i in j:length(emp.ts.list)){
+        other.ts <- emp.ts.list[[i]]$return_ts
+        
+        # The intersection can be NULL (so the distance cannot be defined = NA)
+        other.ts.intersect <- merge(other.ts, zoo(,seq(start(emp.ts), end(emp.ts), by="day")), all = F)
+        emp.ts.intersect <- window(emp.ts, start = start(other.ts.intersect), end = end(other.ts.intersect))
+        
+        # Pearson Correlation
+        if (length(other.ts.intersect) == length(emp.ts.intersect)){
+          ts.correlation <- cor(emp.ts.intersect, other.ts.intersect, method="pearson")
+        }else{
+          ts.correlation <- NA
+        }
+        
+        emp.ts.distances <- rbind(emp.ts.distances, data.frame(nome_pregao_A = emp.ts.list[[j]]$nome_pregao,
+                                                               nome_pregao_B = emp.ts.list[[i]]$nome_pregao, 
+                                                               correlation = ts.correlation))
+      }
+    }
+  }
+  return(emp.ts.distances)
+}
+
+CalcCorrelationsPerSegment <- function(seg){
+  cat("\nSegmento:", seg, "\n")
+  
+  is.segment <- sapply(emp.ts.list, function(x){
+    return(x$segmento == seg)
+  })
+  return.correlations <- CalcReturnCorrelations(emp.ts.list[is.segment])
+  return(cbind(data.frame(segmento = rep(seg, nrow(return.correlations))), return.correlations))
+}
+
+# =============================================================================
 # MAIN
 # =============================================================================
+# ATTENTION: THIS SCRIPT RAISES SOME WARNINGS, PLEASE DISCONSIDER IT.
 
-# ATTENTION: THIS SCRIPT RAISES SOME WARNINGS, PLEASE DISCONSIDER IT
+cat("============== CORRELATION ANALYSIS of COTACOES per SEGMENTO ==============\n")
 
 # -----------------------------------------------------------------------------
 # READ and CAST data
@@ -69,29 +169,40 @@ colnames(emp.isin) <- c("cnpj", "cod_isin")
 emp.isin$cod_isin <- as.character(emp.isin$cod_isin)
 
 # -----------------------------------------------------------------------------
-# Select the Empresas of the 15 biggest segmentos
-# -----------------------------------------------------------------------------
-cat("Select the Empresas of the following Segmentos:\n")
-segmento.count <- count(emp, "segmento")
-segmento.count <- segmento.count[order(segmento.count$freq, decreasing=T),]
-print(segmento.count[1:15,])
-
-emp.small <- subset(emp, segmento %in% segmento.count$segmento[1:15], 
-                    c("segmento", "nome_empresa", "nome_pregao", "cnpj"))
-
-# -----------------------------------------------------------------------------
 # INNER JOIN the tables: EMPRESA - EMPRESA_ISIN - COTACAO
 # -----------------------------------------------------------------------------
 cat("Joining the tables (INNER JOIN!): EMPRESA - EMPRESA_ISIN - COTACAO...\n")
-emp.isin.selected <- merge(emp.isin, emp.small, by="cnpj", all.y = T)
 
-selected.isins <- unique(emp.isin.selected$cod_isin)
+# First JOIN
+emp.isin.full <- merge(emp, emp.isin, by="cnpj")
+emp.isin.full <- emp.isin.full[,c("segmento", "nome_empresa", "nome_pregao", "cnpj", "cod_isin")]
 
-joined.data <- merge(emp.isin.selected, ts.data, by.x="cod_isin", by.y="codisi")
+# Second JOIN (COMPLETE DATABASE!)
+emp.ts.joined <- merge(emp.isin.full, ts.data, by.x="cod_isin", by.y="codisi")
+emp.ts.joined <- emp.ts.joined[,c("segmento", "nome_empresa", "nome_pregao", "cnpj", "cod_isin", "dataPregao", "premed")]
 
-joined.data <- joined.data[,c("segmento", "nome_empresa", "nome_pregao", "cnpj", "cod_isin", "dataPregao", "premed")]
-joined.data <- joined.data[order(joined.data$cnpj, joined.data$cod_isi, joined.data$dataPregao),]
+rm(emp, emp.isin, ts.data)
 
+# -----------------------------------------------------------------------------
+# Select the Empresas of the 15 biggest segmentos
+# -----------------------------------------------------------------------------
+cat("Select the Empresas of the following Segmentos:\n")
+
+emp.segmento <- emp.ts.joined[,c("segmento", "cnpj")]
+emp.segmento <- emp.segmento[! duplicated(emp.segmento),]
+segmento.count <- count(emp.segmento, "segmento")
+segmento.count <- segmento.count[order(segmento.count$freq, decreasing=T),]
+print(segmento.count[1:15,])
+
+# Select the joined data
+emp.isin.full <- subset(emp.isin.full, segmento %in% segmento.count$segmento[1:15])
+emp.ts.joined <- subset(emp.ts.joined, segmento %in% segmento.count$segmento[1:15])
+
+# Order the data
+emp.isin.full <- emp.isin.full[order(emp.isin.full$segmento, emp.isin.full$nome_pregao),]
+emp.ts.joined <- emp.ts.joined[order(emp.ts.joined$cnpj, emp.ts.joined$cod_isi, emp.ts.joined$dataPregao),]
+
+rm(emp.segmento)
 
 # -----------------------------------------------------------------------------
 # Select the largest time-series per Empresa
@@ -100,88 +211,23 @@ joined.data <- joined.data[order(joined.data$cnpj, joined.data$cod_isi, joined.d
 
 cat("Selecting the largest time-series per empresa...\n")
 # Select the ISINs
-emp.isin.selected <- ddply(emp.isin.selected, .(cnpj), function(df){
-  largest.isin <- NA
-  largest.size <- -1
-  for (isin in df$cod_isin){
-    tmp <- subset(joined.data, cod_isin == isin, "dataPregao")
-    
-    if (!is.na(tmp[1,])){
-      diff.days <- tmp[nrow(tmp),] - tmp[1,]
-      
-      if (diff.days[[1]] > largest.size){
-        largest.size <- diff.days[[1]]
-        largest.isin <- isin
-      }
-    }
-  }
-  return(subset(emp.isin.selected, cod_isin == largest.isin))
-})
+emp.isin.full <- ddply(emp.isin.full, .(cnpj), SelectLargestCotacaoPerCNPJ, 
+                       .progress = "text")
 
-# Select the TSs per ISIN
-emp.data <- subset(joined.data, cod_isin %in% emp.isin.selected$cod_isin)
-
-# Print the final count of empresas per segmento
-cat("Segmento Count after table joins:\n")
-tmp <- emp.data[, 1:3]
-tmp <- tmp[!duplicated(tmp),]
-tmp.count <- count(tmp, "segmento")
-tmp.count <- tmp.count[order(tmp.count$freq, decreasing = T),]
-print(tmp.count)
+# Select the TS data
+emp.ts.joined <- subset(emp.ts.joined, cod_isin %in% emp.isin.full$cod_isin)
 
 # -----------------------------------------------------------------------------
 # Fill in the gaps of the time-series in a constant manner (repeating the last 
 # non NA value)
-# And ZNormalize them: Serie = (Serie - Mean(Serie))/StandDev(Serie)
+# Smooth it with a moving average of 7 days
+# Calculate the Return
 # -----------------------------------------------------------------------------
 cat("Fill the gaps of each time-series, keeping the last value (constant interpolation)...\n")
+cat("Smooth the time-series with Moving Average of 7 days...\n")
 cat("Calculate the Return...\n")
-cat("Normalize the time-series...\n")
-
-emp.ts.list <- dlply(emp.data, "cod_isin", function(df){
-  
-  PriceToReturn <- function(serie){
-    diff(serie)/serie[-length(serie)]
-  }
-  
-  one.isin <- df$cod_isin[1]
-  
-  # Merge the "gapped" TS with a complete TS by days
-  one.ts <- zoo(df$premed, df$dataPregao)
-  one.ts.complete <- merge.zoo(one.ts, 
-                               zoo(, seq(start(one.ts), end(one.ts), by="day")), all=TRUE)
-  
-  # Fill the created gaps
-  one.ts.complete <- na.locf(one.ts.complete)
-  
-  # Apply the Moving Average of 7 days to smooth the time-serie
-  days.to.smooth <- 7
-  complete.ts <- one.ts.complete
-  if (length(one.ts.complete) > days.to.smooth + 2){
-    one.ts.complete <- rollmean(one.ts.complete, days.to.smooth)
-  }
-  
-  # Price to Return 
-  return.ts <- PriceToReturn(one.ts.complete)
-  
-  # Normalize the TS
-  mean.ts <- mean(return.ts, na.rm = T)
-  sd.ts <- sd(return.ts, na.rm = T)
-  norm.return.ts <- (return.ts - mean.ts)/sd.ts
-  
-  return(list(segmento = df$segmento[1], 
-              nome_empresa = df$nome_empresa[1],
-              nome_pregao = df$nome_pregao[1],
-              cnpj = df$cnpj[1], 
-              cod_isin = df$cod_isin[1], 
-              mean_ts = mean.ts, # Preserve the previous mean and sd of the time-series
-              sd_ts = sd.ts,
-              preco_medio_ts = complete.ts,
-#               smoothed_ts = one.ts.complete,
-#               norm_preco_medio_ts = norm.one.ts.complete,
-              norm_return_ts = norm.return.ts))
-  
-})
+days.to.smooth <- 7
+emp.ts.list <- dlply(emp.ts.joined, "cod_isin", FillSmoothReturnTheCotacao, days.to.smooth)
 
 # -----------------------------------------------------------------------------
 # Calculate the similarity metrics
@@ -192,48 +238,8 @@ cat("Calculate the Correlation of the Time-Series per Segment...\n")
 # * Each time-serie is compared with the others in pairs, considering only the time
 # both exist
 
-GetTsDistances <- function(emp.ts.list){
-  emp.ts.distances <- NULL
-  
-  for (j in 1:length(emp.ts.list)){
-    cat("    ", emp.ts.list[[j]]$nome_pregao, "\n")
-    
-    emp.ts <- emp.ts.list[[j]]$norm_return_ts
-    if (length(emp.ts) > 1){
-      for(i in j:length(emp.ts.list)){
-        other.ts <- emp.ts.list[[i]]$norm_return_ts
-        
-        # The intersection can be NULL (so the distance cannot be defined = NA)
-        other.ts.intersect <- merge(other.ts, zoo(,seq(start(emp.ts), end(emp.ts), by="day")), all = F)
-        emp.ts.intersect <- window(emp.ts, start = start(other.ts.intersect), end = end(other.ts.intersect))
-        
-        # Pearson Correlation
-        if (length(other.ts.intersect) == length(emp.ts.intersect)){
-          ts.correlation <- cor(emp.ts.intersect, other.ts.intersect, method="pearson")
-        }else{
-          ts.correlation <- NA
-        }
-        
-        emp.ts.distances <- rbind(emp.ts.distances, data.frame(nome_pregao_A = emp.ts.list[[j]]$nome_pregao,
-                                                               nome_pregao_B = emp.ts.list[[i]]$nome_pregao, 
-                                                               correlation = ts.correlation))
-      }
-    }
-  }
-  return(emp.ts.distances)
-}
-
-segments <- unique(emp.data$segmento)
-seg.dists <- adply(segments, 1, function(seg){
-  cat("\nSegmento:", seg, "\n")
-  
-  is.segment <- sapply(emp.ts.list, function(x){
-    return(x$segmento == seg)
-  })
-  distances <- GetTsDistances(emp.ts.list[is.segment])
-  return(cbind(data.frame(segmento = rep(seg, nrow(distances))), distances))
-}, .progress = "text")
-
+seg.dists <- adply(unique(emp.ts.joined$segmento), 1, CalcCorrelationsPerSegment, 
+                   .progress = "text")
 
 # -----------------------------------------------------------------------------
 # Plot the similarity visualizations 
