@@ -1,4 +1,4 @@
-# stocks - Documentação
+﻿# stocks - Documentação
 
 ## Sprint 01
 
@@ -15,3 +15,7 @@
 
 ## Sprint 03
 
+ * US 10 - Sketch do Produto.png
+ * US 11 - O que é um "solavanco"?.png
+ * US 12 e 13 - Como as empresas e acionistas estão identificados nas mídias sociais-
+ * Novo Modelo de Dados - stock_db.png

@@ -17,7 +17,7 @@
 
 		// USED BY: model_top10.php 
 	    "top_crescimento" =>
-	    	'SELECT [SELECT_NOME_GRUPO_COL] AS nome_grupo, ROUND(MAX(preco_diff), 2) AS preco_diff
+	    	'SELECT [SELECT_NOME_GRUPO_COL] AS nome_grupo, MAX(preco_diff) AS preco_diff
 			FROM (SELECT [SUB_SELECT_EXTRA_COL]CONCAT(CONCAT(CONCAT (emp.nome_empresa,\' (\'), emp_isin.cod_isin), \')\') AS nome_empresa, 
 				     CASE (COUNT(cot.preco_abertura) OVER (PARTITION BY emp.nome_empresa, emp_isin.cod_isin))
 				                WHEN 2 THEN 

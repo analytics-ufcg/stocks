@@ -13,16 +13,15 @@ library(reshape2)
 # =============================================================================
 # MAIN
 # =============================================================================
-cat("Reading data...\n")
-ts.data <- NULL
-
-cotacoes.dir <- "data/Historico_Cotacoes_CSV"
-cotacoes.csvs <- list.files(cotacoes.dir)
-
 
 # -----------------------------------------------------------------------------
 # READ and CAST data
 # -----------------------------------------------------------------------------
+cat("Reading data...\n")
+
+cotacoes.dir <- "data/Historico_Cotacoes_CSV"
+cotacoes.csvs <- list.files(cotacoes.dir)
+ts.data <- NULL
 for (csv.file in cotacoes.csvs){
   cat ("  ", csv.file, "\n")
   data <- read.csv(paste(cotacoes.dir, csv.file, sep = "/"), 
@@ -271,10 +270,10 @@ dev.off()
 
 
 # BOXPLOT of SIMILARTY METRIC between TIME-SERIES per SEGMENTO
-cat("Plotting the BOXPLOT of SIMILARTY METRIC between TIME-SERIES per SEGMENTO..\n")
+cat("Plotting the BOXPLOT of SIMILARTY/DISTANCE METRIC between TIME-SERIES per SEGMENTO..\n")
 pdf(paste(output.dir, "/boxplot_segments.pdf", sep =""), width = 15, height = 9)
 print(ggplot(seg.dists, aes(x = segmento, y = simil_cosine)) + 
- geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
+  geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
   ylab("cosine similarity") + theme(legend.position="none") +
   theme(axis.text.x = element_text(angle = 25, hjust = 1)))
 print(ggplot(seg.dists, aes(x = segmento, y = dist_euclidean)) + 
@@ -284,7 +283,7 @@ print(ggplot(seg.dists, aes(x = segmento, y = dist_euclidean)) +
 dev.off()
 
 # BOXPLOT of SIMILARTY METRIC between TIME-SERIES per SEGMENTO
-cat("Plotting the BOXPLOT of DISTANCE METRIC between TIME-SERIES per SEGMENTO..\n")
+cat("Plotting the BOXPLOT of filtered SIMILARTY/DISTANCE METRIC between TIME-SERIES per SEGMENTO..\n")
 # Remove the NAs and the 1 values
 seg.dists.filtered <- seg.dists[!is.na(seg.dists$dist_euclidean) & seg.dists$dist_euclidean != 0,]
 
@@ -299,40 +298,16 @@ print(ggplot(seg.dists.filtered, aes(x = segmento, y = dist_euclidean)) +
   theme(axis.text.x = element_text(angle = 25, hjust = 1)))
 dev.off()
 
+# BOXPLOT of SIMILARTY METRIC between TIME-SERIES per SEGMENTO
+cat("Plotting the BOXPLOT of abs(filtered) SIMILARTY/DISTANCE METRIC between TIME-SERIES per SEGMENTO..\n")
 
-# -----------------------------------------------------------------------------
-# Generate the KMeans and Hierarchical Clustering of the TSs
-# -----------------------------------------------------------------------------
-# seg.dists.no.na <- seg.dists
-# seg.dists.no.na[is.na(seg.dists.no.na)] <- 1000
-# 
-# seg.dist.matrix <- acast(seg.dists.no.na, nome_pregao_A~nome_pregao_B, value.var="dist_euclidean")
-# seg.dist.matrix[is.na(seg.dist.matrix)] <- 0
-# 
-# seg.dist.matrix.full <- seg.dist.matrix + t(seg.dist.matrix)
-# 
-# # Função: hclust
-# # hc <- hclust(seg.dist.matrix.full, method = "average")
-# 
-# # Função: kmeans (ver help)
-# km <- kmeans(seg.dist.matrix.full, centers=10)
-
-
-# -----------------------------------------------------------------------------
-# Plot the Clusters
-# -----------------------------------------------------------------------------
-
-
-
-# =============================================================================
-# EXTRA! 
-# Apenas depois que terminarmos acima (tirando todos os filtros) e tivermos 
-# analisado e escrito no documento final
-# =============================================================================
-# PLOT THE ALIGNMENT between the MOST SIMILAR time-series (excluding itself) and 
-# the MOST DISTANT ones
-# DTW - Dynamic Time Warping - Distance Metric
-# library(dtw)
-# dtw.align <- dtw(emp.ts.list$norm_preco_medio_ts, emp.ts.list[[i]]$norm_preco_medio_ts, 
-#                  step.pattern=asymmetric, open.end=T,open.begin=T, distance.only=T)
-# dtwPlotTwoWay(align)
+pdf(paste(output.dir, "/boxplot_segments_filtered_abs.pdf", sep =""), width = 15, height = 9)
+print(ggplot(seg.dists.filtered, aes(x = segmento, y = abs(simil_cosine))) + 
+        geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
+        ylab("cosine similarity") + theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 25, hjust = 1)))
+print(ggplot(seg.dists.filtered, aes(x = segmento, y = abs(dist_euclidean))) + 
+        geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
+        ylab("euclidean distance") + theme(legend.position="none")+
+        theme(axis.text.x = element_text(angle = 25, hjust = 1)))
+dev.off()
