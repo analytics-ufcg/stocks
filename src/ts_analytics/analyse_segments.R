@@ -6,13 +6,14 @@ rm(list = ls())
 library(lubridate)
 library(plyr)
 library(zoo)
-# library(dtw)
 library(ggplot2)
 library(reshape2)
 
 # =============================================================================
 # MAIN
 # =============================================================================
+
+# ATTENTION: THIS SCRIPT RAISES SOME WARNINGS, PLEASE DISCONSIDER IT
 
 # -----------------------------------------------------------------------------
 # READ and CAST data
@@ -133,10 +134,16 @@ print(tmp.count)
 # non NA value)
 # And ZNormalize them: Serie = (Serie - Mean(Serie))/StandDev(Serie)
 # -----------------------------------------------------------------------------
-cat("Fill the gaps of each time-series, keeping the last value (constant interpolation)\n")
-cat("And Normalize the time-series...\n")
+cat("Fill the gaps of each time-series, keeping the last value (constant interpolation)...\n")
+cat("Calculate the Return...\n")
+cat("Normalize the time-series...\n")
 
 emp.ts.list <- dlply(emp.data, "cod_isin", function(df){
+  
+  PriceToReturn <- function(serie){
+    diff(serie)/serie[-length(serie)]
+  }
+  
   one.isin <- df$cod_isin[1]
   
   # Merge the "gapped" TS with a complete TS by days
@@ -147,10 +154,20 @@ emp.ts.list <- dlply(emp.data, "cod_isin", function(df){
   # Fill the created gaps
   one.ts.complete <- na.locf(one.ts.complete)
   
+  # Apply the Moving Average of 7 days to smooth the time-serie
+  days.to.smooth <- 7
+  complete.ts <- one.ts.complete
+  if (length(one.ts.complete) > days.to.smooth + 2){
+    one.ts.complete <- rollmean(one.ts.complete, days.to.smooth)
+  }
+  
+  # Price to Return 
+  return.ts <- PriceToReturn(one.ts.complete)
+  
   # Normalize the TS
-  mean.ts <- mean(one.ts.complete, na.rm = T)
-  sd.ts <- sd(one.ts.complete, na.rm = T)
-  norm.one.ts.complete <- (one.ts.complete - mean.ts)/sd.ts
+  mean.ts <- mean(return.ts, na.rm = T)
+  sd.ts <- sd(return.ts, na.rm = T)
+  norm.return.ts <- (return.ts - mean.ts)/sd.ts
   
   return(list(segmento = df$segmento[1], 
               nome_empresa = df$nome_empresa[1],
@@ -159,16 +176,19 @@ emp.ts.list <- dlply(emp.data, "cod_isin", function(df){
               cod_isin = df$cod_isin[1], 
               mean_ts = mean.ts, # Preserve the previous mean and sd of the time-series
               sd_ts = sd.ts,
-#               preco_medio_ts = one.ts.complete,
-              norm_preco_medio_ts = norm.one.ts.complete))
+              preco_medio_ts = complete.ts,
+#               smoothed_ts = one.ts.complete,
+#               norm_preco_medio_ts = norm.one.ts.complete,
+              norm_return_ts = norm.return.ts))
+  
 })
 
 # -----------------------------------------------------------------------------
 # Calculate the similarity metrics
 # -----------------------------------------------------------------------------
-cat("Calculate the Distance/Similarity of the Time-Series per Segment...\n")
+cat("Calculate the Correlation of the Time-Series per Segment...\n")
 # Observations:
-# * The time-serie name is the empresa's name
+# * The time-serie name is the nome_pregao
 # * Each time-serie is compared with the others in pairs, considering only the time
 # both exist
 
@@ -178,26 +198,26 @@ GetTsDistances <- function(emp.ts.list){
   for (j in 1:length(emp.ts.list)){
     cat("    ", emp.ts.list[[j]]$nome_pregao, "\n")
     
-    emp.ts <- emp.ts.list[[j]]$norm_preco_medio_ts
-    for(i in j:length(emp.ts.list)){
-      other.ts <- emp.ts.list[[i]]$norm_preco_medio_ts
-      
-      # The intersection can be NULL (so the distance cannot be defined = NA)
-      other.ts.intersect <- merge(other.ts, zoo(,seq(start(emp.ts), end(emp.ts), by="day")), all = F)
-      emp.ts.intersect <- window(emp.ts, start = start(other.ts.intersect), end = end(other.ts.intersect))
-      
-      emp.data <- as.vector(emp.ts.intersect)
-      other.data <- as.vector(other.ts.intersect)
-      
-      ts.distance <- proxy::dist(rbind(emp.data, other.data), method="Euclidean")
-      ts.similarity <- proxy::simil(rbind(emp.data, other.data), method="cosine")
-      
-      emp.ts.distances <- rbind(emp.ts.distances, data.frame(nome_pregao_A = emp.ts.list[[j]]$nome_pregao,
-                                                             nome_pregao_B = emp.ts.list[[i]]$nome_pregao, 
-                                                             # nome_empresa_A = emp.ts.list[[j]]$nome_empresa,
-                                                             # nome_empresa_B = emp.ts.list[[i]]$nome_empresa, 
-                                                             dist_euclidean = ts.distance[1],
-                                                             simil_cosine = ts.similarity[1]))
+    emp.ts <- emp.ts.list[[j]]$norm_return_ts
+    if (length(emp.ts) > 1){
+      for(i in j:length(emp.ts.list)){
+        other.ts <- emp.ts.list[[i]]$norm_return_ts
+        
+        # The intersection can be NULL (so the distance cannot be defined = NA)
+        other.ts.intersect <- merge(other.ts, zoo(,seq(start(emp.ts), end(emp.ts), by="day")), all = F)
+        emp.ts.intersect <- window(emp.ts, start = start(other.ts.intersect), end = end(other.ts.intersect))
+        
+        # Pearson Correlation
+        if (length(other.ts.intersect) == length(emp.ts.intersect)){
+          ts.correlation <- cor(emp.ts.intersect, other.ts.intersect, method="pearson")
+        }else{
+          ts.correlation <- NA
+        }
+        
+        emp.ts.distances <- rbind(emp.ts.distances, data.frame(nome_pregao_A = emp.ts.list[[j]]$nome_pregao,
+                                                               nome_pregao_B = emp.ts.list[[i]]$nome_pregao, 
+                                                               correlation = ts.correlation))
+      }
     }
   }
   return(emp.ts.distances)
@@ -215,12 +235,6 @@ seg.dists <- adply(segments, 1, function(seg){
 }, .progress = "text")
 
 
-# seg.dists <- merge(seg.dists, segmento.count[1:15,], by = "segmento")
-# seg.dists <- seg.dists[order(seg.dists$freq, decreasing=T),]
-# seg.dists <- subset(seg.dists, select=-c(X1,freq))
-# 
-# seg.dists$segmento <- factor(seg.dists$segmento, levels=segmento.count[1:15,"segmento"])
-
 # -----------------------------------------------------------------------------
 # Plot the similarity visualizations 
 # -----------------------------------------------------------------------------
@@ -230,14 +244,14 @@ dir.create(output.dir, showWarnings=F)
 theme_set(theme_bw())
 
 # HEATMAP of SIMILARITY between the TIME-SERIES per SEGMENT
-cat("Plotting the HEATMAP of SIMILARITY between the TIME-SERIES per SEGMENT...\n")
-pdf(paste(output.dir, "/heatmap_segments_ts_similarity.pdf", sep =""), width = 20, height = 21)
+cat("Plotting the HEATMAP of the PEARSON CORRELATION between the RETURN TIME-SERIES per SEGMENT...\n")
+pdf(paste(output.dir, "/heatmap_segments_return_ts_corr.pdf", sep =""), width = 20, height = 21)
 
 d_ply(seg.dists, .(segmento), function(seg.dist){
   seg <- seg.dist$segmento[1]
   print(ggplot(seg.dist, aes(x = nome_pregao_A, y = nome_pregao_B)) + 
-          geom_tile(aes(fill = abs(simil_cosine)), color = gray) + 
-          geom_text(aes(fill = simil_cosine, label = round(simil_cosine, 2)), 
+          geom_tile(aes(fill = abs(correlation)), color = gray) + 
+          geom_text(aes(fill = correlation, label = round(correlation, 2)), 
                     colour = "grey25", size = 3) + 
           scale_fill_gradient(low = "white", high = "red") + 
           labs(title = seg) + 
@@ -249,65 +263,26 @@ d_ply(seg.dists, .(segmento), function(seg.dist){
 dev.off()
 
 
-# HEATMAP of DISTANCE between the TIME-SERIES per SEGMENT
-cat("Plotting the HEATMAP of DISTANCE between the TIME-SERIES per SEGMENT...\n")
-pdf(paste(output.dir, "/heatmap_segments_ts_distances.pdf", sep =""), width = 20, height = 21)
+# BOXPLOT of CORRELATION between SEGMENTO
+cat("Plotting the BOXPLOT of the CORRELATION between SEGMENTOs...\n")
+seg.dists.filtered <- seg.dists[!is.na(seg.dists$correlation) & 
+                 as.character(seg.dists$nome_pregao_A) != as.character(seg.dists$nome_pregao_B),]
 
-d_ply(seg.dists, .(segmento), function(seg.dist){
-  seg <- seg.dist$segmento[1]
-  print(ggplot(seg.dist, aes(x = nome_pregao_A, y = nome_pregao_B)) + 
-          geom_tile(aes(fill = dist_euclidean), color = gray) + 
-          geom_text(aes(fill = dist_euclidean, label = round(dist_euclidean, 2)), 
-                    colour = "grey25", size = 3) + 
-          scale_fill_gradient(low = "red", high = "white") + 
-          labs(title = seg) + 
-          theme(axis.ticks = element_blank(), legend.position="none",
-                axis.text.x = element_text(angle = 45, hjust = 1)))
-  
-}, .progress = "text")
-
-dev.off()
-
-
-# BOXPLOT of SIMILARTY METRIC between TIME-SERIES per SEGMENTO
-cat("Plotting the BOXPLOT of SIMILARTY/DISTANCE METRIC between TIME-SERIES per SEGMENTO..\n")
 pdf(paste(output.dir, "/boxplot_segments.pdf", sep =""), width = 15, height = 9)
-print(ggplot(seg.dists, aes(x = segmento, y = simil_cosine)) + 
-  geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
-  ylab("cosine similarity") + theme(legend.position="none") +
-  theme(axis.text.x = element_text(angle = 25, hjust = 1)))
-print(ggplot(seg.dists, aes(x = segmento, y = dist_euclidean)) + 
-  geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
-  ylab("euclidean distance") + theme(legend.position="none")+
-  theme(axis.text.x = element_text(angle = 25, hjust = 1)))
-dev.off()
 
-# BOXPLOT of SIMILARTY METRIC between TIME-SERIES per SEGMENTO
-cat("Plotting the BOXPLOT of filtered SIMILARTY/DISTANCE METRIC between TIME-SERIES per SEGMENTO..\n")
-# Remove the NAs and the 1 values
-seg.dists.filtered <- seg.dists[!is.na(seg.dists$dist_euclidean) & seg.dists$dist_euclidean != 0,]
-
-pdf(paste(output.dir, "/boxplot_segments_filtered.pdf", sep =""), width = 15, height = 9)
-print(ggplot(seg.dists.filtered, aes(x = segmento, y = simil_cosine)) + 
+print(ggplot(seg.dists, aes(x = segmento, y = correlation)) + 
   geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
-  ylab("cosine similarity") + theme(legend.position="none") +
+  ylab("pearson correlation") + theme(legend.position="none") +
   theme(axis.text.x = element_text(angle = 25, hjust = 1)))
-print(ggplot(seg.dists.filtered, aes(x = segmento, y = dist_euclidean)) + 
+
+print(ggplot(seg.dists.filtered, aes(x = segmento, y = correlation)) + 
   geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
-  ylab("euclidean distance") + theme(legend.position="none")+
+  ylab("cosine similarity (filtered)") + theme(legend.position="none") +
   theme(axis.text.x = element_text(angle = 25, hjust = 1)))
-dev.off()
 
-# BOXPLOT of SIMILARTY METRIC between TIME-SERIES per SEGMENTO
-cat("Plotting the BOXPLOT of abs(filtered) SIMILARTY/DISTANCE METRIC between TIME-SERIES per SEGMENTO..\n")
-
-pdf(paste(output.dir, "/boxplot_segments_filtered_abs.pdf", sep =""), width = 15, height = 9)
-print(ggplot(seg.dists.filtered, aes(x = segmento, y = abs(simil_cosine))) + 
+print(ggplot(seg.dists.filtered, aes(x = segmento, y = abs(correlation))) + 
         geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
-        ylab("cosine similarity") + theme(legend.position="none") +
+        ylab("abs(cosine similarity) (filtered)") + theme(legend.position="none") +
         theme(axis.text.x = element_text(angle = 25, hjust = 1)))
-print(ggplot(seg.dists.filtered, aes(x = segmento, y = abs(dist_euclidean))) + 
-        geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
-        ylab("euclidean distance") + theme(legend.position="none")+
-        theme(axis.text.x = element_text(angle = 25, hjust = 1)))
+
 dev.off()
