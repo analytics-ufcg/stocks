@@ -1,6 +1,3 @@
-
-var typeahed_name_list = Array();
-
 /*
 	MAIN CONTROLLER METHOD
 */
@@ -39,46 +36,22 @@ function main_controller(){
 		
 	});
 
-	var lowerBound = new Date(1950, 1, 1, 0, 0, 0, 0);
-	var now = new Date();
-	var upperBound = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-
-	var start_field = $("#start_date_wrapper").datepicker({
-		onRender : function(date) {
-			return date.valueOf() <= lowerBound.valueOf() || date.valueOf() > upperBound.valueOf() ? 'disabled' : '';
-		}
-		}).on('changeDate', function(ev) {
-		if ( ev.date.valueOf() > end_field.date.valueOf() ){
-			var newDate = new Date(ev.date);
-			newDate.setDate(newDate.getDate());
-			end_field.setValue(newDate);
-		}
-		//barra(ev);
-		
-	}).data('datepicker');
-
 	$("#start_date_wrapper").datepicker('setValue', new Date(2010, 0, 1, 0, 0, 0, 0));
 	$("#start_date").click(function() {
 		$("start_date_wrapper").datepicker('show');
 	});
 
-
-
-	var end_field = $("#end_date_wrapper").datepicker({
-		onRender : function(date) {
-			return date.valueOf() < start_field.date.valueOf() || date.valueOf() > upperBound.valueOf() ? 'disabled' : '';
-		}
-	}).on('changeDate', function(ev) {
-		if ( ev.date.valueOf() < start_field.date.valueOf() ){
-			var newDate = new Date(ev.date);
-			newDate.setDate(newDate.getDate());
-			start_field.setValue(newDate);
-		}
-	}).data('datepicker');
-
 	$("#end_date_wrapper").datepicker('setValue', new Date(2010, 0, 10, 0, 0, 0, 0));
 	$("#end_date").click(function() {
 		$("end_date_wrapper").datepicker('show');
+	});
+
+	$("#start_date").keypress(function(){
+		add_barra_date(this);
+	});
+
+	$("#end_date").keypress(function(){
+		add_barra_date(this);
 	});
 
 }

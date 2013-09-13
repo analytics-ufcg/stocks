@@ -249,32 +249,14 @@ dir.create(output.dir, showWarnings=F)
 
 theme_set(theme_bw())
 
-# HEATMAP of SIMILARITY between the TIME-SERIES per SEGMENT
-cat("Plotting the HEATMAP of the PEARSON CORRELATION between the RETURN TIME-SERIES per SEGMENT...\n")
-pdf(paste(output.dir, "/heatmap_segments_return_ts_corr.pdf", sep =""), width = 20, height = 21)
-
-d_ply(seg.dists, .(segmento), function(seg.dist){
-  seg <- seg.dist$segmento[1]
-  print(ggplot(seg.dist, aes(x = nome_pregao_A, y = nome_pregao_B)) + 
-          geom_tile(aes(fill = abs(correlation)), color = gray) + 
-          geom_text(aes(fill = correlation, label = round(correlation, 2)), 
-                    colour = "grey25", size = 3) + 
-          scale_fill_gradient(low = "white", high = "red") + 
-          labs(title = seg) + 
-          theme(axis.ticks = element_blank(), legend.position="none",
-                axis.text.x = element_text(angle = 45, hjust = 1)))
-  
-}, .progress = "text")
-
-dev.off()
-
-
-# BOXPLOT of CORRELATION between SEGMENTO
+# BOXPLOT of CORRELATION between SEGMENTOs
 cat("Plotting the BOXPLOT of the CORRELATION between SEGMENTOs...\n")
 seg.dists.filtered <- seg.dists[!is.na(seg.dists$correlation) & 
                  as.character(seg.dists$nome_pregao_A) != as.character(seg.dists$nome_pregao_B),]
 
-pdf(paste(output.dir, "/boxplot_segments.pdf", sep =""), width = 15, height = 9)
+pdf(paste(output.dir, 
+          "/US 16 - Figura 1 - Boxplot da Correlação entre Pares de Cotações (Retorno) por Segmento.pdf", sep =""), 
+    width = 15, height = 9)
 
 print(ggplot(seg.dists, aes(x = segmento, y = correlation)) + 
   geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
@@ -290,5 +272,26 @@ print(ggplot(seg.dists.filtered, aes(x = segmento, y = abs(correlation))) +
         geom_boxplot() + geom_jitter(aes(col = segmento), alpha = .4) + 
         ylab("abs(cosine similarity) (filtered)") + theme(legend.position="none") +
         theme(axis.text.x = element_text(angle = 25, hjust = 1)))
+
+dev.off()
+
+# HEATMAP of SIMILARITY between the TIME-SERIES per SEGMENT
+cat("Plotting the HEATMAP of the PEARSON CORRELATION between the RETURN TIME-SERIES per SEGMENT...\n")
+pdf(paste(output.dir, 
+          "/US 16 - Figura 2 - Heatmap da Correlação entre Cotações (Retorno) por Segmento.pdf", sep =""), 
+    width = 20, height = 21)
+
+d_ply(seg.dists, .(segmento), function(seg.dist){
+  seg <- seg.dist$segmento[1]
+  print(ggplot(seg.dist, aes(x = nome_pregao_A, y = nome_pregao_B)) + 
+          geom_tile(aes(fill = abs(correlation)), color = gray) + 
+          geom_text(aes(fill = correlation, label = round(correlation, 2)), 
+                    colour = "grey25", size = 3) + 
+          scale_fill_gradient(low = "white", high = "red") + 
+          labs(title = seg) + 
+          theme(axis.ticks = element_blank(), legend.position="none",
+                axis.text.x = element_text(angle = 45, hjust = 1)))
+  
+}, .progress = "text")
 
 dev.off()
