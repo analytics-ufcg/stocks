@@ -15,7 +15,7 @@ library(reshape2)
 SelectLargestCotacaoPerCNPJ <- function(df){
   largest.isin <- NA
   largest.size <- -1
-  for (isin in df$cod_isin){
+  for (isin in unique(df$cod_isin)){
     tmp <- subset(emp.ts.joined, cod_isin == isin, "dataPregao")
     
     if (!is.na(tmp[1,])){
