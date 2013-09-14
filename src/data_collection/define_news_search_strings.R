@@ -36,6 +36,11 @@ SelectStartEndDatePerIsin <- function(df){
 }
 
 
+SelectStartEndDateFromEmp <- function(df){
+  return(data.frame(query_start_date = min(df$query_start_date), 
+                    query_end_date = max(df$query_end_date)))
+}
+
 # =============================================================================
 # MAIN
 # =============================================================================
@@ -50,7 +55,7 @@ cat("Reading data...\n")
 cotacoes.dir <- "data/Historico_Cotacoes_CSV"
 cotacoes.csvs <- list.files(cotacoes.dir)
 ts.data <- NULL
-for (csv.file in cotacoes.csvs[-c(1:18)]){
+for (csv.file in cotacoes.csvs){
   cat ("  ", csv.file, "\n")
   data <- read.csv(paste(cotacoes.dir, csv.file, sep = "/"), 
                    # Define the column names
@@ -116,67 +121,65 @@ rm(emp, emp.isin, ts.data)
 # Select the START and END DATE
 # -----------------------------------------------------------------------------
 
+# EMPRESA
 cat("QUERY DATA: Empresa\n")
 cat("  Selecting the Start and End Date of the queries per empresa...\n")
-start.end.all <- ddply(emp.ts.joined, .(cnpj), SelectStartEndDatePerIsin, .progress = "text")
-start.end.emp <- start.end.all[order(start.end.all$nome_empresa, start.end.all$query_start_date),]
+start.end.emp <- ddply(emp.ts.joined, .(cnpj), SelectStartEndDatePerIsin, .progress = "text")
+start.end.emp <- start.end.emp[order(start.end.emp$nome_empresa, start.end.emp$query_start_date),]
 
 cat(" Defining the query_string column...\n")
 start.end.emp$query_string <- gsub(" e ", " ", 
                                    gsub(" ltd.| s.a.| s/a|\\.|,", "", 
                                         tolower(start.end.emp$nome_empresa)))
 
-start.end.emp <- start.end.emp[,c("query_start_date", "query_end_date", "query_string",
+start.end.emp <- start.end.emp[,c("query_string", "query_start_date", "query_end_date",
                                     "nome_empresa", "nome_pregao", "setor", "sub_setor", "segmento")]
 
-
+# SETOR
 cat("QUERY DATA: Setor\n")
 cat("  Selecting the Start and End Date of the queries per setor...\n")
-start.end.all <- ddply(emp.ts.joined, .(setor), SelectStartEndDatePerIsin, .progress = "text")
-start.end.setor <- start.end.all[order(start.end.all$nome_empresa, start.end.all$query_start_date),]
+group.col <- "setor"
+start.end.setor <- ddply(start.end.emp, group.col, SelectStartEndDateFromEmp, .progress = "text")
 
 cat(" Defining the query_string column...\n")
 start.end.setor$query_string <- gsub(" e ", " ", 
                                      gsub(" ltd.| s.a.| s/a|\\.|,", "", 
                                           tolower(start.end.setor$setor)))
 
+start.end.setor <- start.end.setor[,c("query_string", "query_start_date", "query_end_date", group.col)]
 
-start.end.setor <- start.end.setor[,c("query_start_date", "query_end_date", "query_string", "setor")]
-
-
-
+# SUB-SETOR
 cat("QUERY DATA: Sub-Setor\n")
 cat("  Selecting the Start and End Date of the queries per sub-setor...\n")
-start.end.all <- ddply(emp.ts.joined, .(sub_setor), SelectStartEndDatePerIsin, .progress = "text")
-start.end.subsetor <- start.end.all[order(start.end.all$nome_empresa, start.end.all$query_start_date),]
+group.col <- "sub_setor"
+start.end.subsetor <- ddply(start.end.emp, group.col, SelectStartEndDateFromEmp, .progress = "text")
 
 cat(" Defining the query_string column...\n")
 start.end.subsetor$query_string <- gsub(" e ", " ", 
                                         gsub(" ltd.| s.a.| s/a|\\.|,", "", 
                                              tolower(start.end.subsetor$sub_setor)))
 
-start.end.subsetor <- start.end.subsetor[,c("query_start_date", "query_end_date", "query_string", "sub_setor")]
+start.end.subsetor <- start.end.subsetor[,c("query_string", "query_start_date", "query_end_date", group.col)]
 
-
-
+# SEGMENTO
 cat("QUERY DATA: Segmento\n")
 cat("  Selecting the Start and End Date of the queries per segmento...\n")
-start.end.all <- ddply(emp.ts.joined, .(segmento), SelectStartEndDatePerIsin, .progress = "text")
-start.end.segmento <- start.end.all[order(start.end.all$nome_empresa, start.end.all$query_start_date),]
+group.col <- "segmento"
+start.end.segmento <- ddply(start.end.emp, group.col, SelectStartEndDateFromEmp, .progress = "text")
 
 cat(" Defining the query_string column...\n")
 start.end.segmento$query_string <- gsub(" e ", " ", 
                                         gsub(" ltd.| s.a.| s/a|\\.|,", "", 
                                              tolower(start.end.segmento$segmento)))
 
-start.end.segmento <- start.end.segmento[,c("query_start_date", "query_end_date", "query_string", "segmento")]
+start.end.segmento <- start.end.segmento[,c("query_string", "query_start_date", "query_end_date", group.col)]
 
 # -----------------------------------------------------------------------------
 # Persisting Query data
 # -----------------------------------------------------------------------------
 cat("Persisting all Query data...\n")
 
-news.dir <- "data/news_query"
+news.dir <- "data/news"
 dir.create(news.dir, showWarnings=F)
 
 write.csv(start.end.emp, paste(news.dir, "/NewsQueryDataPerEmpresa.csv", sep = ""), row.names = F)
