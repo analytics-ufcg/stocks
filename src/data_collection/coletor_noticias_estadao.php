@@ -31,28 +31,27 @@ $search_query = 'petrobras';
 # -----------------------------------------------------------------------------
 
 # Create the empresa links file
-$links_emp_csv_file = fopen("$estadao_dir/links_" . str_replace(' ', '_', $nome_empresa) . ".csv", "w");
+$links_emp_csv_filename = "$estadao_dir/links_" . str_replace(' ', '_', $nome_empresa) . ".csv";
+$links_emp_csv_file = fopen($links_emp_csv_filename, "w");
 
-# CSV Header: Fonte, Caderno, Link, Data, Titulo
-$links_array = array('Estadao', 'NA', 'NA', 'NA', 'NA', 'NA');
-
+# CSV Header: Fonte, Caderno, Data, Titulo, Link
+$links_array = array('Estadao', 'NA', 'NA', 'NA', 'NA');
 
 $emp_search_url = str_replace(" ", "%20", "$search_url$search_query");
 
-$html_content = file_get_contents($emp_search_url);
+# TODO: Change this!!!!!!!!!!!!!!
+// $html_content = file_get_contents($emp_search_url);
+$html_content = file_get_contents('./file.txt');
 
-print_r($html_content);
-
-# TODO
+# TODO: Get Caderno!
 
 # SELECT THE DESIRED PART OF THE PAGE
-// FROM: <div class="topoPagBusca">
-// TO: <div class="reset">
+$html_content = read_text_between($html_content, '<div class="topoPagBusca">', '<div class="c3">');
 
 # GET THE NUMBER OF PAGES RETURNED
+$number_links = read_text_between($html_content, 'encontrados <em>', '</em> registros para');
 
-// preg_match("Foram encontrados <em>8983</em> registros para", $html_content);
-
+echo("There are $number_links links.\n");
 
 # GET ALL: NEWS_TITLE, DATE AND LINK
 // preg_match_all(pattern, subject, matches)
@@ -61,12 +60,25 @@ print_r($html_content);
 // <h2 class="listaNoticias_titulo" title="Petrobras aprova venda na Colômbia por US$ 380 mi">Petrobras aprova venda na Colômbia por US$ 380 mi</h2></a>
 // <a href="http://economia.estadao.com.br/noticias/negocios-geral,petrobras-aprova-venda-na-colombia-por-us-380-mi,164711,0.htm" class="listaNoticias_chamada">
 
+$all_links_data = match_all_between($html_content, '<p class="listaNoticias_data">', 'class="listaNoticias_chamada">');
+$all_links_data = $all_links_data[0]; # Select the complete match (with leading and trailing strings)
+
+for ($i = 0; $i < count($all_links_data); $i++){
+	$date = read_text_between($all_links_data[$i], '<p class="listaNoticias_data">', '</p>');
+	$link = read_text_between($all_links_data[$i], '<a href="', '">');
+	$title = read_text_between($all_links_data[$i], 'class="listaNoticias_titulo" title="', '">');
+
+	$links_array[2] = $date;
+	$links_array[3] = $title;
+	$links_array[4] = $link;
+	
+	# STORE THEM IN THE links_[empresa] CSV FILE
+	fputcsv($links_emp_csv_file, $links_array, ',', '"');
+}
+
 # CHECK IF THERE IS MORE LINKS TO RETRIEVE
 
-# STORE THEM IN THE links_[empresa] CSV FILE
-fputcsv($links_emp_csv_file, $links_array, ',', '"');
-
-
+# CLOSE THE LINKS CSV FILE
 fclose($links_emp_csv_file);
 
 # -----------------------------------------------------------------------------
@@ -88,4 +100,22 @@ fputcsv($text_emp_csv_file, $text_array, ',', '"');
 
 fclose($text_emp_csv_file);
 
-?>
+function read_text_between($text, $start_tag, $end_tag){
+	$starts_at = strpos($text, $start_tag) + strlen($start_tag);
+	$ends_at = strpos($text, $end_tag, $starts_at);
+	return substr($text, $starts_at, $ends_at - $starts_at);
+}
+
+function match_all_between($text, $start_tag, $end_tag){
+	$delimiter = '#';
+	$regex = $delimiter . preg_quote($start_tag, $delimiter) 
+	                    . '(.*?)' 
+	                    . preg_quote($end_tag, $delimiter) 
+	                    . $delimiter 
+	                    . 's';
+	preg_match_all($regex, $text, $result_array);
+	return $result_array;
+}
+
+
+// ?>
