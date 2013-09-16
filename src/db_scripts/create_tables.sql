@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS empresa (
     PRIMARY KEY           (cnpj)
 );
 
--- =========== TABELA com os ISINs das EMPRESA =========== 
+-- =========== TABELA com os ISINs das EMPRESAs =========== 
 /*
     Uma empresa pode ter 1 ou mais ISINs
     Nessa tabela o ISIN eh a chave primaria pois nao podem existir dois ISINs 
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS empresa_isin (
     FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
 );
 
-
+-- =========== TABELA com os CONTATOs das EMPRESAs =========== 
 CREATE TABLE IF NOT EXISTS contato_investidor (
     id_contato            AUTO_INCREMENT,
     nome_contato          CHAR(50) NOT NULL,
@@ -56,6 +56,19 @@ CREATE TABLE IF NOT EXISTS contato_investidor (
     facebook_contato      CHAR(80), 
     cnpj                  CHAR(14) NOT NULL,
     PRIMARY KEY           (id_contato),
+    FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
+);
+
+-- =========== TABELA com os LINKS das NOTICIAS das EMPRESAs =========== 
+CREATE TABLE IF NOT EXISTS link_noticias_empresa (
+    id_link               AUTO_INCREMENT,
+    fonte                 CHAR(30),
+    sub_fonte             CHAR(30),
+    cnpj                  CHAR(14) NOT NULL,
+    data_noticia          TIMESTAMP,
+    titulo                CHAR(150),
+    link                  CHAR(300),
+    PRIMARY KEY           (id_link),
     FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
 );
 
