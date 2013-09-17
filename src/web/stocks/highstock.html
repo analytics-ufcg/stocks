@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highstock Example</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript">
+$(function() {
+	var nomeEmpresa = "OGX";
+	$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) {
+		// Create the chart
+		$('#container').highcharts('StockChart', {
+			
+
+			rangeSelector : {
+				selected : 1
+			},
+
+			title : {
+				text : nomeEmpresa
+			},
+			
+			series : [{
+				name : nomeEmpresa,
+				data : data, 
+				//[
+					/* Sep 2006 */
+				//	[1158278400000,74.10],
+				//	[1158537600000,73.89],
+				//	[1158624000000,73.77],
+				//	[1158710400000,75.26]],
+				tooltip: {
+					valueDecimals: 2
+				}
+			}]
+		});
+	});
+
+});
+
+		</script>
+	</head>
+	<body>
+<script src="js/highstock.js"></script>
+		<script src="js/exporting.js"></script>
+
+<div id="container" style="height: 500px; min-width: 500px"></div>
+	</body>
+</html>

@@ -1,4 +1,9 @@
+function newPopup(url) {
+		popupWindow = window.open(
+		    url,'popUpWindow','height=800,width=1200,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no');
+    }
 function show_empresa_table(table_array){
+    
 
     function is_empty(value){
         return (value == "--");
@@ -21,7 +26,7 @@ function show_empresa_table(table_array){
             "<tr><td rowspan='6'><img src=" + row['icon_filename'] + "></td>" 
             // Dados gerais | Contatos | Classificação
             // Row 1
-            + "<td>Empresa: <strong>" + row['nome_empresa'] + "</strong></td>";
+            + "<td>Empresa: <strong><a href='JavaScript:newPopup(\"highstock.html\");'>" + row['nome_empresa'] + "</a></strong></td>";
 
         if (! is_empty(row['site'])){
             table += "<td>Site: <a href=" + row['site'] + ">" + row['site'] + "</a>";
