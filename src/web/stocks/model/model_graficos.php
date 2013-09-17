@@ -2,18 +2,11 @@
 
     include 'global_model.php';
 
-    # Argument casting...
-    $column = $_GET['search_type'];
-
-    if($column == 'Sub-Setor'){
-       $column = 'sub_setor';
-    }
-
-    $column = strtolower($column);
+   
     // $column = "setor";
 
     # Prepare the query
-   	$query = "select preco_medio, data_pregao from Cotacao where cod_isin = 'BRPETRACNOR9'";
+   	$query = "select preco_medio, data_pregao from Cotacao where cod_isin = 'BRPETRACNOR9' and COD_BDI = '02'";
     
     # Turn on error reporting
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
@@ -25,18 +18,20 @@
     $resultset = odbc_prepare($conn, $query);
    
     # Execute the query
-    $success = odbc_execute($resultset, array($column));
+    $success = odbc_execute($resultset, array());
 
     # Fetch all rows
     $name_list = array();
 
+    $data = array();
+    $valores = array();
     while ($row = odbc_fetch_array($resultset)) {
-        $row[$column] = trim($row[$column]);
-        array_push($name_list, $row[$column]);
+        array_push($data, $row['data_pregao']);
+        array_push($valores, $row['preco_medio']);
     }
 
 	# Close the connection
 	odbc_close($conn);
 
-    echo json_encode(array("name_list" => $name_list));
+    echo json_encode(array("data" => $data, "valores" => $valores));
 ?>

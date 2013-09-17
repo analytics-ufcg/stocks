@@ -6,36 +6,61 @@
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 		<script type="text/javascript">
+
+
+
+var dataG;
 $(function() {
 	var nomeEmpresa = "OGX";
-	$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) {
-		// Create the chart
-		$('#container').highcharts('StockChart', {
-			
+	
+	$.ajax({
+		type: 'GET',
+		dataType: 'json',
+		url: 'model/model_graficos.php',
+		async: true,
+		success: function(response) {
+			//$("#go_search").button('reset');
+			  console.log(response);
+			//dataG = response;
 
-			rangeSelector : {
-				selected : 1
-			},
+			// Create the chart
+			$('#container').highcharts('StockChart', {
+				
+				
+				rangeSelector : {
+					selected : 1
+				},
 
-			title : {
-				text : nomeEmpresa
-			},
-			
-			series : [{
-				name : nomeEmpresa,
-				data : data, 
-				//[
-					/* Sep 2006 */
-				//	[1158278400000,74.10],
-				//	[1158537600000,73.89],
-				//	[1158624000000,73.77],
-				//	[1158710400000,75.26]],
-				tooltip: {
-					valueDecimals: 2
-				}
-			}]
-		});
+				title : {
+					text : nomeEmpresa
+				},
+				
+				series : [{
+					name : nomeEmpresa,
+					data : [
+						/* Sep 2006 */
+						[1158278400000,74.10],
+						[1158537600000,73.89],
+						[1158624000000,73.77],
+						[1158710400000,75.26]],
+					//data : response,//ajeitar o response para ficar igual acima
+					//[
+						/* Sep 2006 */
+					//	[1158278400000,74.10],
+					//	[1158537600000,73.89],
+					//	[1158624000000,73.77],
+					//	[1158710400000,75.26]],
+					tooltip: {
+						valueDecimals: 2
+					}
+				}]
+			});
+		}
+		
 	});
+	
+
+	
 
 });
 
