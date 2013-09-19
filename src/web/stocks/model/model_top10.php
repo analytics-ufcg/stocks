@@ -105,7 +105,7 @@
         $counter = 0;
         while (($row = odbc_fetch_array($resultset)) && ($counter < $top)) {
             array_push($nomes, $row['nome_grupo']);
-            array_push($valores, $row['preco_diff']);
+            array_push($valores, round($row['preco_diff'], 2));
             $counter++;
         }
         return array($nomes, $valores);

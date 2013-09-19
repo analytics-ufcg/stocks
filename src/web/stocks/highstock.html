@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highstock Example</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript">
+
+
+
+var dataG;
+$(function() {
+	var nomeEmpresa = "OGX";
+	
+	$.ajax({
+		type: 'GET',
+		dataType: 'json',
+		url: 'model/model_graficos.php',
+		async: true,
+		success: function(response) {
+			//$("#go_search").button('reset');
+			  console.log(response);
+			//dataG = response;
+
+			// Create the chart
+			$('#container').highcharts('StockChart', {
+				
+				
+				rangeSelector : {
+					selected : 1
+				},
+
+				title : {
+					text : nomeEmpresa
+				},
+				
+				series : [{
+					name : nomeEmpresa,
+					data : response,
+					//data : response,//ajeitar o response para ficar igual acima
+					//[
+						/* Sep 2006 */
+					//	[1158278400000,74.10],
+					//	[1158537600000,73.89],
+					//	[1158624000000,73.77],
+					//	[1158710400000,75.26]],
+					tooltip: {
+						valueDecimals: 2
+					}
+				}]
+			});
+		}
+		
+	});
+	
+
+	
+
+});
+
+		</script>
+	</head>
+	<body>
+<script src="js/highstock.js"></script>
+		<script src="js/exporting.js"></script>
+
+<div id="container" style="height: 500px; min-width: 500px"></div>
+	</body>
+</html>

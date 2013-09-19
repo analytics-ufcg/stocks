@@ -1,4 +1,9 @@
+function newPopup(url) {
+		popupWindow = window.open(
+		    url,'popUpWindow','height=800,width=1200,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no');
+    }
 function show_empresa_table(table_array){
+    
 
     function is_empty(value){
         return (value == "--");
@@ -21,7 +26,7 @@ function show_empresa_table(table_array){
             "<tr><td rowspan='6'><img src=" + row['icon_filename'] + "></td>" 
             // Dados gerais | Contatos | Classificação
             // Row 1
-            + "<td>Empresa: <strong>" + row['nome_empresa'] + "</strong></td>";
+            + "<td>Empresa: <strong><a href='JavaScript:newPopup(\"highstock.html\");'>" + row['nome_empresa'] + "</a></strong></td>";
 
         if (! is_empty(row['site'])){
             table += "<td>Site: <a href=" + row['site'] + ">" + row['site'] + "</a>";
@@ -94,12 +99,12 @@ function show_top10_result(table_array){
     var metric_explanation_map = 
         {"Crescimento" : "O 'Crescimento' de uma ação é calculado através da diferença entre \
                         o último preço da 'Data Final' e preço de abertura da 'Data Inicial'. \
-                        O 'Crescimento' de um grupo de ações é dado pela soma dessas diferenças \
+                        O 'Crescimento' de um grupo de ações é dado pela média dessas diferenças \
                         para todas as ações. Assim, as TOP ações/grupos são aqueles com maior \
                         diferença positiva.", 
         "Queda" : "A 'Queda' de uma ação é calculada através da diferença entre \
                     o último preço da 'Data Final' e preço de abertura da 'Data Inicial'. \
-                    A 'Queda' de um grupo de ações é dado pela soma dessas diferenças \
+                    A 'Queda' de um grupo de ações é dado pela média dessas diferenças \
                     para todas as ações. Assim, as TOP ações/grupos são aqueles com maior \
                     diferença negativa.", 
         "Maior Liquidez" : "A Liquidez de uma ação/grupo é dada pela soma do volume de títulos \
@@ -120,8 +125,8 @@ function show_top10_result(table_array){
 
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
                 + "<thead><tr bgcolor='#f5f5f5'><td colspan='3' style='text-align:center;font-weight:bold'>Ranking de "
-                 + metric + " por " + grouping + "</td></tr><tr bgcolor='#f5f5f5'><th>Ranking</th><th align='center'>" 
-                + grouping + "</th><th id = 'top_metrica_col' data-placement='right' rel='popover'>" 
+                 + metric + " por " + grouping + "</td></tr><tr bgcolor='#f5f5f5'><th style='text-align:center'>Ranking</th><th style='text-align:center'>" 
+                + grouping + "</th><th style='text-align:center' id='top_metrica_col' data-placement='top' rel='popover'>" 
                 + metric + "<i class='icon-info-sign'></i></th></tr><thead><tbody>";
 
     for (var i = 0; i < table_array.nomes.length; i++) {
@@ -131,7 +136,7 @@ function show_top10_result(table_array){
         pos_ranking = i + 1;
         table += 
             // Row 1
-             "<tr><td>"+ pos_ranking + "</strong></td>";
+             "<tr><td style='text-align:center'>"+ pos_ranking + "</strong></td>";
         table += "<td>" + nome;
         table += "<td>" + valor;
     };

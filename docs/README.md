@@ -19,3 +19,10 @@
  * US 11 - O que é um "solavanco"?.png
  * US 12 e 13 - Como as empresas e acionistas estão identificados nas mídias sociais-
  * Novo Modelo de Dados - stock_db.png
+
+## Sprint 04
+
+* Novo Modelo de Dados - Stocks_DB.png
+* US 16 - Figura 1 - Boxplot da Correlação entre Pares de Cotações (Retorno) por Segmento.pdf
+* US 16 - Figura 2 - Heatmap da Correlação entre Cotações (Retorno) por Segmento.pdf
+* US 16 - Empresas de um mesmo segmento oscilam de maneira semelhante dado um período de tempo?

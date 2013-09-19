@@ -57,16 +57,16 @@ for($i = 1;$i < count($array_emp);$i++){
  	//escrita das informacoes no csv.
 	fputcsv($file, $saida, ',', '"');
 	
-	}
+}
 	//fecha arquivo de saida.
- 	fclose($file);
- 	
+fclose($file);
+
  	/*
  	 * Metodo retorna pagina html de uma empresa.
  	 * Argumento: campo com informacao da empresa na pagina html da lista de empresas.
  	 */
  	function getHTMLPorEmpresa($empresa){
- 	
+
  		$url = "http://www.bmfbovespa.com.br/cias-listadas/empresas-listadas/";
  		$array_empresa = preg_split("/href=/i",$empresa);
  		$indice_um = $array_empresa[1];
@@ -82,7 +82,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html principal da empresa.
  	 */
  	function getHTMLcampoInformacoes($htmlEmpresa){
- 	
+
  		$url2 = "http://www.bmfbovespa.com.br/";
  		$array_body = preg_split("/<body/i", $htmlEmpresa);
  		$array_frame = preg_split("/<iframe/i",$array_body[1]);
@@ -98,7 +98,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: campo com informacao da empresa na pagina html da lista de empresas.
  	 */
  	function getNomeEmpresa($empresa){
- 	
+
  		$array_empresa = preg_split("/href=/i",$empresa);
  		$indice_um = $array_empresa[1];
  		$array_indice_um = preg_split("/>/i",$indice_um);
@@ -131,20 +131,20 @@ for($i = 1;$i < count($array_emp);$i++){
  			for($j=1;$j < count($array_codigos_neg2) - 1;$j++){
  				$codigo_neg2 = $codigo_neg2 . substr(preg_split("/>/",$array_codigos_neg2[$j])[1],0,-3).",";
  			}
- 	
+
  			$codigo_neg = preg_split("/</",$array_codigos_neg[1]);
- 	
+
  			$codigo_neg = $codigo_neg[0];
  			$codigo_neg = substr($codigo_neg,8);
  			$codigoTemp = $codigo_neg;
  			$codigo_neg_saida = $codigo_neg;
- 	
+
  			if(count(preg_split("/Nenhum ativo/",$codigoTemp)) == 2){
  				$codigo_neg_saida = $codigo_neg;
  			}else{
  				$codigo_neg_saida = substr($codigo_neg2,0,-1);
  			}
- 	
+
  		}else{
  			$codigo_neg_saida = "NA";
  		}
@@ -160,7 +160,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getCodigoISIN($paginaHTML){
- 	
+
  		$codigo_isin = preg_split("/C&oacute;digos ISIN:/",$paginaHTML);
  		if(isset($codigo_isin[1])){
  			$codigo_isin = preg_split("/<td class=/",$codigo_isin[1]);
@@ -174,7 +174,7 @@ for($i = 1;$i < count($array_emp);$i++){
  		if($codigo_isin == ""){
  			$codigo_isin = "NA";
  		}
- 	
+
  		return $codigo_isin;
  	}
  	
@@ -183,7 +183,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getCodigoCVM($paginaHTML){
- 	
+
  		$codigo_cvm = preg_split("/C&oacute;digos CVM:/",$paginaHTML);
  		if(isset($codigo_cvm[1])){
  			$codigo_cvm = preg_split("/<td class=/",$codigo_cvm[1]);
@@ -193,12 +193,12 @@ for($i = 1;$i < count($array_emp);$i++){
  		}else{
  			$codigo_cvm = "NA";
  		}
- 	
+
  		$codigo_cvm = html_entity_decode(trim($codigo_cvm), ENT_COMPAT, "UTF-8");
  		if($codigo_cvm == ""){
  			$codigo_cvm = "NA";
  		}
- 	
+
  		return $codigo_cvm;
  	}
  	
@@ -207,7 +207,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getCNPJ($paginaHTML){
- 	
+
  		$cnpj = preg_split("/CNPJ:/", $paginaHTML);
  		if(isset($cnpj[1])){
  			$cnpj = preg_split("/<td class=/", $cnpj[1]);
@@ -224,7 +224,7 @@ for($i = 1;$i < count($array_emp);$i++){
  		if($cnpj == ""){
  			$cnpj = "NA";
  		}
- 	
+
  		return $cnpj;
  	}
  	
@@ -233,7 +233,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getAtividadePrincipal($paginaHTML){
- 	
+
  		$atividade_princ = preg_split("/Atividade Principal:/", $paginaHTML);
  		if(isset($atividade_princ[1])){
  			$atividade_princ = preg_split("/<td class=/",$atividade_princ[1]);
@@ -256,19 +256,19 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getClassificacaoSetorial($paginaHTML){
- 	
+
  		$classif_setorial = preg_split("/Classifica&ccedil;&atilde;o Setorial:/", $paginaHTML);
  		if(isset($classif_setorial[1])){
  			$classif_setorial = preg_split("/<td class=/",$classif_setorial[1]);
  			$classif_setorial = preg_split("/</",$classif_setorial[1]);
  			$classif_setorial = $classif_setorial[0];
  			$classif_setorial = substr($classif_setorial,8);
- 				
+
  		}else{
  			$classif_setorial = "NA";
- 				
+
  		}
- 	
+
  		return $classif_setorial;
  	}
  	
@@ -277,7 +277,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: classificacao setorial da empresa.
  	 */
  	function getSetor($classifSetorial){
- 	
+
  		if($classifSetorial != "NA"){
  			$arrayClassifSetorial = preg_split("'/'",$classifSetorial);
  			$setor = $arrayClassifSetorial[0];
@@ -285,7 +285,7 @@ for($i = 1;$i < count($array_emp);$i++){
  		}else{
  			$setor = "NA";
  		}
- 	
+
  		return $setor;
  	}
  	
@@ -294,7 +294,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Argumento: classificacao setorial da empresa.
  	*/
  	function getSubSetor($classifSetorial){
- 	
+
  		if($classifSetorial != "NA"){
  			$arrayClassifSetorial = preg_split("'/'",$classifSetorial);
  			$subsetor = $arrayClassifSetorial[1];
@@ -302,7 +302,7 @@ for($i = 1;$i < count($array_emp);$i++){
  		}else{
  			$subsetor = "NA";
  		}
- 	
+
  		return $subsetor;
  	}
  	
@@ -311,7 +311,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Argumento: classificacao setorial da empresa.
  	*/
  	function getSegmento($classifSetorial){
- 	
+
  		if($classifSetorial != "NA"){
  			$arrayClassifSetorial = preg_split("'/'",$classifSetorial);
  			$segmento = $arrayClassifSetorial[2];
@@ -319,9 +319,9 @@ for($i = 1;$i < count($array_emp);$i++){
  		}else{
  			$segmento = "NA";
  		}
- 	
+
  		return $segmento;
- 	
+
  	}
  	
  	/*
@@ -329,7 +329,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getSite($paginaHTML){
- 	
+
  		$site = preg_split("/Site:/",$paginaHTML);
  		if (isset($site[1])){
  			$site = preg_split("/<td class=/",$site[1]);
@@ -353,21 +353,21 @@ for($i = 1;$i < count($array_emp);$i++){
  	 * Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	 */
  	function getRua($paginaHTML){
- 	
+
  		$endereco = preg_split("/Endere&ccedil;o:/",$paginaHTML);
  		if (isset($endereco[1])){
  			$endereco = preg_split("/>/",$endereco[1]);
  			$rua = substr($endereco[2],0,-6);
  		}else{
  			$rua = "NA";
- 				
+
  		}
  		$rua = html_entity_decode(trim($rua), ENT_COMPAT, "UTF-8");
- 	
+
  		if($rua == ""){
  			$rua = "NA";
  		}
- 	
+
  		return $rua;
  	}
  	
@@ -383,14 +383,14 @@ for($i = 1;$i < count($array_emp);$i++){
  		}else{
  			$uf = "NA";
  		}
- 	
+
  		$uf = html_entity_decode(trim($uf), ENT_COMPAT, "UTF-8");
- 	
+
  		if($uf == ""){
  			$uf = "NA";
  		}
  		return $uf;
- 	
+
  	}
  	
  	/*
@@ -398,7 +398,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getCidade($paginaHTML){
- 	
+
  		$endereco = preg_split("/Endere&ccedil;o:/",$paginaHTML);
  		if (isset($endereco[1])){
  			$endereco = preg_split("/>/",$endereco[1]);
@@ -407,13 +407,13 @@ for($i = 1;$i < count($array_emp);$i++){
  		}else{
  			$cidade = "NA";
  		}
- 	
+
  		$cidade = html_entity_decode(trim($cidade), ENT_COMPAT, "UTF-8");
- 	
+
  		if($cidade == ""){
  			$cidade = "NA";
  		}
- 	
+
  		return $cidade;
  	}
  	
@@ -422,7 +422,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getCep($paginaHTML){
- 	
+
  		$endereco = preg_split("/Endere&ccedil;o:/",$paginaHTML);
  		if (isset($endereco[1])){
  			$endereco = preg_split("/>/",$endereco[1]);
@@ -430,7 +430,7 @@ for($i = 1;$i < count($array_emp);$i++){
  		}else{
  			$cep = "NA";
  		}
- 	
+
  		$cep = html_entity_decode(trim($cep), ENT_COMPAT, "UTF-8");
  		if($cep == ""){
  			$cep = "NA";
@@ -443,7 +443,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getTelefone($paginaHTML){
- 	
+
  		$array_telefone = preg_split("/Telefone:/", $paginaHTML);
  		$telefone = "";
  		for($u =1;$u < count($array_telefone);$u++){
@@ -469,7 +469,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getFax($paginaHTML){
- 	
+
  		$array_telefone = preg_split("/Telefone:/", $paginaHTML);
  		$fax = "";
  		for($u =1;$u < count($array_telefone);$u++){
@@ -482,7 +482,7 @@ for($i = 1;$i < count($array_emp);$i++){
  		}
  		$fax = substr($fax,0,-1);
  		$fax = trim($fax);
- 	
+
  		if($fax == ""){
  			$fax = "NA";
  		}
@@ -494,7 +494,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Argumento: pagina html do campo de Dados da companhia anexa na pagina principal da empresa.
  	*/
  	function getEmail($paginaHTML){
- 	
+
  		$array_email = preg_split("/E-mail:/",$paginaHTML);
  		$emailAux = "";
  		for($t=1;$t < count($array_email);$t++){
@@ -505,7 +505,7 @@ for($i = 1;$i < count($array_emp);$i++){
  				$emailAux= "NA";
  			}
  		}
- 	
+
  		$emailAux = substr($emailAux, 0,-1);
  		$emailAux = html_entity_decode($emailAux, ENT_COMPAT, "UTF-8");
  		if($emailAux == ""){
@@ -539,7 +539,7 @@ for($i = 1;$i < count($array_emp);$i++){
  	* Nome de contato da empresa
  	*/
  	function getContato($paginaHTML,$nome){
- 	
+
  		$contato = preg_split("/Contato:/",$paginaHTML);
  		if(count($contato) > 1){
  			if (isset($contato[1])){
@@ -566,4 +566,4 @@ for($i = 1;$i < count($array_emp);$i++){
  	}
  	
  	
-?>
+ 	?>

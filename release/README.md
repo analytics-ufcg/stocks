@@ -32,3 +32,26 @@
  * Scripts de seleção e detecção de solavancos (R)
 	* src/ts_analytics/* 
  * Mudanças em todos os scripts anteriomente gerados
+
+## Sprint 03
+
+### Documentação
+ * US 10 - Sketch do Produto.png
+ * US 11 - O que é um "solavanco"?.png
+ * US 12 e 13 - Como as empresas e acionistas estão identificados nas mídias sociais-
+ * Novo Modelo de Dados - stock_db.png
+
+
+## Sprint 04
+
+### Documentação
+ * Novo Modelo de Dados - Stocks_DB.png
+ * US 16 - Figura 1 - Boxplot da Correlação entre Pares de Cotações (Retorno) por Segmento.pdf
+ * US 16 - Figura 2 - Heatmap da Correlação entre Cotações (Retorno) por Segmento.pdf
+ * US 16 - Empresas de um mesmo segmento oscilam de maneira semelhante dado um período de tempo?
+
+### Código
+* Script de análise das cotações por segmento (R)
+	* src/ts_analytics/analyse_segments.R
+* Desenvolvimento da Interface Web para consulta das métricas por agrupamento (ação/setor/sub-setor/segmento)
+	* src/web/stocks/*
