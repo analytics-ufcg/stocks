@@ -1,12 +1,18 @@
 <?php 
 
     include 'global_model.php';
-
-   
-    // $column = "setor";
-
     # Prepare the query
-   	$query = "select preco_medio, data_pregao from Cotacao where cod_isin = 'BRPETRACNOR9' and COD_BDI = '02' order by data_pregao asc";
+   	// $query = "select acao.preco_ultimo, acao.data_pregao 
+    //           from (SELECT slice_time as data_pregao, cod_isin, 
+    //                 TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') as preco_ultimo
+    //                 FROM cotacao
+    //                 WHERE cod_bdi = 02
+    //                 TIMESERIES slice_time AS \'1 day\' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
+    //           ) AS acao 
+    //           where acao.cod_isin = 'BRPETRACNOR9' 
+    //           order by acao.data_pregao asc";
+    $query = "select preco_medio, data_pregao from Cotacao where cod_isin = 'BRPETRACNOR9' and COD_BDI = '02' order by data_pregao asc";
+
     
     # Turn on error reporting
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
@@ -31,12 +37,8 @@
         array_push($valores, $row['preco_medio']);
         
     }
-    #arrayD = array($data, $valores);
+    
 	# Close the connection
 	odbc_close($conn);
-//echo json_encode(array("data" => $data, "valores" => $valores)); array(["1158278400000",74.10],["1158278400000",90.10])
-    // echo json_encode(array([1158270400000,74.10],[1158271400000,90.10], [1158272400000,74.10], [1158277400000,74.10]));
-  //  echo json_encode(array([$data,$valores]));
-    //print_r($list_response);
     echo json_encode($list_response);
 ?>

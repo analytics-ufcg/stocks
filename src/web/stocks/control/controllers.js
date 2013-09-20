@@ -102,7 +102,7 @@ function run_top10(){
 	$("#go_top10").button('loading');
 	var call_data = $('#top10_form').serialize();
 	call_data += "&top=10";
-	// console.log(call_data);
+	console.log(call_data);
 
 	$.ajax({
 	 	type: 'GET',
@@ -117,4 +117,43 @@ function run_top10(){
 	 	}
 	 });
 	 return false;
+}
+
+function create_time_serie(nome_empresa, nome_pregao, cnpj){
+	// var nomeEmpresa = "OGX";
+	call_data = "cnpj=" + cnpj;
+	
+	$.ajax({
+		type: 'GET',
+		dataType: 'json',
+		url: 'model/model_graficos.php',
+		async: true,
+		data: call_data,
+		success: function(response) {
+
+			console.log(response);
+
+			// Create the chart
+			$('#stock_container').highcharts('StockChart', {
+				rangeSelector : {
+					selected : 1
+				},
+
+				title : {
+					text : nome_pregao
+				},
+				
+				series : [{
+					name : nome_empresa,
+					data : response,
+					tooltip: {
+						valueDecimals: 2
+					}
+				}]
+			});
+
+			popupWindow = window.open(
+		    			'index_stocks.html','popUpWindow','height=800,width=1200,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no');
+		}
+	});
 }
