@@ -4,29 +4,29 @@
 
 CREATE TABLE IF NOT EXISTS empresa (
     -- Atributos Gerais
-    nome_empresa          CHAR(60),
-    nome_pregao           CHAR(15),
-    cod_negociacao        CHAR(100),
+    nome_empresa          VARCHAR(100),
+    nome_pregao           VARCHAR(30),
+    cod_negociacao        VARCHAR(100),
     cod_cvm               CHAR(10),
     cnpj                  CHAR(14),
-    atividade_principal   CHAR(250),
+    atividade_principal   VARCHAR(500),
     
     -- Atributos de Classificacao
-    setor                 CHAR(35),
-    sub_setor             CHAR(40),
-    segmento              CHAR(45),
+    setor                 VARCHAR(100),
+    sub_setor             VARCHAR(100),
+    segmento              VARCHAR(100),
 
     -- Atributos de Contato
-    site                  CHAR(50),
-    endereco              CHAR(50),
-    cidade                CHAR(30),
-    cep                   CHAR(10),
+    site                  VARCHAR(100),
+    endereco              VARCHAR(100),
+    cidade                VARCHAR(100),
+    cep                   VARCHAR(20),
     estado                CHAR(2),
-    telefone              CHAR(100),
-    fax                   CHAR(100),
-    emails                CHAR(100),
-    twitter_empresa       CHAR(50),
-    facebook_empresa      CHAR(80),   
+    telefone              VARCHAR(100),
+    fax                   VARCHAR(100),
+    emails                VARCHAR(200),
+    twitter_empresa       VARCHAR(300),
+    facebook_empresa      VARCHAR(300),   
 
     PRIMARY KEY           (cnpj)
 );
@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS empresa_isin (
 -- =========== TABELA com os CONTATOs das EMPRESAs =========== 
 CREATE TABLE IF NOT EXISTS contato_investidor (
     id_contato            AUTO_INCREMENT,
-    nome_contato          CHAR(50) NOT NULL,
-    twitter_contato       CHAR(50),
-    facebook_contato      CHAR(80), 
+    nome_contato          VARCHAR(100) NOT NULL,
+    twitter_contato       VARCHAR(200),
+    facebook_contato      VARCHAR(200), 
     cnpj                  CHAR(14) NOT NULL,
     PRIMARY KEY           (id_contato),
     FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
@@ -62,12 +62,12 @@ CREATE TABLE IF NOT EXISTS contato_investidor (
 -- =========== TABELA com os LINKS das NOTICIAS das EMPRESAs =========== 
 CREATE TABLE IF NOT EXISTS link_noticias_empresa (
     id_link               AUTO_INCREMENT,
-    fonte                 CHAR(30),
-    sub_fonte             CHAR(30),
+    fonte                 VARCHAR(100),
+    sub_fonte             VARCHAR(100),
     cnpj                  CHAR(14) NOT NULL,
     data_noticia          TIMESTAMP,
-    titulo                CHAR(150),
-    link                  CHAR(300),
+    titulo                VARCHAR(500),
+    link                  VARCHAR(500),
     PRIMARY KEY           (id_link),
     FOREIGN KEY           (cnpj) REFERENCES empresa (cnpj)
 );
