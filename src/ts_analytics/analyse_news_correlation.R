@@ -14,14 +14,14 @@ source("src/ts_analytics/detect_ts_bursts_methods.R")
 # FUNCTIONS
 # =============================================================================
 
-PlotTsWithSolavanco <- function(serie, solavanco, main.title){
-  plot.ts(serie, main = main.title)
+PlotTsWithSolavanco <- function(serie, solavanco, ylab, main.title){
+  plot(serie, main = main.title, ylab = ylab, xlab = "Year")
   colour <- ifelse(solavanco, "red", "black")
   segments(x0=index(serie)[-c(length(serie))], y0=serie[-c(length(serie))], 
            x1=index(serie)[-1], y1=serie[-1], 
-           col = colour, lwd = 2)  
+           col = colour)  
   legend("topright", legend=c("IS solavanco", "ISN'T solavanco"), 
-         col=c("red", "black"), lty = 1, lwd = 2)
+         col=c("red", "black"), lty = 1)
 }
 
 # =============================================================================
@@ -52,9 +52,9 @@ PlotTsWithSolavanco <- function(serie, solavanco, main.title){
 # cat("Closing the connection.\n")
 # close(myconn)
 
-cat("Interpolating with zeros the days without NEWS...\n")
 # For each (FONTE and CNPJ):
 #   Interpolate the NUM_NOTICIAS with zeros (0)
+cat("Interpolating with zeros the days without NEWS...\n")
 news.count.filled <- ddply(news.count.df, .(fonte, cnpj), function(df){
   
   news.ts <- zoo(df$num_noticias, df$data_noticia)
@@ -65,9 +65,9 @@ news.count.filled <- ddply(news.count.df, .(fonte, cnpj), function(df){
                     num_noticias = as.vector(news.ts.complete)))
 }, .progress = "text")
 
-cat("Interpolating with the last non-NA value all COTACAO...\n")
 # For each (CNPJ and ISIN):
 #   Interpolate the COTACAO with constant values
+cat("Interpolating with the last non-NA value all COTACAO...\n")
 emp.ts.filled <- ddply(emp.ts.df, .(cnpj, cod_isin), function(df){
   
   emp.ts <- zoo(df$preco_ultimo, df$data_pregao)
@@ -95,14 +95,18 @@ cat("Calculating the correlation between the (interpolated) NEWS COUNT and the (
 cat("Plotting the Price and NewsCount Time-Series with the solavancos highlighted...\n")
 
 all.fontes <- as.character(unique(news.count.df$fonte))
+window.size <- 15
 emp.news.corr <- NULL
 output.dir <- "data/time_series/news_correlation"
 dir.create(output.dir, showWarnings=F)
 
-for (this.fonte in all.fontes){
-  emp.news.corr.tmp <- ddply(emp.ts.filled, .(cnpj, cod_isin), function(df){
-    
+pdf(paste(output.dir, "/news_correlation_ts.pdf", sep = ""), width = 25, height = 10)
+
+d_ply(emp.ts.filled, .(cnpj, cod_isin), function(df){
+  
+  for (this.fonte in all.fontes){
     ts.cnpj <- df$cnpj[1]
+    ts.nome.pregao <- df$cnpj[1] #df$nome_pregao[1]
     ts.cod_isin <- as.character(df$cod_isin[1])
       
     # Get BOTH, the Filled Price and the Price, TSs by the CNPJ and ISIN
@@ -133,45 +137,44 @@ for (this.fonte in all.fontes){
     intersect.news.ts <- intersect.ts.filled[, "news.ts.filled"]
     intersect.price.ts <- intersect.ts.filled[, "price.ts.filled"]
     
-    solavancos <- LocalBaseline(intersect.price.ts)$is.burst
+    solavancos <- LocalBaseline(intersect.price.ts, window.size)$is.burst
     
+    # Calculate the Pearson Correlation to the non-Solavanco dates (only)
+    
+    solavanco.corr <- cor(as.vector(intersect.news.ts)[c(F, solavancos)], 
+                          as.vector(intersect.price.ts)[c(F, solavancos)], 
+                          method = "pearson")
+
     # Calculate the Pearson Correlation with higher weights to Solavanco dates
     weights <- rep(1, length(intersect.news.ts))
     weights[c(F, solavancos)] = 2
     
     solavanco.weighted.corr <- wtd.cor(as.vector(intersect.news.ts), as.vector(intersect.price.ts), 
                                        weight=weights)[1]
-    
-    # Calculate the Pearson Correlation with zero (0) weights to non-Solavanco dates
-    weights <- rep(0, length(intersect.news.ts))
-    weights[c(F, solavancos)] = 1
-    
-    solavanco.corr <- wtd.cor(as.vector(intersect.news.ts), as.vector(intersect.price.ts), 
-                              weights)[1]
-    
-    pdf(paste(output.dir, "/news_correlation_ts.pdf", sep = ""), width = 20, height = 10)
-    par(mfrow = c(2, 1))
-    PlotTsWithSolavanco(intersect.price.ts, solavancos, 
-                        main.title = paste("Pearson Correlation (Preco_Ultimo e Num_Noticia): plain=", 
-                                           round(ts.correlation.filled, 3), 
-                                           "/ solavanco weighted=", 
-                                           round(solavanco.weighted.corr, 3), 
-                                           "/ solavanco only=", 
-                                           round(solavanco.corr, 3), "\nSéries Temporais com Solavancos"))
-    PlotTsWithSolavanco(intersect.news.ts, solavancos, 
-                        main.title = "")
-    dev.off()
-    
-    return(data.frame(fonte = this.fonte,
-                      cnpj = ts.cnpj, 
-                      cod_isin = ts.cod_isin,
-                      all_filled_ts_corr = ts.correlation.filled, 
-                      all_filled_ts_days_compared = nrow(intersect.ts.filled),
-                      solavanco_corr = solavanco.corr,
-                      solavanco_weighted_corr = solavanco.weighted.corr))
-  }, .progress = "text")
-  
-  emp.news.corr <- rbind(emp.news.corr, emp.news.corr.tmp)
-}
 
-# TODO: Add o nome_pregao nos plots
+    # Plot the Time-Series and Correlations
+    par(mfrow = c(2, 1), mar=c(5.1, 4.1, 4.1, 2.1))
+    
+    PlotTsWithSolavanco(intersect.price.ts, solavancos, 
+                        ylab = "Preco_Ultimo",
+                        main.title = paste("Time-Series with Solavancos\n", ts.nome.pregao, 
+                                           " - ", ts.cod_isin,"    vs.    ", trim(this.fonte), 
+                                           "\nPearson Correlations: plain= ", 
+                                           round(ts.correlation.filled, 3), 
+                                           " / solavanco weighted= ", 
+                                           round(solavanco.weighted.corr, 3), 
+                                           " / solavanco only= ", 
+                                           round(solavanco.corr, 3), sep = ""))
+    
+    par(mar=c(5.1, 4.1, 0, 2.1)) # No title
+    
+    PlotTsWithSolavanco(intersect.news.ts, solavancos, 
+                        ylab = "Number of News", main.title = "")
+    
+  }
+}, .progress = "text")
+dev.off()
+
+# TODO: Fazer a interpolação dos preços no Vertica
+# TODO: Unir a contagem de notícias por dia (independentemente de fontes)
+# TODO: Add o nome_pregao nos plots (mudar consulta)
