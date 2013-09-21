@@ -1,32 +1,56 @@
-rm(list = ls())
+# rm(list = ls())
 
-library(RODBC)
+# =============================================================================
+# SOURCE() and LIBRARY()
+# =============================================================================
+# library(RODBC)
 library(plyr)
 library(zoo)
+library(weights)
 
-cat("Connecting to the Stocks_DB to get the data directly!\n")
-myconn <- odbcConnect("StocksDSN")
+source("src/ts_analytics/detect_ts_bursts_methods.R")
 
-cat("Selecting the NEWS COUNT per (DAY and CNPJ)...\n")
-news.count.query <- "SELECT cnpj, data_noticia, fonte, count(*) AS num_noticias
-                     FROM link_noticias_empresa
-                     GROUP BY cnpj, fonte, data_noticia
-                     ORDER BY data_noticia ASC"
+# =============================================================================
+# FUNCTIONS
+# =============================================================================
 
-news.count.df <- sqlQuery(myconn, news.count.query)
+PlotTsWithSolavanco <- function(serie, solavanco, main.title){
+  plot.ts(serie, main = main.title)
+  colour <- ifelse(solavanco, "red", "black")
+  segments(x0=index(serie)[-c(length(serie))], y0=serie[-c(length(serie))], 
+           x1=index(serie)[-1], y1=serie[-1], 
+           col = colour, lwd = 2)  
+  legend("topright", legend=c("IS solavanco", "ISN'T solavanco"), 
+         col=c("red", "black"), lty = 1, lwd = 2)
+}
 
+# =============================================================================
+# MAIN
+# =============================================================================
 
-cat("Selecting all COTACAO with the CNPJs that have at least one NOTICIA assigned to it...\n")
-emp.ts.query <- "SELECT emp.cnpj, emp_isin.cod_isin, acao.data_pregao, acao.preco_ultimo
-                 FROM empresa AS emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj
-                     INNER JOIN cotacao AS acao ON emp_isin.cod_isin = acao.cod_isin 
-                     INNER JOIN (SELECT DISTINCT(cnpj) FROM link_noticias_empresa) 
-                               AS news_table ON (emp.cnpj = news_table.cnpj)
-                 WHERE acao.cod_bdi = 02"
-
-emp.ts.df <- sqlQuery(myconn, emp.ts.query)
-cat("Closing the connection.\n")
-close(myconn)
+# cat("Connecting to the Stocks_DB to get the data directly!\n")
+# myconn <- odbcConnect("StocksDSN")
+# 
+# cat("Selecting the NEWS COUNT per (DAY and CNPJ)...\n")
+# news.count.query <- "SELECT cnpj, data_noticia, fonte, count(*) AS num_noticias
+#                      FROM link_noticias_empresa
+#                      GROUP BY cnpj, fonte, data_noticia
+#                      ORDER BY data_noticia ASC"
+# 
+# news.count.df <- sqlQuery(myconn, news.count.query)
+# 
+# 
+# cat("Selecting all COTACAO with the CNPJs that have at least one NOTICIA assigned to it...\n")
+# emp.ts.query <- "SELECT emp.cnpj, emp_isin.cod_isin, acao.data_pregao, acao.preco_ultimo
+#                  FROM empresa AS emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj
+#                      INNER JOIN cotacao AS acao ON emp_isin.cod_isin = acao.cod_isin 
+#                      INNER JOIN (SELECT DISTINCT(cnpj) FROM link_noticias_empresa) 
+#                                AS news_table ON (emp.cnpj = news_table.cnpj)
+#                  WHERE acao.cod_bdi = 02"
+# 
+# emp.ts.df <- sqlQuery(myconn, emp.ts.query)
+# cat("Closing the connection.\n")
+# close(myconn)
 
 cat("Interpolating with zeros the days without NEWS...\n")
 # For each (FONTE and CNPJ):
@@ -57,17 +81,23 @@ emp.ts.filled <- ddply(emp.ts.df, .(cnpj, cod_isin), function(df){
                     preco_ultimo = as.vector(emp.ts.complete)))
 }, .progress = "text")
 
-cat("Calculating the correlation between the (interpolated) NEWS COUNT and the (interpolated) COTACAO (per CNPJ and ISIN)...\n")
 # For each Fonte:
 #   For each (CNPJ and ISIN):
 #       Select the intersection between the series
 #       Calculate the Pearson Correlation (for the hole series)
 #       Calculate the Pearson Correlation (for the days with noticias only AND filled Cotacao)
-# TODO:
 #       Calculate the Pearson Correlation (for the days with Cotacao only AND filled news)
 #       Calculate the Pearson Correlation (for the days with Cotacao only AND news)
+#       Select the SOLAVANCOs
+#       Calculate the Pearson Correlation for the Solavancos
+#       Plot the Price and NewsCount Time-Series with the solavancos highlighted
+cat("Calculating the correlation between the (interpolated) NEWS COUNT and the (interpolated) COTACAO (per CNPJ and ISIN)...\n")
+cat("Plotting the Price and NewsCount Time-Series with the solavancos highlighted...\n")
+
 all.fontes <- as.character(unique(news.count.df$fonte))
 emp.news.corr <- NULL
+output.dir <- "data/time_series/news_correlation"
+dir.create(output.dir, showWarnings=F)
 
 for (this.fonte in all.fontes){
   emp.news.corr.tmp <- ddply(emp.ts.filled, .(cnpj, cod_isin), function(df){
@@ -75,13 +105,22 @@ for (this.fonte in all.fontes){
     ts.cnpj <- df$cnpj[1]
     ts.cod_isin <- as.character(df$cod_isin[1])
       
-    # Get the Filled Stock ts by the CNPJ and ISIN
+    # Get BOTH, the Filled Price and the Price, TSs by the CNPJ and ISIN
+    price.ts.tmp <- subset(emp.ts.df, cnpj == ts.cnpj & cod_isin == ts.cod_isin)
+    price.ts <- zoo(price.ts.tmp$preco_ultimo, price.ts.tmp$data_pregao)
+
     price.ts.filled <- zoo(df$preco_ultimo, df$data_pregao)
     
-    # FILLED NEWS TS CORRELATION
+    # Get BOTH, the Filled News and the News, TSs by CNPJ
+    news.df <- subset(news.count.df, fonte == this.fonte & cnpj == ts.cnpj)
+    news.ts <- zoo(news.df$num_noticias, news.df$data_noticia)
+    
     news.df.filled <- subset(news.count.filled, fonte == this.fonte & cnpj == ts.cnpj)
     news.ts.filled <- zoo(news.df.filled$num_noticias, news.df.filled$data_noticia)
+
+    rm(price.ts.tmp, news.df, news.df.filled)
     
+    # FILLED NEWS and FILLED PRICE (TS CORRELATION)
     # Find the intersection between the filled TSs and Filter them
     intersect.ts.filled <- merge.zoo(news.ts.filled, price.ts.filled, all = F)
     
@@ -89,43 +128,50 @@ for (this.fonte in all.fontes){
     ts.correlation.filled <- cor(as.vector(intersect.ts.filled[, "news.ts.filled"]), 
                                  as.vector(intersect.ts.filled[, "price.ts.filled"]), 
                                  method = "pearson")
+
+    # Find the solavancos of the Filled Price TS
+    intersect.news.ts <- intersect.ts.filled[, "news.ts.filled"]
+    intersect.price.ts <- intersect.ts.filled[, "price.ts.filled"]
     
+    solavancos <- LocalBaseline(intersect.price.ts)$is.burst
     
-    # DAYS WITH NON-ZERO NEWS TS CORRELATION
-    news.df <- subset(news.count.df, fonte == this.fonte & cnpj == ts.cnpj)
-    news.ts <- zoo(news.df$num_noticias, news.df$data_noticia)
+    # Calculate the Pearson Correlation with higher weights to Solavanco dates
+    weights <- rep(1, length(intersect.news.ts))
+    weights[c(F, solavancos)] = 2
     
-    # Find the intersection between the 'days with news' TSs and Filter them
-    intersect.ts.with.news <- merge.zoo(news.ts, price.ts.filled, all = F)
+    solavanco.weighted.corr <- wtd.cor(as.vector(intersect.news.ts), as.vector(intersect.price.ts), 
+                                       weight=weights)[1]
     
-    # Calculate the 'days with news' Correlation
-    ts.correlation.with.news <- cor(as.vector(intersect.ts.with.news[, "news.ts"]), 
-                                    as.vector(intersect.ts.with.news[, "price.ts.filled"]), 
-                                    method = "pearson")
+    # Calculate the Pearson Correlation with zero (0) weights to non-Solavanco dates
+    weights <- rep(0, length(intersect.news.ts))
+    weights[c(F, solavancos)] = 1
+    
+    solavanco.corr <- wtd.cor(as.vector(intersect.news.ts), as.vector(intersect.price.ts), 
+                              weights)[1]
+    
+    pdf(paste(output.dir, "/news_correlation_ts.pdf", sep = ""), width = 20, height = 10)
+    par(mfrow = c(2, 1))
+    PlotTsWithSolavanco(intersect.price.ts, solavancos, 
+                        main.title = paste("Pearson Correlation (Preco_Ultimo e Num_Noticia): plain=", 
+                                           round(ts.correlation.filled, 3), 
+                                           "/ solavanco weighted=", 
+                                           round(solavanco.weighted.corr, 3), 
+                                           "/ solavanco only=", 
+                                           round(solavanco.corr, 3), "\nSéries Temporais com Solavancos"))
+    PlotTsWithSolavanco(intersect.news.ts, solavancos, 
+                        main.title = "")
+    dev.off()
     
     return(data.frame(fonte = this.fonte,
                       cnpj = ts.cnpj, 
                       cod_isin = ts.cod_isin,
                       all_filled_ts_corr = ts.correlation.filled, 
                       all_filled_ts_days_compared = nrow(intersect.ts.filled),
-                      filled_cotacao_only_ts_corr = ts.correlation.with.news,
-                      filled_cotacao_only_days_compared = nrow(intersect.ts.with.news),
-                      filled_news_only_ts_corr = 1,
-                      filled_news_only_days_compared = 1,
-                      no_filling_ts_corr = 1,
-                      no_filling_days_compared = 1))
+                      solavanco_corr = solavanco.corr,
+                      solavanco_weighted_corr = solavanco.weighted.corr))
   }, .progress = "text")
   
   emp.news.corr <- rbind(emp.news.corr, emp.news.corr.tmp)
 }
 
-# TODO:
-# Plot/Print the correlations
-
-
-# TODO:
-# Select the SOLAVANCOs dates (previous and next day)
-# Filter the COTACAO to these dates
-# Filter the filled NUM_NOTICIAS to these dates
-# Calculate the Pearson Correlation (separetely for each solavanco)
-
+# TODO: Add o nome_pregao nos plots
