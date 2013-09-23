@@ -156,3 +156,42 @@ function create_time_serie(nome_empresa, nome_pregao, cnpj){
 
 	return false;
 }
+
+
+function create_time_serie_top(nome_empresa, isin){
+	
+	call_data = "isin=" + isin;
+	console.log(call_data);
+	$.ajax({
+		type: 'GET',
+		dataType: 'json',
+		url: 'model/model_empresa_ts_by_isin.php',
+		async: true,
+		data: call_data,
+		success: function(response) {
+
+			console.log(response);
+
+			// Create the chart
+			$('#ts_news_container_top #time_serie').highcharts('StockChart', {
+				rangeSelector : {
+					selected : 1
+				},
+
+				title : {
+					text : nome_empresa
+				},
+				
+				series : [{
+					name : nome_empresa,
+					data : response,
+					tooltip: {
+						valueDecimals: 2
+					}
+				}]
+			});		
+		}
+	});
+
+	return false;
+}

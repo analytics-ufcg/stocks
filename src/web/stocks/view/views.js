@@ -135,10 +135,24 @@ function show_top10_result(table_array){
         nome = table_array.nomes[i];
         valor = table_array.valores[i];
         pos_ranking = i + 1;
+        if(grouping == "Ação")
+        {
+            array_nome = nome.split("(");
+            isin_empresa = array_nome[1];
+            isin_empresa = isin_empresa.replace(")","");
+        }
         table += 
             // Row 1
              "<tr><td style='text-align:center'>"+ pos_ranking + "</strong></td>";
-        table += "<td><a href='JavaScript:newPopup(\"highstock.html\");'>" + nome + "</a>";
+        if(grouping == "Ação")
+        {
+            table += "<td><button onclick=\"create_time_serie_top('"+ array_nome[0]
+             + "', '" + isin_empresa + "')\">" + nome + "</a>";
+           // table += "<td><a href='JavaScript:newPopup(\"highstock.html\");'>" + nome + "</a>";
+        }else {
+            table += "<td>" + nome;
+        }
+        
         table += "<td>" + valor;
     };
     table += "</tbody></table>";

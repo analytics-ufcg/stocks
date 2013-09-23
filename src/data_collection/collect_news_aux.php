@@ -178,7 +178,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 				
 				$link_title = preg_split('/">/', substr($list_links[$i], 0, $hifen_position));
 				$link = $link_title[0];
-				$title = str_replace('Folha.com - ', str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1])));
+				$title = str_replace('Folha.com - ', '', str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1])));
 
 				//valido indice 1
 				$links_array[3] =  "$this_year-$this_month-$this_day";
@@ -205,7 +205,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 					$link_title = preg_split('/">/', substr($list_links[$i], 0,$hifen_position));
 					$links_array[3] =  "$this_year-$this_month-$this_day";
 					$link = $link_title[0];
-					$title = str_replace('Folha.com - ', str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1])));
+					$title = str_replace('Folha.com - ', '', str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1])));
 
 					//valido indice 1
 					$links_array[4] =  $title;
@@ -214,7 +214,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 					
 				}
 				$iterator_after_first_page +=  25;
-				sleep(rand(1, 3));
+				sleep(rand(1, 2));
 			}
 		}
 	}

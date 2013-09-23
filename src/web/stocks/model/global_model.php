@@ -72,6 +72,10 @@
 			ORDER BY sum_volume_titulos ASC
 			LIMIT ?;',
 
+		"get_ts_by_isin" =>
+			'SELECT preco_ultimo, data_pregao FROM Cotacao WHERE cod_isin = \'[EMP_ISIN]\' and COD_BDI = 02 ORDER BY data_pregao ASC;',
+
+
 		// USED BY: model_emp_ts_by_cnpj.php
 		"get_largest_ts_by_cnpj" =>
 			'SELECT tab_result.preco_ultimo, tab_result.data_pregao
