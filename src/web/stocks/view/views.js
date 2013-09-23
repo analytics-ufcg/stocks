@@ -26,15 +26,8 @@ function show_empresa_table(table_array){
             "<tr><td rowspan='6'><img src=" + row['icon_filename'] + "></td>" 
             // Dados gerais | Contatos | Classificação
             // Row 1
-            // + "<td>Empresa: <strong><a onclick=\"create_time_serie('" + row['nome_empresa'] 
-            // + "', '" + row['nome_pregao'] + "', '" + row['cnpj'] + "');\">" 
-            // + row['nome_empresa'] + "</a></strong></td>";
-            
-            // + "<td>Empresa: <strong><a href='JavaScript:create_time_serie(\"" + row['nome_empresa'] 
-            // + "\", \"" + row['nome_pregao'] + "\", \"" + row['cnpj'] + "\");'>" + row['nome_empresa'] + "</a></strong></td>";
-             // + "<td>Empresa: <strong><a href='JavaScript:newPopup(\"highstock.html\");'>" + row['nome_empresa'] + "</a></strong></td>";
-             + "<td>Empresa: <strong><a href='#' onclick=\"create_time_serie('"+ row['nome_empresa']
-             + "', '" + row['nome_pregao'] + "', '" + row['cnpj'] + "')\">" + row['nome_empresa'] + "</a></strong></td>";
+             + "<td>Empresa: <button onclick=\"create_time_serie('"+ row['nome_empresa']
+             + "', '" + row['nome_pregao'] + "', '" + row['cnpj'] + "')\">" + row['nome_empresa'] + "</a></td>";
 
         if (! is_empty(row['site'])){
             table += "<td>Site: <a href=https://" + row['site'] + ">" + row['site'] + "</a>";

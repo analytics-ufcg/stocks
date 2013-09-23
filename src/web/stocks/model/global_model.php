@@ -70,7 +70,32 @@
 			        AND acao.cod_bdi=02 
 			GROUP BY [GROUP_BY_COLS]
 			ORDER BY sum_volume_titulos ASC
-			LIMIT ?;'
+			LIMIT ?;',
+
+		// USED BY: model_emp_ts_by_cnpj.php
+		"get_largest_ts_by_cnpj" =>
+			'SELECT tab_result.preco_ultimo, tab_result.data_pregao
+			FROM (SELECT emp_isin.cod_isin, acao.preco_ultimo, acao.data_pregao 
+					FROM empresa AS emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj
+					     INNER JOIN (SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') as preco_ultimo
+							        FROM cotacao
+							        WHERE cod_bdi = 02
+							        TIMESERIES slice_time AS \'1 day\' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
+							  		) AS acao  ON emp_isin.cod_isin = acao.cod_isin 
+					WHERE emp.cnpj = \'[EMP_CNPJ]\'
+					ORDER BY acao.data_pregao asc) as tab_result,
+					(SELECT emp_isin.cod_isin, COUNT(*) as acao_size
+					FROM empresa AS emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj
+					     INNER JOIN (SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') as preco_ultimo
+							        FROM cotacao
+							        WHERE cod_bdi = 02
+							        TIMESERIES slice_time AS \'1 day\' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
+							  		) AS acao  ON emp_isin.cod_isin = acao.cod_isin 
+					WHERE emp.cnpj = \'[EMP_CNPJ]\'
+					GROUP BY emp_isin.cod_isin
+					ORDER BY acao_size DESC
+					limit 1) AS tab_isin
+			WHERE tab_result.cod_isin = tab_isin.cod_isin;'
 	);
 
 ?>

@@ -40,7 +40,7 @@ select ANALYZE_CONSTRAINTS('contato_investidor');
 -- CARREGA os dados dos links das noticias das empresas a partir de um arquivo CSV
 
 COPY link_noticias_empresa
-FROM '/home/stocks/data/news/links_*.csv'
+FROM '/home/stocks/data/news/links*.csv'
 DELIMITER ','    -- Delimitador das colunas
 ENCLOSED BY '"'  -- Caractere que abre e fecha strings
 ESCAPE AS '\'    -- Caractere de escape

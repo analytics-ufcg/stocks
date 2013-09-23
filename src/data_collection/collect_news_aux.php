@@ -144,11 +144,12 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 	$links_emp_csv_file = fopen($links_emp_csv_filename, "w");
 
 	# CSV Header: Fonte, Sub-Fonte, CNPJ, Data, Titulo, Link
-	$links_array = array('Folha de S.Paulo', 'Mercado', $cnpj, 'NA', 'NA', 'NA');
+	$links_array = array('Folha de S.Paulo', 'Mercado e Dinheiro', $cnpj, 'NA', 'NA', 'NA');
 
 	
 	$year_list = range(2002, 2013);
 	$month_list = range(01, 12);
+
 	foreach ($year_list as $year) {
 		for($month=0; $month < count($month_list) - 1; $month++) {
 			
@@ -160,9 +161,9 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 			# Create the empresa links file
 
 			$result_set = get_result_set(1,$complemento_url);
-			//echo $result_set;
+			
 			$list_links = get_list_string_with_link_title_date($result_set);
-			//echo count($list_links)."--";
+			
 			$number_links = get_number_pages($result_set);
 			$number_links = (int) str_replace(".", "", $number_links);
 			
@@ -173,14 +174,14 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 
 				$hifen_position = strrpos($list_links[$i], " - ");
 				$date = substr($list_links[$i],$hifen_position + 3, $hifen_position + 8);
-				list ($day, $month, $year) = split("/", $date);
+				list ($this_day, $this_month, $this_year) = split("/", $date);
 				
 				$link_title = preg_split('/">/', substr($list_links[$i], 0, $hifen_position));
 				$link = $link_title[0];
-				$title = str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1]));
+				$title = str_replace('Folha.com - ', str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1])));
 
 				//valido indice 1
-				$links_array[3] =  "$year-$month-$day";
+				$links_array[3] =  "$this_year-$this_month-$this_day";
 				$links_array[4] =  $title;
 				$links_array[5] =  $link;
 				fputcsv($links_emp_csv_file, $links_array, ',', '"');			
@@ -200,11 +201,11 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 					
 					$hifen_position = strrpos($list_links[$i], " - ");
 					$date = substr($list_links[$i], $hifen_position + 3, $hifen_position + 8);
-					list ($day, $month, $year) = split("/", $date);
+					list ($this_day, $this_month, $this_year) = split("/", $date);
 					$link_title = preg_split('/">/', substr($list_links[$i], 0,$hifen_position));
-					$links_array[3] =  "$year-$month-$day";
+					$links_array[3] =  "$this_year-$this_month-$this_day";
 					$link = $link_title[0];
-					$title = str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1]));
+					$title = str_replace('Folha.com - ', str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1])));
 
 					//valido indice 1
 					$links_array[4] =  $title;

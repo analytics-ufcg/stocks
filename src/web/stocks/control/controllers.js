@@ -120,14 +120,13 @@ function run_top10(){
 }
 
 function create_time_serie(nome_empresa, nome_pregao, cnpj){
-	// var nomeEmpresa = "OGX";
-	call_data = "cnpj=" + cnpj;
-	console.log(cnpj);
 	
+	call_data = "cnpj=" + cnpj;
+
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: 'model/model_graficos.php',
+		url: 'model/model_empresa_ts_by_cnpj.php',
 		async: true,
 		data: call_data,
 		success: function(response) {
@@ -135,7 +134,7 @@ function create_time_serie(nome_empresa, nome_pregao, cnpj){
 			console.log(response);
 
 			// Create the chart
-			$('#stock_container').highcharts('StockChart', {
+			$('#ts_news_container_search #time_serie').highcharts('StockChart', {
 				rangeSelector : {
 					selected : 1
 				},
@@ -155,7 +154,5 @@ function create_time_serie(nome_empresa, nome_pregao, cnpj){
 		}
 	});
 
-	// popupWindow = window.open(
-	// 	    			'highstock.html','popUpWindow','height=800,width=1200,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no');
 	return false;
 }
