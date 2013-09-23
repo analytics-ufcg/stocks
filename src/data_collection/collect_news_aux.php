@@ -147,16 +147,16 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 	$links_array = array('Folha de S.Paulo', 'Mercado', $cnpj, 'NA', 'NA', 'NA');
 
 	
-	$year_list = array("2002");
-	$month_list = array("01","02","03");
+	$year_list = range(2002, 2013);
+	$month_list = range(01, 12);
 	foreach ($year_list as $year) {
 		for($month=0; $month < count($month_list) - 1; $month++) {
-
-			$complemento_url = $query_string."&site=jornal&sd=02%2F".$month_list[$month]
-								."%2F".$year."&ed=01%2F".$month_list[$month + 1]."%2F".$year;
+			
+			$complemento_url = $query_string."&site=online%2Fdinheiro&sd=02%2F".$month_list[$month]
+			."%2F".$year."&ed=01%2F".$month_list[$month + 1]."%2F".$year;
 
 			print("DATA CONSULTA: 02/".$month_list[$month]."/".$year." - 01/".$month_list[$month + 1]."/".$year);
-
+			
 			# Create the empresa links file
 
 			$result_set = get_result_set(1,$complemento_url);
@@ -165,7 +165,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 			//echo count($list_links)."--";
 			$number_links = get_number_pages($result_set);
 			$number_links = (int) str_replace(".", "", $number_links);
-
+			
 			printf("  Total de Links: %d\n", $number_links);
 			//valido os indices de 1 a 3
 
@@ -173,16 +173,14 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 
 				$hifen_position = strrpos($list_links[$i], " - ");
 				$date = substr($list_links[$i],$hifen_position + 3, $hifen_position + 8);
-				$link_title = preg_split('/">Folha de S.Paulo - /', substr($list_links[$i], 0,$hifen_position));
+				list ($day, $month, $year) = split("/", $date);
+				
+				$link_title = preg_split('/">/', substr($list_links[$i], 0, $hifen_position));
 				$link = $link_title[0];
-				$title = $link_title[1];
-
-				//$title = preg_replace("/[^a-zA-Z0-9\síóáúôûâêÁÉÍÓÚÂÊÎÔÛãõÃÕÇç,$:;()?!.-]/", "", $title);
-				//$title = preg_replace('/<b>/', "", $title);
-				//$title = preg_replace('/</b>/', "", $title);
+				$title = str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1]));
 
 				//valido indice 1
-				$links_array[3] =  $date;
+				$links_array[3] =  "$year-$month-$day";
 				$links_array[4] =  $title;
 				$links_array[5] =  $link;
 				fputcsv($links_emp_csv_file, $links_array, ',', '"');			
@@ -192,38 +190,35 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 			while($iterator_after_first_page <= $number_links){
 
 				printf("    Links coletados: %d/%d\n", $iterator_after_first_page, $number_links);
-
+				
 				$result_set = get_result_set($iterator_after_first_page,$complemento_url);
 				$list_links = get_list_string_with_link_title_date($result_set);
-
+				
 
 				//valido os indices de 1 a 3
 				for($i=0;$i < count($list_links);$i++){
-
+					
 					$hifen_position = strrpos($list_links[$i], " - ");
-					$date = substr($list_links[$i],$hifen_position + 3, $hifen_position + 8);
-					$link_title = preg_split('/">Folha de S.Paulo - /', substr($list_links[$i], 0,$hifen_position));
-					$links_array[3] =  $date;
+					$date = substr($list_links[$i], $hifen_position + 3, $hifen_position + 8);
+					list ($day, $month, $year) = split("/", $date);
+					$link_title = preg_split('/">/', substr($list_links[$i], 0,$hifen_position));
+					$links_array[3] =  "$year-$month-$day";
 					$link = $link_title[0];
-					$title = $link_title[1];
-
-					//$title = preg_replace("/[^a-zA-Z0-9\síóáúôûâêÁÉÍÓÚÂÊÎÔÛ$:;()?!.-]/", "", $title);
-					//$title = preg_replace('/<b>/', "", $title);
-					//$title = preg_replace('/</b>/', "", $title);
+					$title = str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1]));
 
 					//valido indice 1
 					$links_array[4] =  $title;
 					$links_array[5] =  $link;
 					fputcsv($links_emp_csv_file, $links_array, ',', '"');
-
+					
 				}
 				$iterator_after_first_page +=  25;
 				sleep(rand(1, 3));
 			}
 		}
 	}
-
 	fclose($links_emp_csv_file);
+
 }
 
 ?>

@@ -9,7 +9,7 @@ $query_string = "petrobras";
 $nome_pregao = "PETROBRAS";
 $cnpj = '33000167000101';
 
-$links_emp_csv_filename = "links_folha_" . str_replace(' ', '_', strtolower($nome_pregao)) . ".csv";
+$links_emp_csv_filename = "data/news/links_folha_" . str_replace(' ', '_', strtolower($nome_pregao)) . ".csv";
 $links_emp_csv_file = fopen($links_emp_csv_filename, "w");
 
 # CSV Header: Fonte, Sub-Fonte, CNPJ, Data, Titulo, Link
@@ -19,12 +19,12 @@ $links_array = array('Folha.com.br', 'Economia & Negócios', $cnpj, 'NA', 'NA', 
 printf("Empresa: %s (busca: %s)\n", $nome_pregao, $query_string);
 //,"2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013"
 //,"04","05","06","07","08","09","10","11","12"
-$year_list = array("2002");
-$month_list = array("01","02","03");
+$year_list = array("2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013");
+$month_list = array("01","02","03","04","05","06","07","08","09","10","11","12");
 foreach ($year_list as $year) {
 	for($month=0; $month < count($month_list) - 1; $month++) {
 		
-		$complemento_url = $query_string."&site=jornal&sd=02%2F".$month_list[$month]
+		$complemento_url = $query_string."&site=online%2Fdinheiro&sd=02%2F".$month_list[$month]
 		."%2F".$year."&ed=01%2F".$month_list[$month + 1]."%2F".$year;
 
 		print("DATA CONSULTA: 02/".$month_list[$month]."/".$year." - 01/".$month_list[$month + 1]."/".$year);
@@ -45,16 +45,18 @@ foreach ($year_list as $year) {
 
 			$hifen_position = strrpos($list_links[$i], " - ");
 			$date = substr($list_links[$i],$hifen_position + 3, $hifen_position + 8);
-			$link_title = preg_split('/">Folha de S.Paulo - /', substr($list_links[$i], 0,$hifen_position));
-			$link = $link_title[0];
-			$title = $link_title[1];
+			list ($day, $month, $year) = split("/", $date);
 			
+			$link_title = preg_split('/">/', substr($list_links[$i], 0, $hifen_position));
+			$link = $link_title[0];
+			$title = str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1]));
+
 			//$title = preg_replace("/[^a-zA-Z0-9\síóáúôûâêÁÉÍÓÚÂÊÎÔÛãõÃÕÇç,$:;()?!.-]/", "", $title);
-			//$title = preg_replace('/<b>/', "", $title);
+			//$title = preg_replace('//', "", $title);
 			//$title = preg_replace('/</b>/', "", $title);
 
 			//valido indice 1
-			$links_array[3] =  $date;
+			$links_array[3] =  "$year-$month-$day";
 			$links_array[4] =  $title;
 			$links_array[5] =  $link;
 			fputcsv($links_emp_csv_file, $links_array, ',', '"');			
@@ -73,12 +75,13 @@ foreach ($year_list as $year) {
 			for($i=0;$i < count($list_links);$i++){
 				
 				$hifen_position = strrpos($list_links[$i], " - ");
-				$date = substr($list_links[$i],$hifen_position + 3, $hifen_position + 8);
-				$link_title = preg_split('/">Folha de S.Paulo - /', substr($list_links[$i], 0,$hifen_position));
-				$links_array[3] =  $date;
+				$date = substr($list_links[$i], $hifen_position + 3, $hifen_position + 8);
+				list ($day, $month, $year) = split("/", $date);
+				$link_title = preg_split('/">/', substr($list_links[$i], 0,$hifen_position));
+				$links_array[3] =  "$year-$month-$day";
 				$link = $link_title[0];
-				$title = $link_title[1];
-				
+				$title = str_replace('Folha Online - ', '', str_replace('"', '\"', $link_title[1]));
+				//$title = preg_replace('/"/', "", $title);
 				//$title = preg_replace("/[^a-zA-Z0-9\síóáúôûâêÁÉÍÓÚÂÊÎÔÛ$:;()?!.-]/", "", $title);
 				//$title = preg_replace('/<b>/', "", $title);
 				//$title = preg_replace('/</b>/', "", $title);
@@ -95,8 +98,6 @@ foreach ($year_list as $year) {
 	}
 }
 fclose($links_emp_csv_file);
-
-
 
 
 function get_between($input, $start, $end) 
