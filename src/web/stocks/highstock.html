@@ -11,7 +11,7 @@
 
 var dataG;
 $(function() {
-	var nomeEmpresa = "OGX";
+	var nomeEmpresa = "Petrobras";
 	
 	$.ajax({
 		type: 'GET',
@@ -24,7 +24,7 @@ $(function() {
 			//dataG = response;
 
 			// Create the chart
-			$('#container').highcharts('StockChart', {
+			$('#stock_container').highcharts('StockChart', {
 				
 				
 				rangeSelector : {
@@ -32,11 +32,11 @@ $(function() {
 				},
 
 				title : {
-					text : nomeEmpresa
+					text : "Petrobras"
 				},
 				
 				series : [{
-					name : nomeEmpresa,
+					name : "Petrobras",
 					data : response,
 					//data : response,//ajeitar o response para ficar igual acima
 					//[
@@ -65,6 +65,6 @@ $(function() {
 <script src="js/highstock.js"></script>
 		<script src="js/exporting.js"></script>
 
-<div id="container" style="height: 500px; min-width: 500px"></div>
+<div id="stock_container" style="height: 500px; min-width: 500px"></div>
 	</body>
 </html>

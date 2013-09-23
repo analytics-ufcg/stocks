@@ -32,16 +32,18 @@ function show_empresa_table(table_array){
             
             // + "<td>Empresa: <strong><a href='JavaScript:create_time_serie(\"" + row['nome_empresa'] 
             // + "\", \"" + row['nome_pregao'] + "\", \"" + row['cnpj'] + "\");'>" + row['nome_empresa'] + "</a></strong></td>";
-             + "<td>Empresa: <strong><a href='JavaScript:newPopup(\"highstock.html\");'>" + row['nome_empresa'] + "</a></strong></td>";
+             // + "<td>Empresa: <strong><a href='JavaScript:newPopup(\"highstock.html\");'>" + row['nome_empresa'] + "</a></strong></td>";
+             + "<td>Empresa: <strong><a href='#' onclick=\"create_time_serie('"+ row['nome_empresa']
+             + "', '" + row['nome_pregao'] + "', '" + row['cnpj'] + "')\">" + row['nome_empresa'] + "</a></strong></td>";
 
         if (! is_empty(row['site'])){
-            table += "<td>Site: <a href=" + row['site'] + ">" + row['site'] + "</a>";
+            table += "<td>Site: <a href=https://" + row['site'] + ">" + row['site'] + "</a>";
         }else{
             table += "<td>Site: " + row['site'];
         }
 
         if (! is_empty(row['twitter_empresa'])){
-            table += "<br>Twitter: <a href=https://" + row['twitter_empresa'] + ">" + row['twitter_empresa'] + "</a>";
+            table += "<br>Twitter: <a href=" + row['twitter_empresa'] + ">" + row['twitter_empresa'] + "</a>";
         }else{
             table += "<br>Twitter: " + row['twitter_empresa'];
         }
@@ -56,7 +58,7 @@ function show_empresa_table(table_array){
             + "<td rowspan='6' style='max-width:150px; word-wrap:break-word;'>Nome: " + row['nome_contato'];
 
         if (! is_empty(row['twitter_contato'])){
-            table += "<br>Twitter: <a href=https://" + row['twitter_contato'] + ">" + row['twitter_contato'] + "</a>";
+            table += "<br>Twitter: <a href=" + row['twitter_contato'] + ">" + row['twitter_contato'] + "</a>";
         }else{
             table += "<br>Twitter: " + row['twitter_contato'];
         }
@@ -143,7 +145,7 @@ function show_top10_result(table_array){
         table += 
             // Row 1
              "<tr><td style='text-align:center'>"+ pos_ranking + "</strong></td>";
-        table += "<td>" + nome;
+        table += "<td><a href='JavaScript:newPopup(\"highstock.html\");'>" + nome + "</a>";
         table += "<td>" + valor;
     };
     table += "</tbody></table>";

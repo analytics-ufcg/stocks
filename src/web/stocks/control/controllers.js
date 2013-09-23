@@ -122,6 +122,7 @@ function run_top10(){
 function create_time_serie(nome_empresa, nome_pregao, cnpj){
 	// var nomeEmpresa = "OGX";
 	call_data = "cnpj=" + cnpj;
+	console.log(cnpj);
 	
 	$.ajax({
 		type: 'GET',
@@ -150,10 +151,11 @@ function create_time_serie(nome_empresa, nome_pregao, cnpj){
 						valueDecimals: 2
 					}
 				}]
-			});
-
-			popupWindow = window.open(
-		    			'index_stocks.html','popUpWindow','height=800,width=1200,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no');
+			});		
 		}
 	});
+
+	// popupWindow = window.open(
+	// 	    			'highstock.html','popUpWindow','height=800,width=1200,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no');
+	return false;
 }

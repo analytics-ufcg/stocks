@@ -11,7 +11,7 @@
     //           ) AS acao 
     //           where acao.cod_isin = 'BRPETRACNOR9' 
     //           order by acao.data_pregao asc";
-    $query = "select preco_medio, data_pregao from Cotacao where cod_isin = 'BRPETRACNOR9' and COD_BDI = '02' order by data_pregao asc";
+   $query = "select preco_medio, data_pregao from Cotacao where cod_isin = 'BRPETRACNOR9' and COD_BDI = '02' order by data_pregao asc";
 
     
     # Turn on error reporting
