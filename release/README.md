@@ -53,5 +53,19 @@
 ### Código
 * Script de análise das cotações por segmento (R)
 	* src/ts_analytics/analyse_segments.R
-* Desenvolvimento da Interface Web para consulta das métricas por agrupamento (ação/setor/sub-setor/segmento)
+* Desenvolvimento da Interface Web para consulta das métricas por agrupamento, ação/setor/sub-setor/segmento (Javascript, PHP e VerticaSQL)
+	* src/web/stocks/*
+
+## Sprint 05
+
+### Documentação
+ * US 17 - Novo Modelo de Dados - Stocks_DB.png
+ * US 18 - É possível verificar correlações entre notícias e solavancos.pdf
+ * US 18 - Séries Temporais com Solavancos e Correlações.pdf
+ * US 19 - Atualização do Sketch do produto.pdf
+
+### Código
+* Script de análise das cotações por segmento (R)
+	* src/ts_analytics/analyse_news_correlation.R
+* Desenvolvimento da Interface Web para Exposição das Séries Temporais das Empresas (Javascript, PHP e VerticaSQL)
 	* src/web/stocks/*

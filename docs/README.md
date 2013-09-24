@@ -22,7 +22,14 @@
 
 ## Sprint 04
 
-* Novo Modelo de Dados - Stocks_DB.png
-* US 16 - Figura 1 - Boxplot da Correlação entre Pares de Cotações (Retorno) por Segmento.pdf
-* US 16 - Figura 2 - Heatmap da Correlação entre Cotações (Retorno) por Segmento.pdf
-* US 16 - Empresas de um mesmo segmento oscilam de maneira semelhante dado um período de tempo?
+ * Novo Modelo de Dados - Stocks_DB.png
+ * US 16 - Figura 1 - Boxplot da Correlação entre Pares de Cotações (Retorno) por Segmento.pdf
+ * US 16 - Figura 2 - Heatmap da Correlação entre Cotações (Retorno) por Segmento.pdf
+ * US 16 - Empresas de um mesmo segmento oscilam de maneira semelhante dado um período de tempo?
+
+## Sprint 05
+
+ * US 17 - Novo Modelo de Dados - Stocks_DB.png
+ * US 18 - É possível verificar correlações entre notícias e solavancos.pdf
+ * US 18 - Séries Temporais com Solavancos e Correlações.pdf
+ * US 19 - Atualização do Sketch do produto.pdf

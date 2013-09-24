@@ -91,6 +91,10 @@ emp.news.corr <- NULL
 output.dir <- "data/time_series/news_correlation"
 dir.create(output.dir, showWarnings=F)
 
+# TODO (if you're going to use it to more empresas):
+# * Create a PDF for each Empresa + Isin
+# * Add the Scatterplot graph with lm() regression
+
 pdf(paste(output.dir, "/news_correlation_ts.pdf", sep = ""), width = 25, height = 10)
 
 d_ply(emp.ts.filled, .(cnpj, cod_isin), function(df){
@@ -156,6 +160,3 @@ d_ply(emp.ts.filled, .(cnpj, cod_isin), function(df){
   }
 }, .progress = "text")
 dev.off()
-
-# TODO:
-# Analyse together and separately by fontes
