@@ -50,8 +50,8 @@ printf("Empresa: %s (busca: %s)\n\n", $nome_pregao, $query_string);
 # -----------------------------------------------------------------------------
 
 # Run the Collection to the Estadão.com.br
-// printf("===== Estadão.com.br =====\n\n");
-// collect_estadao($news_dir, $nome_pregao, $cnpj, $query_string);
+printf("===== Estadão.com.br =====\n\n");
+collect_estadao($news_dir, $nome_pregao, $cnpj, $query_string);
 
 # Run the Collection to the Folha de São Paulo
 printf("===== Folha de São Paulo =====\n\n");
