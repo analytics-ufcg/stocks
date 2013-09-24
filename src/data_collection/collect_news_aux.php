@@ -106,7 +106,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 	# CSV Header: Fonte, Sub-Fonte, CNPJ, Data, Titulo, Link
 	$links_row = array('Folha de S.Paulo', 'Mercado e Dinheiro', $cnpj, 'NA', 'NA', 'NA');
 
-	$initial_date = '2000-01-01';
+	$initial_date = '2013-05-23';
 	$final_date = date( "Y-m-d"); # TODAY
 
 	$month_steps = 3;
@@ -115,6 +115,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 	$curr_end_date = $initial_date;
 	
 	$total_links = 0;	
+	$last_date = $curr_start_date;
 
 	while(true){
 		if($curr_end_date >= $final_date){
@@ -135,11 +136,11 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 		$end_date = "$day-$month-$year";
 
 		print("Date Interval: $start_date - $end_date\n");
-				  			
+
 		# Create the empresa links file
 		$full_url = "http://search.folha.com.br/search?q=" . $query_string . 
-					"&site=online%2Fdinheiro&sd=" . str_replace('-', '%2F', $start_date) .
-					'&ed=' . str_replace('-', '%2F', $end_date);
+		"&site=online%2Fdinheiro&sd=" . str_replace('-', '%2F', $start_date) .
+		'&ed=' . str_replace('-', '%2F', $end_date);
 		// echo $full_url, "\n" ;
 
 		# Update the next start_date
@@ -160,7 +161,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 
 		# Get the number of links
 		$number_links = split(' de ', read_text_between($html_content, 
-														'<h2 class="localSearchTarja">resultados <span>(', ')</span></h2>'));
+			'<h2 class="localSearchTarja">resultados <span>(', ')</span></h2>'));
 		$number_links = $number_links[1];
 		printf("  Number of Links: %d\n", $number_links);
 		
@@ -181,8 +182,16 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 				# Date
 				$last_hyphen = strrpos($all_links_data[$i], $hyphen);
 				$date_news = str_replace('</a><br>', '', substr($all_links_data[$i], $last_hyphen + strlen($hyphen)));
-				list ($day, $month, $year) = split("/", $date_news);
-				$links_row[3] =  "$year-$month-$day";
+				if (strlen($date_news) < 6){
+					# Error condition (non existing date), so we repeat the last date retrieved
+					$links_row[3] = $last_date;
+				}else{
+					list ($day, $month, $year) = split("/", $date_news);
+					$links_row[3] =  "$year-$month-$day";
+					
+					# Persist the last date to the error condition above
+					$last_date = $links_row[3];
+				}
 				// echo $links_row[3], "\n";
 
 				# Title
@@ -229,7 +238,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 		}while(true);
 		
 		$total_links += $number_links;
-		echo $total_links, "\n";	
+		// echo $total_links, "\n";
 	}
 	printf("Total of Retrieved Links: %d\n", $total_links);
 
