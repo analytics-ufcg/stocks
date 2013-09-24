@@ -116,6 +116,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 	
 	$total_links = 0;	
 	$last_date = $curr_start_date;
+	$last_year = '2000';
 
 	while(true){
 		if($curr_end_date >= $final_date){
@@ -183,14 +184,21 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 				$last_hyphen = strrpos($all_links_data[$i], $hyphen);
 				$date_news = str_replace('</a><br>', '', substr($all_links_data[$i], $last_hyphen + strlen($hyphen)));
 				if (strlen($date_news) < 6){
-					# Error condition (non existing date), so we repeat the last date retrieved
+					# Error condition: Non existing date. So we repeat the last date retrieved.
 					$links_row[3] = $last_date;
 				}else{
 					list ($day, $month, $year) = split("/", $date_news);
+
+					if(strlen($year) < 4){
+						# Error condition: Year with 3 character only. So we repeat the last year retrieved.
+						$year = $last_year;
+					}
+
 					$links_row[3] =  "$year-$month-$day";
 					
-					# Persist the last date to the error condition above
+					# Persist the last date and year to be used in the next error conditions
 					$last_date = $links_row[3];
+					$last_year = $year;
 				}
 				// echo $links_row[3], "\n";
 
