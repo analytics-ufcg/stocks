@@ -12,9 +12,12 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/datepicker.css" rel="stylesheet">
+	 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
 	
 	<!-- LIBRARIES -->
 	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
 	<script type="text/javascript" src="js/bootstrap-tooltip.js"></script>
@@ -69,7 +72,8 @@
 			        		</fieldset>
 			        	</form>
 			        	<div id="inner_central_bar" class="container"></div>
-			        	<div id="ts_news_container_search" class="container">
+			        	<div id="ts_news_container_search" title="Série Temporal" class="container">
+			        		<div id="loading_search" style="display:none"><center><img src="img/ajax-loader.gif"></center></div>
 			        		<div id="time_serie"></div>
 			        		<div id="news">
 			        			<div id="folha_sao_paulo"></div>
@@ -113,7 +117,8 @@
 							</fieldset>
 						</form>
 						<div id="central_bar_top" class="container"></div>
-						<div id="ts_news_container_top" class="container">
+						<div id="ts_news_container_top" title="Série Temporal" class="container">
+							<div id="loading_top" style="display:none"><center><img src="img/ajax-loader.gif"><center></div>
 							<div id="time_serie"></div>
 			        		<div id="news">
 			        			<div id="folha_sao_paulo"></div>
