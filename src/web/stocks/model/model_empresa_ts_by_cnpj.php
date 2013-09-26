@@ -30,7 +30,6 @@
         array_push($list_response, array(strtotime($row['data_pregao'])*1000, (float)$row['preco_ultimo']));
         array_push($data, $row['data_pregao']);
         array_push($valores, $row['preco_ultimo']);
-        
     }
     
 	# Close the connection

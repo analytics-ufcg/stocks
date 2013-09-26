@@ -7,7 +7,6 @@
     # Prepare the query
     // $cnpj = '86550951000150';
     $query = str_replace("[EMP_ISIN]", $isin, $query_map['get_ts_by_isin']);
-    //$query = "select preco_ultimo, data_pregao from Cotacao where cod_isin = '$isin' and COD_BDI = '02' order by data_pregao asc";
     
     # Turn on error reporting
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);

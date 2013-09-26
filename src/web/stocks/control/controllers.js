@@ -140,6 +140,7 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 	
 	// Clean the previous time-serie
 	$('#ts_news_container_search #time_serie').html("");
+	$("#ts_news_container_search").dialog("option", "title", "Carregando Série Temporal...");
 	
 	$("#ts_news_container_search").dialog("open");
 	call_data = "cnpj=" + cnpj;
@@ -166,6 +167,7 @@ function create_time_serie_top(nome_empresa, isin){
 	
 	// Clean the previous time-serie
 	$('#ts_news_container_top #time_serie').html("");
+	$("#ts_news_container_top").dialog("option", "title", "Carregando Série Temporal...");
 
 	$("#ts_news_container_top").dialog("open");
 
