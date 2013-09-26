@@ -36,21 +36,6 @@ function main_controller(){
 		
 	});
 
-	$( "#ts_news_container_top" ).dialog({
-		autoOpen: false,
-		height: 800,
-		width: 1200,
-		modal: true
-	});
-
-	$( "#ts_news_container_search" ).dialog({
-		autoOpen: false,
-		height: 800,
-		width: 1200,
-		modal: true
-	});
-
-	
 
 	$("#start_date_wrapper").datepicker('setValue', new Date(2010, 0, 1, 0, 0, 0, 0));
 	$("#start_date").click(function() {
@@ -68,6 +53,21 @@ function main_controller(){
 
 	$("#end_date").keypress(function(){
 		add_barra_date(this);
+	});
+
+
+	$( "#ts_news_container_top" ).dialog({
+		autoOpen: false,
+		height: 800,
+		width: 1000,
+		modal: true
+	});
+
+	$( "#ts_news_container_search" ).dialog({
+		autoOpen: false,
+		height: 800,
+		width: 1000,
+		modal: true
 	});
 
 }
@@ -135,10 +135,13 @@ function run_top10(){
 	 return false;
 }
 
-function create_time_serie(nome_empresa, nome_pregao, cnpj){
-	$("#loading_search").show();
+function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
+	$("#loading_ts_search").show();
 	
-	$( "#ts_news_container_search" ).dialog( "open" );
+	// Clean the previous time-serie
+	$('#ts_news_container_search #time_serie').html("");
+	
+	$("#ts_news_container_search").dialog("open");
 	call_data = "cnpj=" + cnpj;
 
 	$.ajax({
@@ -148,27 +151,9 @@ function create_time_serie(nome_empresa, nome_pregao, cnpj){
 		async: true,
 		data: call_data,
 		success: function(response) {
-
-			console.log(response);
-			$("#loading_search").hide();
-			// Create the chart
-			$('#ts_news_container_search #time_serie').highcharts('StockChart', {
-				rangeSelector : {
-					selected : 1
-				},
-
-				title : {
-					text : nome_pregao
-				},
-				
-				series : [{
-					name : nome_empresa,
-					data : response,
-					tooltip: {
-						valueDecimals: 2
-					}
-				}]
-			});		
+			$("#loading_ts_search").hide();	
+			show_highchart('ts_news_container_search', nome_pregao, nome_empresa, response);
+			show_news([]);
 		}
 	});
 
@@ -177,8 +162,12 @@ function create_time_serie(nome_empresa, nome_pregao, cnpj){
 
 
 function create_time_serie_top(nome_empresa, isin){
-	$("#loading_top").show();
-	$( "#ts_news_container_top" ).dialog( "open" );
+	$("#loading_ts_top").show();
+	
+	// Clean the previous time-serie
+	$('#ts_news_container_top #time_serie').html("");
+
+	$("#ts_news_container_top").dialog("open");
 
 	call_data = "isin=" + isin;
 	console.log(call_data);
@@ -189,27 +178,9 @@ function create_time_serie_top(nome_empresa, isin){
 		async: true,
 		data: call_data,
 		success: function(response) {
-
-			console.log(response);
-			$("#loading_top").hide();
-			// Create the chart
-			$('#ts_news_container_top #time_serie').highcharts('StockChart', {
-				rangeSelector : {
-					selected : 1
-				},
-
-				title : {
-					text : nome_empresa
-				},
-				
-				series : [{
-					name : nome_empresa,
-					data : response,
-					tooltip: {
-						valueDecimals: 2
-					}
-				}]
-			});		
+			$("#loading_ts_top").hide();
+			show_highchart('ts_news_container_top', nome_empresa, nome_empresa, response);
+			show_news([]);
 		}
 	});
 	

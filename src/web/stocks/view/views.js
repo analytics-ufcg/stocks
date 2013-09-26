@@ -1,9 +1,5 @@
-function newPopup(url) {
-		popupWindow = window.open(
-		    url,'popUpWindow','height=800,width=1200,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no');
-    }
+
 function show_empresa_table(table_array){
-    
 
     function is_empty(value){
         return (value == "--");
@@ -26,7 +22,7 @@ function show_empresa_table(table_array){
             "<tr><td rowspan='6'><img src=" + row['icon_filename'] + "></td>" 
             // Dados gerais | Contatos | Classificação
             // Row 1
-             + "<td>Empresa: <button onclick=\"create_time_serie('"+ row['nome_empresa']
+             + "<td>Empresa: <button onclick=\"create_time_serie_search('"+ row['nome_empresa']
              + "', '" + row['nome_pregao'] + "', '" + row['cnpj'] + "')\">" + row['nome_empresa'] + "</a></td>";
 
         if (! is_empty(row['site'])){
@@ -135,20 +131,21 @@ function show_top10_result(table_array){
         nome = table_array.nomes[i];
         valor = table_array.valores[i];
         pos_ranking = i + 1;
+
         if(grouping == "Ação")
         {
             array_nome = nome.split("(");
             isin_empresa = array_nome[1];
             isin_empresa = isin_empresa.replace(")","");
         }
+
         table += 
             // Row 1
              "<tr><td style='text-align:center'>"+ pos_ranking + "</strong></td>";
-        if(grouping == "Ação")
-        {
+        
+        if(grouping == "Ação"){
             table += "<td><button onclick=\"create_time_serie_top('"+ array_nome[0]
-             + "', '" + isin_empresa + "')\">" + nome + "</a>";
-           // table += "<td><a href='JavaScript:newPopup(\"highstock.html\");'>" + nome + "</a>";
+                     + "', '" + isin_empresa + "')\">" + nome + "</a>";
         }else {
             table += "<td>" + nome;
         }
@@ -165,4 +162,41 @@ function show_top10_result(table_array){
         title: 'O que é ' + metric + '?',
         content: metric_explanation_map[metric]
     });  
+}
+
+function show_highchart(container_name, nome_pregao, nome_empresa, response){
+    
+    $("#" + container_name + "").dialog("option", "title", "Série Temporal - " + nome_empresa);
+    
+    if (response.length <= 0){
+        // Show an error message
+        $('#' + container_name + ' #time_serie').html("<em>Não existe cotação para essa empresa no intervalo 1994-2013.</em>");
+    }else{
+        // Create the chart
+        $('#' + container_name + ' #time_serie').highcharts('StockChart', {
+            rangeSelector : {
+                selected : 1
+            },
+
+            title : {
+                text : nome_pregao
+            },
+            
+            series : [{
+                name : nome_empresa,
+                data : response,
+                tooltip: {
+                    valueDecimals: 2
+                }
+            }]
+        }); 
+    }   
+}
+
+function show_news(news_list){
+    if (news_list.length <= 0){
+                
+    }else{
+        
+    }
 }
