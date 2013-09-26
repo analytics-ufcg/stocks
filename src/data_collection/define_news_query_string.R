@@ -174,6 +174,9 @@ start.end.segmento$query_string <- gsub(" e ", " ",
 
 start.end.segmento <- start.end.segmento[,c("query_string", "query_start_date", "query_end_date", group.col)]
 
+# Remove the setor, sub_setor and segmento columns from start.end.emp
+start.end.emp <- start.end.emp[, 1:(length(start.end.emp)-3)]
+
 # -----------------------------------------------------------------------------
 # Persisting Query data
 # -----------------------------------------------------------------------------
@@ -184,7 +187,7 @@ dir.create(news.dir, showWarnings=F)
 query.metadata.dir <- "data/news/query_metadata"
 dir.create(query.metadata.dir, showWarnings=F)
 
-write.csv(start.end.emp, paste(query.metadata.dir, "/NewsQueryDataPerEmpresa.csv", sep = ""), row.names = F)
-write.csv(start.end.setor, paste(query.metadata.dir, "/NewsQueryDataPerSetor.csv", sep = ""), row.names = F)
-write.csv(start.end.subsetor, paste(query.metadata.dir, "/NewsQueryDataPerSubSetor.csv", sep = ""), row.names = F)
-write.csv(start.end.segmento, paste(query.metadata.dir, "/NewsQueryDataPerSegmento.csv", sep = ""), row.names = F)
+write.table(start.end.emp, paste(query.metadata.dir, "/NewsQueryDataPerEmpresa.csv", sep = ""), sep=",", row.names = F, col.names = F)
+write.table(start.end.setor, paste(query.metadata.dir, "/NewsQueryDataPerSetor.csv", sep = ""), sep=",", row.names = F, col.names = F)
+write.table(start.end.subsetor, paste(query.metadata.dir, "/NewsQueryDataPerSubSetor.csv", sep = ""), sep=",", row.names = F, col.names = F)
+write.table(start.end.segmento, paste(query.metadata.dir, "/NewsQueryDataPerSegmento.csv", sep = ""), sep=",", row.names = F, col.names = F)
