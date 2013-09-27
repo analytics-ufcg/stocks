@@ -198,7 +198,10 @@ date1 = new Date("2007-04-04").getTime();
     }   
 }
 
-function show_news(news_list){
+function show_news(container_name,news_list){
+
+    $('#' + container_name).html("Testando");
+
     if (news_list.length <= 0){
                 
     }else{
