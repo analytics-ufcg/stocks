@@ -205,7 +205,10 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
     }
 }
 
-function show_news(news_list){
+function show_news(container_name,news_list){
+
+    $('#' + container_name).html("Testando");
+
     if (news_list.length <= 0){
                 
     }else{
