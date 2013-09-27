@@ -111,7 +111,7 @@
 				WHERE cod_bdi = 02
 				TIMESERIES slice_time AS \'1 day\' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
 			  	) AS acao
-			WHERE acao.cod_isin = \'[EMP_ISIN]\' and acao.cod_bdi = 02 
+			WHERE acao.cod_isin = \'[EMP_ISIN]\'
 			ORDER BY acao.data_pregao ASC;',
 
 

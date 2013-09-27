@@ -185,7 +185,7 @@ function collect_folha_sao_paulo($news_dir, $nome_pregao, $cnpj, $query_string){
 				$last_hyphen = strrpos($all_links_data[$i], $hyphen);
 				$date_news = str_replace('</a><br>', '', substr($all_links_data[$i], $last_hyphen + strlen($hyphen)));
 				
-				if (strlen($date_news) < 6){
+				if (strlen($date_news) < 10){
 					# Error condition: Non existing date. So we repeat the last date retrieved.
 					$links_row[3] = $last_date;
 				}else{

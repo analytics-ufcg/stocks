@@ -154,7 +154,10 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 		success: function(response) {
 			$("#loading_ts_search").hide();	
 			show_highchart('ts_news_container_search', nome_pregao, nome_empresa, response,$('#start_date').val(), $('#end_date').val());
-			show_news([]);
+			show_news('ts_news_container_search', []);
+
+			// Test only
+			create_time_line_news('ts_news_container_search', "kjk", "klklk");
 		}
 	});
 
@@ -172,7 +175,7 @@ function create_time_serie_top(nome_empresa, isin){
 	$("#ts_news_container_top").dialog("open");
 
 	call_data = "isin=" + isin;
-	console.log(call_data);
+	
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
@@ -183,7 +186,7 @@ function create_time_serie_top(nome_empresa, isin){
 			$("#loading_ts_top").hide();
 
 			show_highchart('ts_news_container_top', nome_empresa, nome_empresa, response, $('#start_date').val(), $('#end_date').val());
-			//show_news([]);
+			show_news('ts_news_container_top', []);
 		}
 	});
 	
@@ -191,11 +194,13 @@ function create_time_serie_top(nome_empresa, isin){
 	return false;
 }
 
-function create_time_line_news(cnpj, date){
+function create_time_line_news(container_name, cnpj, date){
 	//$('#ts_news_container_top #news #folha_sao_paulo');
 	
-	$('#ts_news_container_top #news #folha_sao_paulo').html("");
-	call_data = "?";
+	$('#' + container_name + ' #news #folha_sao_paulo').html("");
+	$('#' + container_name + ' #news #estadao').html("");
+
+	call_data = "";
 	//console.log(call_data);
 	$.ajax({
 		type: 'GET',
@@ -204,9 +209,8 @@ function create_time_line_news(cnpj, date){
 		async: true,
 		data: call_data,
 		success: function(response) {
-			
-			
-			show_news('ts_news_container_top #news #folha_sao_paulo',response);
+			console.log(response);
+			show_news(container_name, response);
 		}
 	});
 	

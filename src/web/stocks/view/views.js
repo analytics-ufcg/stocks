@@ -205,13 +205,14 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
     }
 }
 
-function show_news(container_name,news_list){
-
-    $('#' + container_name).html("Testando");
+function show_news(container_name, news_list){
 
     if (news_list.length <= 0){
+        $("#" + container_name + " #news #estadao").html("Testando vazio");
+        $("#" + container_name + " #news #folha_sao_paulo").html("Testando vazio");
                 
     }else{
-        
+        $("#" + container_name + " #news #estadao").html("Testando nao vazio");
+        $("#" + container_name + " #news #folha_sao_paulo").html("Testando nao vazio");
     }
 }
