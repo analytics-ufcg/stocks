@@ -116,9 +116,10 @@
 
 
 		// USED BY: model_empresa_news_by_cnpj_and_date.php
-		"get_news_by_cnpj_and_date" => 'SELECT  data_noticia,titulo
+		"get_news_by_cnpj_and_date" => 
+			'SELECT  data_noticia,titulo
 		 	FROM Link_Noticias_Empresa
-		 	WHERE cnpj = \'[EMP_CNPJ]\' and data_noticia = \'[NEWS_DATE]\';'
+		 	WHERE cnpj = \'[EMP_CNPJ]\' AND data_noticia = \'[NEWS_DATE]\';'
 	);
 
 ?>
