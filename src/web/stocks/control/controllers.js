@@ -153,7 +153,7 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 		data: call_data,
 		success: function(response) {
 			$("#loading_ts_search").hide();	
-			show_highchart('ts_news_container_search', nome_pregao, nome_empresa, response);
+			show_highchart('ts_news_container_search', nome_pregao, nome_empresa, response,$('#start_date').val(), $('#end_date').val());
 			show_news([]);
 		}
 	});
