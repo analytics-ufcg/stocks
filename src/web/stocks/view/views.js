@@ -165,10 +165,13 @@ function show_top10_result(table_array){
 }
 
 function show_highchart(container_name, nome_pregao, nome_empresa, response, data_inicial, data_final){
-    // date1 = tratar_data(data_inicial);
-    // date2 = tratar_data(data_final);
-date1 = new Date("2007-04-04").getTime();
-        date2 = new Date("2010-04-04").getTime()
+   if(container_name == "ts_news_container_top")
+    {
+     date1 = tratar_data(data_inicial);
+     date2 = tratar_data(data_final);
+   }
+// date1 = new Date("2007-04-04").getTime();
+//         date2 = new Date("2010-04-04").getTime()
     
    // $('#container').highcharts().xAxis[0].setExtremes(date1, date2);
     $("#" + container_name + "").dialog("option", "title", "Série Temporal - " + nome_empresa);
@@ -194,8 +197,14 @@ date1 = new Date("2007-04-04").getTime();
                     valueDecimals: 2
                 }
             }]
-        }).xAxis[0].setExtremes(date1, date2); 
-    }   
+        }); 
+
+        if(container_name == "ts_news_container_top")
+        {
+             $('#' + container_name + ' #time_serie').highcharts().xAxis[0].setExtremes(date1, date2);    
+        }    
+
+    }
 }
 
 function show_news(news_list){
