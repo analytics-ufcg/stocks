@@ -164,8 +164,13 @@ function show_top10_result(table_array){
     });  
 }
 
-function show_highchart(container_name, nome_pregao, nome_empresa, response){
+function show_highchart(container_name, nome_pregao, nome_empresa, response, data_inicial, data_final){
+    // date1 = tratar_data(data_inicial);
+    // date2 = tratar_data(data_final);
+date1 = new Date("2007-04-04").getTime();
+        date2 = new Date("2010-04-04").getTime()
     
+   // $('#container').highcharts().xAxis[0].setExtremes(date1, date2);
     $("#" + container_name + "").dialog("option", "title", "Série Temporal - " + nome_empresa);
     
     if (response.length <= 0){
@@ -175,7 +180,7 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response){
         // Create the chart
         $('#' + container_name + ' #time_serie').highcharts('StockChart', {
             rangeSelector : {
-                selected : 1
+                selected : undefined
             },
 
             title : {
@@ -189,7 +194,7 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response){
                     valueDecimals: 2
                 }
             }]
-        }); 
+        }).xAxis[0].setExtremes(date1, date2); 
     }   
 }
 
@@ -199,4 +204,16 @@ function show_news(news_list){
     }else{
         
     }
+}
+
+function tratar_data(data)
+{
+     array_data = data.split("/")
+     //list ($dia, $mes, $ano) = split("/", data);
+     ano = array_data[2];
+     mes = array_data[1];
+     dia = array_data[0];
+     console.log(ano + "-" + mes + "-" + dia);
+     result = new Date(ano + "-" + mes + "-" + dia).getTime();
+     return result;
 }

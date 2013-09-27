@@ -181,7 +181,29 @@ function create_time_serie_top(nome_empresa, isin){
 		data: call_data,
 		success: function(response) {
 			$("#loading_ts_top").hide();
-			show_highchart('ts_news_container_top', nome_empresa, nome_empresa, response);
+
+			show_highchart('ts_news_container_top', nome_empresa, nome_empresa, response, $('#start_date').val(), $('#end_date').val());
+			show_news([]);
+		}
+	});
+	
+
+	return false;
+}
+
+function create_line_time_news(cnpj, date){
+	$('#ts_news_container_top #news #folha_sao_paulo').show();
+	
+	console.log(call_data);
+	$.ajax({
+		type: 'GET',
+		dataType: 'json',
+		url: 'model/model_empresa_news_by_date.php',
+		async: true,
+		data: call_data,
+		success: function(response) {
+			$('#ts_news_container_top #news #folha_sao_paulo').hide();
+			
 			show_news([]);
 		}
 	});

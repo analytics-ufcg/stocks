@@ -95,7 +95,12 @@
 			'SELECT preco_ultimo, data_pregao 
 			FROM cotacao AS acao
 			WHERE acao.cod_isin = \'[EMP_ISIN]\' and acao.cod_bdi = 02 
-			ORDER BY acao.data_pregao ASC;'
+			ORDER BY acao.data_pregao ASC;',
+
+		// USED BY: model_empresa_news_by_cnpj_and_date.php
+		"get_news_by_cnpj_and_date" => 'SELECT  data_noticia,titulo
+		 	FROM Link_Noticias_Empresa
+		 	WHERE cnpj = \'[EMP_CNPJ]\' and data_noticia = \'[NEWS_DATE]\';'
 	);
 
 ?>
