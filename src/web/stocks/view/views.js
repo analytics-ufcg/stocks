@@ -86,10 +86,10 @@ function show_empresa_table(table_array){
 }
 
 
-function show_top10_result(table_array){
+function show_top_result(table_array){
 
    if (table_array.nomes.length <= 0){
-        $("#TOP_central_bar").html("<em>Nada foi encontrado.</em>");
+        $("#central_bar_top").html("<em>Nada foi encontrado.</em>");
         return false;
     }
 
@@ -117,8 +117,8 @@ function show_top10_result(table_array){
                         em 'Oscilação' são aquelas com maior soma."};
 
     // Create the table result as html
-    grouping = $("#top10_grouping").val();
-    metric = $("#top10_metric").val();
+    grouping = $("#top_grouping").val();
+    metric = $("#top_metric").val();
 
     var table = "<table id='empresa_table' class='table table-bordered table-condensed'>" 
                 + "<thead><tr bgcolor='#f5f5f5'><td colspan='3' style='text-align:center;font-weight:bold'>Ranking de "
@@ -212,7 +212,12 @@ function show_news(container_name, news_list){
         $("#" + container_name + " #news #folha_sao_paulo").html("Testando vazio");
                 
     }else{
-        $("#" + container_name + " #news #estadao").html("Testando nao vazio");
-        $("#" + container_name + " #news #folha_sao_paulo").html("Testando nao vazio");
+
+        
+        
+        $("#" + container_name + " #news #estadao").html("Testando");
+        $("#" + container_name + " #news #folha_sao_paulo").html("Testando");
     }
+
+    
 }

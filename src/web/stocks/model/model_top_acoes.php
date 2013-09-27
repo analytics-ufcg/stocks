@@ -7,11 +7,11 @@
     */
 
     # Reading Arguments...
-    $agrupamento = $_GET['top10_grouping'];
-    $metrica = $_GET['top10_metric'];
-    $top = $_GET['top'];
-    $data_inicial = $_GET['start_date_top10'];
-    $data_final = $_GET['end_date_top10'];
+    $agrupamento = $_GET['top_grouping'];
+    $metrica = $_GET['top_metric'];
+    $top = $_GET['top_n'];
+    $data_inicial = $_GET['start_date_top'];
+    $data_final = $_GET['end_date_top'];
     
     // $agrupamento = "Setor";
     // $metrica = "Queda";

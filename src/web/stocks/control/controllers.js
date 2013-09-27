@@ -25,13 +25,13 @@ function main_controller(){
 	/*
 		TAB TOP
 	*/
-	$("#top10_form").submit(function(e){
+	$("#top_acoes_form").submit(function(e){
 		// Avoid refreshing the page
 		e.preventDefault(); 
 		if(isValidDate($('#start_date').val(), "inicial") && 
 			isValidDate($('#end_date').val(), "final") )
 		{
-			run_top10();
+			run_top_acoes();
 		}
 		
 	});
@@ -69,6 +69,9 @@ function main_controller(){
 		width: 1000,
 		modal: true
 	});
+
+	// TOP Spinner
+
 
 }
 
@@ -114,22 +117,19 @@ function fill_text_area_typeahed(search_type){
 	return false;
 }
 
-function run_top10(){
+function run_top_acoes(){
 	$("#go_top10").button('loading');
-	var call_data = $('#top10_form').serialize();
-	call_data += "&top=10";
-	console.log(call_data);
+	var call_data = $('#top_acoes_form').serialize();
 
 	$.ajax({
 	 	type: 'GET',
 	 	dataType: 'json',
-	 	url: 'model/model_top10.php',
+	 	url: 'model/model_top_acoes.php',
 	 	async: true,
 	 	data: call_data,
 	 	success: function(response) {
 	 		$("#go_top10").button('reset');
-	 		// console.log(response);
-			show_top10_result(response);
+			show_top_result(response);
 	 	}
 	 });
 	 return false;

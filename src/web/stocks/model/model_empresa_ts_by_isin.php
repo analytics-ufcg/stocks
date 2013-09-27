@@ -7,9 +7,6 @@
     # Prepare the query
     // $cnpj = '86550951000150';
     $query = str_replace("[EMP_ISIN]", $isin, $query_map['get_ts_by_isin']);
-    
-    # Turn on error reporting
-    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
     # Connect to the Database
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");

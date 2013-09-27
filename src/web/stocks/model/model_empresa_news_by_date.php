@@ -14,9 +14,6 @@
             FROM Link_Noticias_Empresa
             WHERE cnpj = ? and data_noticia = ?';
 
-    # Turn on error reporting
-    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-
     # Connect to the Database
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
 

@@ -76,37 +76,14 @@
 			LIMIT ?;',
 
 		// USED BY: model_emp_ts_by_cnpj.php
-		"get_largest_ts_by_cnpj" =>
-			'SELECT tab_result.preco_ultimo, tab_result.data_pregao
-			FROM (SELECT emp_isin.cod_isin, acao.preco_ultimo, acao.data_pregao 
-				FROM empresa AS emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj
-				     INNER JOIN (SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') AS preco_ultimo
-						        FROM cotacao
-						        WHERE cod_bdi = 02
-						        TIMESERIES slice_time AS \'1 day\' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
-						  		) AS acao  ON emp_isin.cod_isin = acao.cod_isin 
-				WHERE emp.cnpj = \'[EMP_CNPJ]\'
-				ORDER BY acao.data_pregao ASC) AS tab_result,
-				(SELECT emp_isin.cod_isin
-				FROM empresa_isin AS emp_isin
-				WHERE emp_isin.cnpj = \'[EMP_CNPJ]\'
-				ORDER BY emp_isin.tamanho_cotacao DESC
-				limit 1) AS tab_isin
-			WHERE tab_result.cod_isin = tab_isin.cod_isin;',
-
-		// "get_ts_by_isin" =>
-		// 	'SELECT preco_ultimo, data_pregao 
-		// 	FROM cotacao AS acao
-		// 	WHERE acao.cod_isin = \'[EMP_ISIN]\' and acao.cod_bdi = 02 
-		// 	ORDER BY acao.data_pregao ASC;',
-
 		"get_isin_with_largest_ts_by_cnpj" =>
-			'SELECT emp_isin.cod_isin
+			'SELECT emp_isin.cod_isin, emp_isin.tamanho_cotacao
 			FROM empresa_isin AS emp_isin
 			WHERE emp_isin.cnpj = \'[EMP_CNPJ]\'
 			ORDER BY emp_isin.tamanho_cotacao DESC
 			limit 1',
 
+		// USED BY: model_emp_ts_by_cnpj.php AND model_emp_ts_by_isin.php
 		"get_ts_by_isin" =>
 			'SELECT data_pregao, preco_ultimo
 			FROM (SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') AS preco_ultimo

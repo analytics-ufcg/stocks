@@ -14,9 +14,6 @@
 
     # Prepare the query
    	$query = str_replace("[EMP_COLUMN]", $column, $query_map['get_col_empresa']);
-    
-    # Turn on error reporting
-    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
     # Connect to the Database
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
