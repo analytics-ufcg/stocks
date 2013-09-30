@@ -205,18 +205,34 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
     }
 }
 
-function show_news(container_name, news_list){
+function show_news(container_name, news_list, date){
+
+    var table1 = "<table id='empresa_table' class='table table-bordered table-condensed'>" + 
+                    "<thead>" + 
+                        "<tr bgcolor='#f5f5f5'>" +
+                            "<th style='text-align:center'>Noticias do Estadão - " + date + "</th>" +
+                        "</tr>";
+
+    var table2 = "<table id='empresa_table' class='table table-bordered table-condensed'>" + 
+                    "<thead>" + 
+                        "<tr bgcolor='#f5f5f5'>" +
+                            "<th style='text-align:center'>Noticias da Folha de São Paulo - " + date + "</th>" + 
+                        "</tr>";
 
     if (news_list.length <= 0){
-        $("#" + container_name + " #news #estadao").html("Testando vazio");
-        $("#" + container_name + " #news #folha_sao_paulo").html("Testando vazio");
-                
+         $("#" + container_name + " #news #estadao").html("Testando vazio");
+         $("#" + container_name + " #news #folha_sao_paulo").html("Testando vazio");
+     <!-- "<a href=" + row['twitter_contato'] + ">" + row['twitter_contato'] + "</a>"; -->         
     }else{
+        for (var i = 0; i < news_list[0].length; i++){
+            table1 += "<tr><td>" + "<a href=" + news_list[0][i][1] + ">" + news_list[0][i][0] +
+                        "</a></td></tr>";
+        }
 
-        
-        
-        $("#" + container_name + " #news #estadao").html("Testando");
-        $("#" + container_name + " #news #folha_sao_paulo").html("Testando");
+        table1 += "</thead></table>";
+        table2 += "</thead></table>";
+        $("#" + container_name + " #news #estadao").html(table1);
+        $("#" + container_name + " #news #folha_sao_paulo").html(table2);
     }
 
     

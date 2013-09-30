@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS cotacao (
     ind_mercado_opcoes    INTEGER, 
     data_vencimento       TIMESTAMP,
     fator_cotacao         INTEGER, 
-    pontos_exercicio      NUMERIC(7, 6),
+    pontos_exercicio      NUMERIC(13, 6),
     cod_isin              CHAR(12),
     num_distribuicao      CHAR(3),
     PRIMARY KEY           (id_cotacao),

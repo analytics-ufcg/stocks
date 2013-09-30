@@ -16,13 +16,13 @@ class CotacaoDiaria():
                  totneg, quatot, voltot, preexe, indopc, datven, fatcot, ptoexe,
                  codisi, dismes):
         self.dataPregao = dataPregao 
-        self.codbdi = codbdi
-        self.codneg = codneg
+        self.codbdi = codbdi.replace('"', '#')
+        self.codneg = codneg.replace('"', '#')
         self.tpmerc = int(tpmerc)
-        self.nomres = nomres 
-        self.especi = especi
-        self.prazot = prazot 
-        self.modref = modref 
+        self.nomres = nomres.replace('"', '#')
+        self.especi = especi.replace('"', '#')
+        self.prazot = prazot.replace('"', '#')
+        self.modref = modref.replace('"', '#')
         self.preabe = float(preabe) / 100
         self.premax = float(premax) / 100 
         self.premin = float(premin) / 100 
@@ -38,8 +38,8 @@ class CotacaoDiaria():
         self.datven = datven
         self.fatcot = int(fatcot) 
         self.ptoexe = float(ptoexe) / 1000000
-        self.codisi = codisi
-        self.dismes = dismes
+        self.codisi = codisi.replace('"', '#')
+        self.dismes = dismes.replace('"', '#')
         
     def getList(self):
         return [self.dataPregao, self.codbdi, self.codneg, self.tpmerc, self.nomres, self.especi, self.prazot,

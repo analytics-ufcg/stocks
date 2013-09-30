@@ -157,7 +157,7 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 			show_news('ts_news_container_search', []);
 
 			// Test only
-			create_time_line_news('ts_news_container_search', "kjk", "klklk");
+			create_time_line_news('ts_news_container_search', '33000167000101', '2013-09-10');
 		}
 	});
 
@@ -200,7 +200,7 @@ function create_time_line_news(container_name, cnpj, date){
 	$('#' + container_name + ' #news #folha_sao_paulo').html("");
 	$('#' + container_name + ' #news #estadao').html("");
 
-	call_data = "";
+	call_data = "cnpj=" + cnpj + "&date=" + date;
 	//console.log(call_data);
 	$.ajax({
 		type: 'GET',
@@ -210,7 +210,7 @@ function create_time_line_news(container_name, cnpj, date){
 		data: call_data,
 		success: function(response) {
 			console.log(response);
-			show_news(container_name, response);
+			show_news(container_name, response, date);
 		}
 	});
 	

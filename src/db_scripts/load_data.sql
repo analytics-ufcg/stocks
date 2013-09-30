@@ -55,7 +55,7 @@ select ANALYZE_CONSTRAINTS('link_noticias_empresa');
 -- 		 automaticamente no proprio codigo python (que leh o UTF e escreve o CSV)
 
 COPY cotacao 
-FROM '/home/stocks/data/cotacoes_*.csv' 
+FROM '/home/stocks/data/Historico_Cotacoes_CSV/cotacoes_*.csv' 
 DELIMITER ',' 
 ENCLOSED BY '"' 
 ESCAPE AS '\'    -- Caractere de escape

@@ -2,15 +2,15 @@
 
     include 'global_model.php';
 
-    //$isin = $_GET['isin'];
-   
+    $cnpj = $_GET['cnpj'];
+    $date = $_GET['date'];
     # Prepare the query
-    $cnpj = 33000167000101;
-    $date = '2013-09-10';
+    //$cnpj = 33000167000101;
+    //$date = '2013-09-10';
     //$query = str_replace("[EMP_CNPJ]", $cnpj, $query_map['get_news_by_cnpj_and_date']);
     //$query = str_replace("[EMP_DATE]", $date, $query);
 
-    $query = 'SELECT  data_noticia,titulo
+    $query = 'SELECT  fonte,titulo,link
             FROM Link_Noticias_Empresa
             WHERE cnpj = ? and data_noticia = ?';
 
@@ -23,14 +23,22 @@
     # Execute the query
     $success = odbc_execute($resultset, array($cnpj,$date));
 
-    # Fetch all rows
-    $name_list = array();
-    $list_response = array();
+    # Arrays para noticias de cada fonte
+    $folha = array();
+    $estadao = array();
    
     while ($row = odbc_fetch_array($resultset)) {
-        array_push($list_response, array($row['data_noticia'], $row['titulo']));
+        
+        # Coloca as noticias no array destinado a cada fonte
+        if($row['fonte'] == 'Folha de S.Paulo'){
+            array_push($folha, array($row['titulo'], $row['link']));
+        }else{
+            array_push($estadao, array($row['titulo'], $row['link']));
+        }
         
     }
+    $list_response = array($estadao, $folha);
+    
     
 	# Close the connection
 	odbc_close($conn);
