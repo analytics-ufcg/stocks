@@ -3,9 +3,9 @@
     include 'global_model.php';
 
     $isin = $_GET['isin'];
-   // $isin = "BRPETRACNOR9";
+    // $isin = "BRPETRACNOR9";
+    
     # Prepare the query
-    // $cnpj = '86550951000150';
     $query = str_replace("[EMP_ISIN]", $isin, $query_map['get_ts_by_isin']);
 
     # Connect to the Database
@@ -18,15 +18,18 @@
     $success = odbc_execute($resultset, array());
 
     # Fetch all rows
-    $name_list = array();
     $list_response = array();
-    $data = array();
-    $valores = array();
     while ($row = odbc_fetch_array($resultset)) {
+        # OLD
         array_push($list_response, array(strtotime($row['data_pregao'])*1000, (float)$row['preco_ultimo']));
-        array_push($data, $row['data_pregao']);
-        array_push($valores, $row['preco_ultimo']);
         
+        # NEW
+        // $is_solavanco = TRUE;
+        // if (rand(1,2) == 1){
+        //     $is_solavanco = FALSE;
+        // }
+        // array_push($list_response, array(strtotime($row['data_pregao'])*1000, (float)$row['preco_ultimo'], $is_solavanco));
+
     }
     
 	# Close the connection

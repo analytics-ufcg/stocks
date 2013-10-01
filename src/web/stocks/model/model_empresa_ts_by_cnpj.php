@@ -41,11 +41,19 @@
         $success = odbc_execute($resultset, array());
 
         # Fetch all rows
-        $preco_ultimo_ts = array();
+        $list_response = array();
         while ($row = odbc_fetch_array($resultset)) {
-            array_push($preco_ultimo_ts, array(strtotime($row['data_pregao']) * 1000, (float) $row['preco_ultimo']));
+            # OLD
+            array_push($list_response, array(strtotime($row['data_pregao']) * 1000, (float) $row['preco_ultimo']));
+            # NEW
+            // $is_solavanco = TRUE;
+            // if (rand(1,2) == 1){
+            //     $is_solavanco = FALSE;
+            // }
+            // array_push($list_response, array(strtotime($row['data_pregao']) * 1000, (float) $row['preco_ultimo'], $is_solavanco));
+
         }
-        echo json_encode($preco_ultimo_ts);
+        echo json_encode($list_response);
     }
     # Close the connection
     odbc_close($conn);
