@@ -93,7 +93,7 @@
 			  	) AS acao
 			WHERE acao.cod_isin = \'[EMP_ISIN]\'
 			ORDER BY acao.data_pregao ASC;',
-
+ 
 
 		// USED BY: model_empresa_news_by_cnpj_and_date.php
 		"get_news_by_cnpj_and_date" => 
