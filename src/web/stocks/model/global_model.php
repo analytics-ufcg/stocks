@@ -94,6 +94,14 @@
 			WHERE acao.cod_isin = \'[EMP_ISIN]\'
 			ORDER BY acao.data_pregao ASC;',
 
+		"get_ts_by_isin_with_solavanco" =>
+			'SELECT DetectSolavancoInterval(acao.data_pregao, acao.preco_ultimo, 15, 0.95) OVER()
+			FROM (SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') AS preco_ultimo
+				FROM cotacao
+				WHERE cod_bdi = 02 AND cod_isin = \'[EMP_ISIN]\'
+				TIMESERIES slice_time AS \'1 day\' OVER (PARTITION BY cod_isin ORDER BY data_pregao)
+				ORDER BY data_pregao ASC
+			  	) AS acao;'
 
 		// USED BY: model_empresa_news_by_cnpj_and_date.php
 		"get_news_by_cnpj_and_date" => 
