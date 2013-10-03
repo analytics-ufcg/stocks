@@ -164,8 +164,20 @@ function show_top_result(table_array){
     });  
 }
 
-function show_highchart(container_name, nome_pregao, nome_empresa, response, data_inicial, data_final){
-    
+function show_highchart(container_name, nome_pregao, nome_empresa, response, data_inicial, data_final, cnpj, isin){
+    //response = Array.prototype.slice.call(response);
+    var seriesOptions = [];
+     seriesOptions[0] = {
+               name : nome_pregao,
+        data: response[0]
+    };
+     seriesOptions[1] = {
+         name : nome_pregao,
+        color: '#BF0B23',
+        data: response[1],
+          enableMouseTracking: false
+    };  
+    console.log(response);
     function parse_date(data){
          array_data = data.split("/");
          return new Date(array_data[2] + "-" + array_data[1] + "-" + array_data[0]).getTime();
@@ -179,6 +191,19 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
     }else{
         // Create the chart
         $('#' + container_name + ' #time_serie').highcharts('StockChart', {
+
+            chart: {
+            events: {
+                click: function(event) {
+                    create_time_line_news(container_name, cnpj, isin, Highcharts.dateFormat('%Y-%m-%d', event.xAxis[0].value));
+                    // alert (
+                    //     'x: '+ Highcharts.dateFormat('%Y-%m-%d', event.xAxis[0].value) +', ' +
+                    //     'y: '+ event.yAxis[0].value
+                    // );
+                }
+            }
+        },
+
             rangeSelector : {
                 selected : undefined
             },
@@ -187,13 +212,7 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
                 text : nome_empresa
             },
             
-            series : [{
-                name : nome_pregao,
-                data : response,
-                tooltip: {
-                    valueDecimals: 2
-                }
-            }]
+            series : seriesOptions
         }); 
 
         if(container_name == "ts_news_container_top"){
@@ -206,22 +225,25 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
 }
 
 function show_news(container_name, news_list, date){
-
+    
+    date = date.split("-");
+    date.reverse();
+    date = date.join("/");
     var table1 = "<table id='empresa_table' class='table table-bordered table-condensed'>" + 
                     "<thead>" + 
                         "<tr bgcolor='#f5f5f5'>" +
-                            "<th style='text-align:center'>Noticias do Estadão - " + date + "</th>" +
+                            "<th style='text-align:center'><img src='img/logo_estadao.jpg'>  Noticias do Estadão - (" + date + ")</th>" +
                         "</tr>";
 
     var table2 = "<table id='empresa_table' class='table table-bordered table-condensed'>" + 
                     "<thead>" + 
                         "<tr bgcolor='#f5f5f5'>" +
-                            "<th style='text-align:center'>Noticias da Folha de São Paulo - " + date + "</th>" + 
+                            "<th style='text-align:center'><img src='img/logo_folha.jpg'>  Noticias da Folha de São Paulo - (" + date + ")</th>" + 
                         "</tr>";
 
     if (news_list.length <= 0){
-         $("#" + container_name + " #news #estadao").html("Testando vazio");
-         $("#" + container_name + " #news #folha_sao_paulo").html("Testando vazio");
+         //$("#" + container_name + " #news #estadao").html("Testando vazio");
+         //$("#" + container_name + " #news #folha_sao_paulo").html("Testando vazio");
      <!-- "<a href=" + row['twitter_contato'] + ">" + row['twitter_contato'] + "</a>"; -->         
     }else{
         for (var i = 0; i < news_list[0].length; i++){
