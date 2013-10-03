@@ -17,7 +17,7 @@ GlobalBaseline <- function(serie, limit.quantile = .95){
   return (list(is.burst = is.burst, method.name = "Global-Baseline Detector"))
 }
 
-LocalBaseline <- function(serie, window.size = 30, limit.quantile = .95){
+LocalBaseline <- function(serie, window.size = 15, limit.quantile = .95){
 
   diff.serie <- diff(serie, lag=1)
   abs.serie <- abs(diff.serie)

@@ -41,11 +41,7 @@ news.count.df <- news.count.df[-c(1:2),]
 
 cat("Selecting all COTACAO (already interpolated) with the CNPJs that have: at least one day with cotacao AND one NOTICIA assigned to it ...\n")
 emp.ts.query <- "SELECT emp.cnpj, emp.nome_pregao, emp_isin.cod_isin, acao.data_pregao, acao.preco_ultimo
-                FROM empresa AS emp INNER JOIN (
-                            SELECT cnpj, cod_isin
-                            FROM empresa_isin
-                            WHERE tamanho_cotacao > 0
-                      ) AS emp_isin ON emp.cnpj = emp_isin.cnpj
+                FROM empresa AS emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj
                      INNER JOIN (
                   		     SELECT slice_time as data_pregao, cod_isin, 
                 				         TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, 'const') as preco_ultimo
@@ -75,7 +71,7 @@ news.count.filled <- ddply(news.count.df, .(cnpj, fonte), function(df){
   
   news.ts <- zoo(df$num_noticias, df$data_noticia)
   news.ts.complete <- merge.zoo(news.ts,
-                               zoo(, seq(start(news.ts), end(news.ts), by="day")), all=TRUE)
+                                zoo(, seq(start(news.ts), end(news.ts), by="day")), all=TRUE)
   news.ts.complete[is.na(news.ts.complete)] <- 0
   return(data.frame(data_noticia = index(news.ts.complete), 
                     num_noticias = as.vector(news.ts.complete)))
@@ -106,58 +102,94 @@ pdf(paste(output.dir, "/news_correlation_ts.pdf", sep = ""), width = 25, height 
 d_ply(emp.ts.filled, .(cnpj, cod_isin), function(df){
   for (this.fonte in unique(news.count.df$fonte)){
     
-      ts.cnpj <- df$cnpj[1]
-      ts.nome.pregao <- df$nome_pregao[1]
-      ts.cod_isin <- as.character(df$cod_isin[1])
-        
-      # Create the zoo object
-      price.ts.filled <- zoo(df$preco_ultimo, df$data_pregao)
+    ts.cnpj <- df$cnpj[1]
+    ts.nome.pregao <- df$nome_pregao[1]
+    ts.cod_isin <- as.character(df$cod_isin[1])
+    print(ts.cnpj)
+    print(ts.cod_isin)
+    print(this.fonte)
+    
+    # Create the zoo object
+    price.ts.filled <- zoo(df$preco_ultimo, df$data_pregao)
+    
+    # Create the Filled News TS object by FONTE and CNPJ
+    news.df.filled <- subset(news.count.filled, fonte == this.fonte & cnpj == ts.cnpj)
+    if (nrow(news.df.filled) > 0){
       
-      # Create the Filled News TS object by FONTE and CNPJ
-      news.df.filled <- subset(news.count.filled, fonte == this.fonte & cnpj == ts.cnpj)
       news.ts.filled <- zoo(news.df.filled$num_noticias, news.df.filled$data_noticia)
-  
+      
       # Remove the useless objects
       rm(news.df.filled)
       
-      # CALCULTE THE Pearson CORRELATION between the FILLED NEWS and FILLED PRICE
       # Find the intersection between the filled TSs and Filter them
       intersect.ts.filled <- merge.zoo(news.ts.filled, price.ts.filled, all = F)
       
-      # Calculate the Correlation
-      ts.correlation.filled <- cor(as.vector(intersect.ts.filled[, "news.ts.filled"]), 
-                                   as.vector(intersect.ts.filled[, "price.ts.filled"]), 
-                                   method = "pearson")
-  
-      # CALCULTE THE Pearson CORRELATION between the FILLED NEWS and FILLED PRICE (solavanco dates)
-      # Find the solavancos of the Filled Price TS
       intersect.news.ts <- intersect.ts.filled[, "news.ts.filled"]
       intersect.price.ts <- intersect.ts.filled[, "price.ts.filled"]
       
-      solavancos <- LocalBaseline(intersect.price.ts, window.size)$is.burst
-      
-      # Calculate the Correlation
-      solavanco.corr <- cor(as.vector(intersect.news.ts)[c(F, solavancos)], 
-                            as.vector(intersect.price.ts)[c(F, solavancos)], 
-                            method = "pearson")
-  
-      # Plot the Time-Series and Correlations
-      par(mfrow = c(2, 1), mar=c(5.1, 4.1, 4.1, 2.1))
-      
-      PlotTsWithSolavanco(intersect.price.ts, solavancos, 
-                          ylab = "Preco_Ultimo",
-                          main.title = paste("Time-Series with Solavancos\n", ts.nome.pregao, 
-                                             " (", ts.cod_isin,")   vs.  ", this.fonte, 
-                                             "\nPearson Correlations: plain= ", 
-                                             round(ts.correlation.filled, 3), 
-                                             " / solavanco only= ", round(solavanco.corr, 3), 
-                                             sep = ""))
-      
-      par(mar=c(5.1, 4.1, 0, 2.1)) # No title
-      
-      PlotTsWithSolavanco(intersect.news.ts, solavancos, 
-                          ylab = "Number of News", main.title = "")
-      
+      if (!is.na(intersect.news.ts[1]) & ! is.na(intersect.price.ts[1])){
+        
+        # ------------------------------------------------------------------------
+        # CALCULTE THE Pearson CORRELATION between the FILLED NEWS and FILLED PRICE
+        vec1 <- as.vector(intersect.news.ts)
+        vec2 <- as.vector(intersect.price.ts)
+        
+        if (length(vec1) > 1 & length(vec2) > 1 & sd(vec1) != 0 & sd(vec2) != 0){
+          ts.correlation.filled <- cor(vec1, vec2, method = "pearson")
+        }else{
+          # No intersection, One valued vector or Zeroed standard deviation => No correlation can be calculated
+          ts.correlation.filled <- NA
+        }
+        
+        # ------------------------------------------------------------------------
+        # CALCULTE THE Pearson CORRELATION between the FILLED NEWS and FILLED PRICE (solavanco dates)
+        # Find the solavancos of the Filled Price TS
+        solavancos <- rep(F, length(intersect.price.ts))
+        
+        if (length(intersect.price.ts) > window.size){
+          solavancos <- LocalBaseline(intersect.price.ts, window.size)$is.burst
+          
+          vec1 <- vec1[c(F, solavancos)]
+          vec2 <- vec2[c(F, solavancos)]
+          
+          # Calculate the Correlation
+          if (length(vec1) > 1 & length(vec2) > 1 & sd(vec1) != 0 & sd(vec2) != 0){
+            solavanco.corr <- cor(vec1, vec2, method = "pearson")
+          }else{
+            # One valued vector or Zeroed standard deviation => No correlation can be calculated
+            solavanco.corr <- NA
+          }   
+        }else{
+          # No solavanco can be calculated
+          solavanco.corr <- NA
+        }
+        
+        # ------------------------------------------------------------------------
+        # Plot the Time-Series and Correlations
+        par(mfrow = c(2, 1), mar=c(5.1, 4.1, 4.1, 2.1))
+        
+        PlotTsWithSolavanco(intersect.price.ts, solavancos, 
+                            ylab = "Preco_Ultimo",
+                            main.title = paste("Time-Series with Solavancos\n", ts.nome.pregao, 
+                                               " (", ts.cod_isin,")   vs.  ", this.fonte, 
+                                               "\nPearson Correlations: plain= ", 
+                                               round(ts.correlation.filled, 3), 
+                                               " / solavanco only= ", round(solavanco.corr, 3), 
+                                               sep = ""))
+        
+        par(mar=c(5.1, 4.1, 0, 2.1)) # No title
+        
+        PlotTsWithSolavanco(intersect.news.ts, solavancos, 
+                            ylab = "Number of News", main.title = "")
+        
+      }else{
+        # No intersection => No correlation can be calculated
+        # TODO: show a text in the middle of the page.
+      }
+    }else{
+      # No news in this fonte!
+      # TODO: show a text in the middle of the page.
+    }
   }
 }, .progress = "text")
 dev.off()

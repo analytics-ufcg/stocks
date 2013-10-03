@@ -11,7 +11,13 @@
 		// USED BY: model_empresa.php 
 		"get_empresas_by_col" => 
 			'SELECT * 
-			FROM empresa as emp LEFT JOIN contato_investidor as cont on emp.cnpj = cont.cnpj 
+			FROM empresa as emp LEFT JOIN contato_investidor AS cont ON emp.cnpj = cont.cnpj 
+	        WHERE emp.[EMP_COLUMN] = ?',
+
+	    "get_empresas_by_isin" => 
+			'SELECT * 
+			FROM empresa as emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj 
+								LEFT JOIN contato_investidor AS cont ON emp.cnpj = cont.cnpj 
 	        WHERE emp.[EMP_COLUMN] = ?',
 
 		// USED BY: model_empresa_col.php 

@@ -18,11 +18,15 @@
     // $column = "cnpj";
     // $value = "56720428000163";
 
-    # Prepare the query
-    $query = str_replace("[EMP_COLUMN]", $column, $query_map['get_empresas_by_col']);
-
     # Connect to the Database
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
+
+    # Prepare the query
+    if ($column == "cod_isin"){
+        $query = str_replace("[EMP_COLUMN]", $column, $query_map['get_empresas_by_isin']);
+    }else{
+        $query = str_replace("[EMP_COLUMN]", $column, $query_map['get_empresas_by_col']);
+    }
 
     # Prepare the query
     $resultset = odbc_prepare($conn, $query);
