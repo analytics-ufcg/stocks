@@ -34,7 +34,7 @@
         # ----------------------------------------------------------------------------------------
         
         # Prepare the query
-        $query = str_replace("[EMP_ISIN]", $isin_row[0]['cod_isin'], $query_map['get_ts_by_isin']);
+        $query = str_replace("[EMP_ISIN]", $isin_row[0]['cod_isin'], $query_map['get_ts_by_isin_with_solavanco']);
        
         # Execute the query
         $resultset = odbc_prepare($conn, $query);
@@ -43,14 +43,9 @@
         # Fetch all rows
         $list_response = array();
         while ($row = odbc_fetch_array($resultset)) {
-            # OLD
-           // array_push($list_response, array(strtotime($row['data_pregao']) * 1000, (float) $row['preco_ultimo']));
-            # NEW
-            $is_solavanco = TRUE;
-            if (rand(1,2) == 1){
-                $is_solavanco = FALSE;
-            }
-            array_push($list_response, array(strtotime($row['data_pregao']) * 1000, (float) $row['preco_ultimo'], $is_solavanco));
+            array_push($list_response, array(strtotime($row['data_pregao']) * 1000, 
+                (float) $row['preco_ultimo'], 
+                $row['is_solavanco']));
 
         }
        // $arraySolavancos = gerarArraySolavancos($list_response);

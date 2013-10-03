@@ -58,11 +58,11 @@ emp.ts.filled <- sqlQuery(myconn, emp.ts.query)
 cat("Closing the connection.\n")
 close(myconn)
 
-cat("Cleaning the data:\n")
-# Estadão.com.br: Removing the news before 2010-01-01
-cat("  Estadão.com.br: Removing the news before 2010-01-01\n")
-rows.to.remove <- which(news.count.df$fonte == 'Estadão.com.br' & news.count.df$data_noticia < as.POSIXct('2010-01-01', "%Y-%m-%d"))
-news.count.df <- news.count.df[-rows.to.remove, ]
+# cat("Cleaning the data:\n")
+# # Estadão.com.br: Removing the news before 2010-01-01
+# cat("  Estadão.com.br: Removing the news before 2010-01-01\n")
+# rows.to.remove <- which(news.count.df$fonte == 'Estadão.com.br' & news.count.df$data_noticia < as.POSIXct('2010-01-01', "%Y-%m-%d"))
+# news.count.df <- news.count.df[-rows.to.remove, ]
 
 # For each (CNPJ and FONTE):
 #   Interpolate the NUM_NOTICIAS with zeros (0)
@@ -89,6 +89,8 @@ cat("Plotting the Price and NewsCount Time-Series with the solavancos highlighte
 window.size <- 15
 emp.news.corr <- NULL
 output.dir <- "data/time_series/news_correlation"
+dir.create("data", showWarnings=F)
+dir.create("data/time_series", showWarnings=F)
 dir.create(output.dir, showWarnings=F)
 
 # TODO (if you're going to use it to more empresas):
