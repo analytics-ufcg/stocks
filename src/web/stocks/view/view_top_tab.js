@@ -38,7 +38,7 @@ function show_top_result(table_array){
                 + grouping + "</th><th style='text-align:center' id='top_metrica_col' data-placement='top' rel='popover'>" 
                 + metric + "<i class='icon-info-sign'></i></th></tr><thead><tbody>";
 
-    for (var i = 0; i < table_array.nomes.length; i++) {
+    for (var i = 0; i < table_array.nomes.length; i++){
         row = table_array[i];
         nome = table_array.nomes[i];
         valor = table_array.valores[i];
@@ -48,7 +48,7 @@ function show_top_result(table_array){
         {
             array_nome = nome.split("(");
             isin_empresa = array_nome[1];
-            isin_empresa = isin_empresa.replace(")","");
+            isin_empresa = isin_empresa.replace(")", "");
         }
 
         table += 
@@ -63,6 +63,10 @@ function show_top_result(table_array){
         }
         
         table += "<td>" + valor;
+
+        if (metric == "Crescimento" || metric == "Queda"){
+            table += " %";
+        }
     };
     table += "</tbody></table>";
     

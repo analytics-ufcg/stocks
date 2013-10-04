@@ -18,7 +18,7 @@
 			'SELECT * 
 			FROM empresa as emp INNER JOIN empresa_isin AS emp_isin ON emp.cnpj = emp_isin.cnpj 
 								LEFT JOIN contato_investidor AS cont ON emp.cnpj = cont.cnpj 
-	        WHERE emp.[EMP_COLUMN] = ?',
+	        WHERE emp_isin.[EMP_COLUMN] = ?',
 
 		// USED BY: model_empresa_col.php 
         "get_col_empresa" =>
@@ -91,7 +91,7 @@
 
 		// USED BY: model_emp_ts_by_cnpj.php AND model_emp_ts_by_isin.php
 		"get_ts_by_isin_with_solavanco" =>
-			'SELECT DetectSolavancoInterval(acao.data_pregao, acao.preco_ultimo, 15, 0.95) OVER()
+			'SELECT DetectSolavanco(acao.data_pregao, acao.preco_ultimo, 15, 0.95) OVER()
 			FROM (SELECT slice_time as data_pregao, cod_isin, TS_FIRST_VALUE(preco_ultimo IGNORE NULLS, \'const\') AS preco_ultimo
 				FROM cotacao
 				WHERE cod_bdi = 02 AND cod_isin = \'[EMP_ISIN]\'

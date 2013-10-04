@@ -18,9 +18,10 @@ function main_controller(){
 
 	$('#text_area').typeahead({
         source : function(){
-            return typeahed_name_list;
+            return window.typeahed_name_list;
     }});
 
+	window.typeahed_name_list = [];
     
 	/*
 		TAB TOP
@@ -101,7 +102,7 @@ function run_search(){
 
 function fill_text_area_typeahed(search_type){
 	if(!(search_type == "Setor" || search_type == "Sub-Setor" || search_type == "Segmento")){
-		typeahed_name_list = [];
+		window.typeahed_name_list = [];
 		return false;
 	}
 	var call_data = "search_type=" + search_type;

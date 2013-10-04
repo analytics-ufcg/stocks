@@ -15,8 +15,8 @@
     }
 
     $column = strtolower($column);
-    // $column = "cnpj";
-    // $value = "56720428000163";
+    // $column = "cod_isin";
+    // $value = "BRBBASACNOR3";
 
     # Connect to the Database
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
