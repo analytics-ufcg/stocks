@@ -63,14 +63,13 @@ function main_controller(){
 	});
 
 
-	$( "#ts_news_container_top" ).dialog({
+	$( "#ts_news_container_search" ).dialog({
 		autoOpen: false,
 		height: 800,
 		width: 1000,
 		modal: true
 	});
-
-	$( "#ts_news_container_search" ).dialog({
+	$( "#ts_news_container_top" ).dialog({
 		autoOpen: false,
 		height: 800,
 		width: 1000,
@@ -158,8 +157,11 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 		data: call_data,
 		success: function(response) {
 			$("#loading_ts_search").hide();	
-			show_highchart('ts_news_container_search', nome_pregao, nome_empresa, response, 
+
+			show_highchart('ts_news_container_search', nome_pregao, nome_empresa, response[0], 
 				$('#start_date').val(), $('#end_date').val(), cnpj);
+			
+			show_news_stock_correlation_pdf(cnpj, response[1]);
 		}
 	});
 
@@ -191,6 +193,8 @@ function create_time_serie_top(nome_empresa, isin){
 
 			show_highchart('ts_news_container_top', nome_empresa, nome_empresa, response, 
 							$('#start_date').val(), $('#end_date').val(), isin);
+
+			// show_news_stock_correlation_pdf('', isin);
 		}
 	});
 

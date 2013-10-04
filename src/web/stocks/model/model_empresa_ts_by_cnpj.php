@@ -35,9 +35,10 @@
         # ----------------------------------------------------------------------------------------
         # QUERY 2: Get the acao by isin
         # ----------------------------------------------------------------------------------------
+        $selected_isin = $isin_row[0]['cod_isin'];
         
         # Prepare the query
-        $query = str_replace("[EMP_ISIN]", $isin_row[0]['cod_isin'], $query_map['get_ts_by_isin_with_solavanco']);
+        $query = str_replace("[EMP_ISIN]", $selected_isin, $query_map['get_ts_by_isin_with_solavanco']);
        
         # Execute the query
         $resultset = odbc_prepare($conn, $query);
@@ -51,7 +52,7 @@
                                             $row['is_solavanco']));
         }
 
-        echo json_encode($list_response);
+        echo json_encode(array($list_response, $selected_isin));
     }
 
     # Close the connection

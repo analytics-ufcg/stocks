@@ -60,7 +60,6 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
             date2 = parse_date(data_final);
              $('#' + container_name + ' #time_serie').highcharts().xAxis[0].setExtremes(date1, date2);    
         }    
-
     }
 }
 
@@ -91,7 +90,7 @@ function show_news(container_name, date, news_by_fonte){
 
         if (news_by_fonte[estadao_index].length > 0){
             for (var i = 0; i < news_by_fonte[estadao_index].length; i++){
-                table1 += "<tr><td>" + "<a href=" + news_by_fonte[estadao_index][i][1] + ">" + news_by_fonte[estadao_index][i][0] +
+                table1 += "<tr><td>" + "<a class='text-info' href=" + news_by_fonte[estadao_index][i][1] + ">" + news_by_fonte[estadao_index][i][0] +
                             "</a></td></tr>";
             }
         }else{
@@ -100,7 +99,7 @@ function show_news(container_name, date, news_by_fonte){
 
         if (news_by_fonte[folha_index].length > 0){
             for (var i = 0; i < news_by_fonte[folha_index].length; i++){
-                table2 += "<tr><td>" + "<a href=" + news_by_fonte[folha_index][i][1] + ">" + news_by_fonte[folha_index][i][0] +
+                table2 += "<tr><td>" + "<a class='text-info' href=" + news_by_fonte[folha_index][i][1] + ">" + news_by_fonte[folha_index][i][0] +
                             "</a></td></tr>";
             }
         }else{
@@ -112,4 +111,21 @@ function show_news(container_name, date, news_by_fonte){
     table2 += "</thead></table>";
     $("#" + container_name + " #news #estadao").html(table1);
     $("#" + container_name + " #news #folha_sao_paulo").html(table2);
+}
+
+function show_news_stock_correlation_pdf(cnpj, isin){
+    if (cnpj.length > 0){
+        filename_pdf = "data/news_stock_correlation/news_stock_corr_" + cnpj + "_" + isin.toUpperCase() + ".pdf";
+
+        // Container Search
+        $("#ts_news_container_search #correlation_pdf").html("<a href='#' onclick=\"window.open('" 
+            + filename_pdf + "', 'resizable,scrollbars');\" class='btn'> " 
+            + "<i class='icon-download'></i> Baixe o PDF com: séries com solavancos e correlação das notícias e da cotação "
+            + "<i class='icon-download'></i></a>");
+    }else{
+        // Container Top
+        // $("#ts_news_container_top #correlation_pdf").html("<a href='#' onclick=\"window.open('" 
+        //     + filename_pdf + "', 'resizable,scrollbars');\" class='btn'><i class='icon-download'></i></a>");
+    }
+
 }

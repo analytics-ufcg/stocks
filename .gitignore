@@ -4,3 +4,4 @@ data
 .RData
 .Rhistory
 src/web/stocks/img/logos
+src/web/stocks/data

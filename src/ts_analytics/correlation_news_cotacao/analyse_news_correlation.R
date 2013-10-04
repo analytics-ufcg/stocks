@@ -88,26 +88,24 @@ cat("Plotting the Price and NewsCount Time-Series with the solavancos highlighte
 
 window.size <- 15
 emp.news.corr <- NULL
-output.dir <- "data/time_series/news_correlation"
+output.dir <- "data/time_series/news_stock_correlation"
 dir.create("data", showWarnings=F)
 dir.create("data/time_series", showWarnings=F)
 dir.create(output.dir, showWarnings=F)
 
-# TODO (if you're going to use it to more empresas):
-# * Create a PDF for each Empresa + Isin
+# TODO:
 # * Add the Scatterplot graph with lm() regression
 
-pdf(paste(output.dir, "/news_correlation_ts.pdf", sep = ""), width = 25, height = 10)
-
 d_ply(emp.ts.filled, .(cnpj, cod_isin), function(df){
+  
+  ts.cnpj <- df$cnpj[1]
+  ts.nome.pregao <- df$nome_pregao[1]
+  ts.cod_isin <- as.character(df$cod_isin[1])
+  print(ts.cnpj)
+
+  pdf(paste(output.dir, "/news_stock_corr_", ts.cnpj, "_", ts.cod_isin, ".pdf", sep = ""), width = 25, height = 10)
+  
   for (this.fonte in unique(news.count.df$fonte)){
-    
-    ts.cnpj <- df$cnpj[1]
-    ts.nome.pregao <- df$nome_pregao[1]
-    ts.cod_isin <- as.character(df$cod_isin[1])
-    print(ts.cnpj)
-    print(ts.cod_isin)
-    print(this.fonte)
     
     # Create the zoo object
     price.ts.filled <- zoo(df$preco_ultimo, df$data_pregao)
@@ -184,12 +182,10 @@ d_ply(emp.ts.filled, .(cnpj, cod_isin), function(df){
         
       }else{
         # No intersection => No correlation can be calculated
-        # TODO: show a text in the middle of the page.
       }
     }else{
       # No news in this fonte!
-      # TODO: show a text in the middle of the page.
     }
   }
+  dev.off()
 }, .progress = "text")
-dev.off()
