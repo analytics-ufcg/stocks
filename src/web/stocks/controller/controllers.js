@@ -28,14 +28,20 @@ function main_controller(){
 	$("#top_acoes_form").submit(function(e){
 		// Avoid refreshing the page
 		e.preventDefault(); 
-		if(isValidDate($('#start_date').val(), "inicial") && 
-			isValidDate($('#end_date').val(), "final") )
+		if(is_valid_date($('#start_date').val(), "inicial") && 
+			is_valid_date($('#end_date').val(), "final") )
 		{
 			run_top_acoes();
 		}
 		
 	});
 
+
+	lower_bound = new Date(1993, 1, 1, 0, 0, 0, 0);
+	now = new Date();
+	upper_bound = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+	create_date_wrappers(lower_bound, upper_bound);
 
 	$("#start_date_wrapper").datepicker('setValue', new Date(2010, 0, 1, 0, 0, 0, 0));
 	$("#start_date").click(function() {
@@ -48,11 +54,11 @@ function main_controller(){
 	});
 
 	$("#start_date").keypress(function(){
-		add_barra_date(this);
+		add_bar_date(this);
 	});
 
 	$("#end_date").keypress(function(){
-		add_barra_date(this);
+		add_bar_date(this);
 	});
 
 
@@ -107,7 +113,7 @@ function fill_text_area_typeahed(search_type){
 		async: true,
 		data: call_data,
 		success: function(response) {		
-			typeahed_name_list = response.name_list;
+			window.typeahed_name_list = response.name_list;
 		}
 	});
 	return false;
@@ -183,15 +189,14 @@ function create_time_serie_top(nome_empresa, isin){
 			$("#loading_ts_top").hide();
 
 			show_highchart('ts_news_container_top', nome_empresa, nome_empresa, response, 
-				$('#start_date').val(), $('#end_date').val(),'',isin);
+							$('#start_date').val(), $('#end_date').val(),'',isin);
 		}
 	});
-	
 
 	return false;
 }
 
-function create_time_line_news(container_name, cnpj, isin, date){
+function create_timed_news(container_name, cnpj, isin, date){
 		
 	$('#' + container_name + ' #news #folha_sao_paulo').html("");
 	$('#' + container_name + ' #news #estadao').html("");
