@@ -7,7 +7,7 @@ library(RODBC)
 library(plyr)
 library(zoo)
 
-source("src/ts_analytics/detect_ts_bursts_methods.R")
+source("src/ts_analytics/ts_solavanco_detection/detect_ts_bursts_methods.R")
 
 # =============================================================================
 # FUNCTIONS

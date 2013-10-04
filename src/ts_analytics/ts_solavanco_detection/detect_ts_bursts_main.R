@@ -5,7 +5,7 @@ rm(list = ls())
 # =============================================================================
 library(zoo)
 library(Hmisc)
-source("src/ts_analytics/detect_ts_bursts_methods.R")
+source("src/ts_analytics/ts_solavanco_detection/detect_ts_bursts_methods.R")
 
 # =============================================================================
 # FUNCTIONs
