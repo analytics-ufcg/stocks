@@ -1,16 +1,11 @@
-function show_highchart(container_name, nome_pregao, nome_empresa, response, data_inicial, data_final, cnpj, isin){
+function show_highchart(container_name, nome_pregao, nome_empresa, response, data_inicial, data_final, query_news_value){
     
     var seriesOptions = [];
      seriesOptions[0] = {
                name : nome_pregao,
-        data: response[0]
+        data: response
     };
-     seriesOptions[1] = {
-         name : nome_pregao,
-        color: '#BF0B23',
-        data: response[1],
-          enableMouseTracking: false
-    };  
+    var data_to_plot_index = 1;
     
     function parse_date(data){
          array_data = data.split("/");
@@ -24,12 +19,26 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
         $('#' + container_name + ' #time_serie').html("<em>Não existe cotação para essa empresa no intervalo 1994-2013.</em>");
     }else{
         // Create the chart
+        for (i = 1; i < response.length; i++){
+            if(response[i][2] == true){
+                seriesOptions[data_to_plot_index] = {
+                        color: '#BF0B23',
+                        data: [
+                            {x: response[i-1][0], y: response[i-1][1]},
+                            {x: response[i][0], y: response[i][1]}
+                        ],
+                         enableMouseTracking: false
+
+                }
+                data_to_plot_index++;
+            }
+        }
         $('#' + container_name + ' #time_serie').highcharts('StockChart', {
 
             chart: {
             events: {
                 click: function(event) {
-                    create_timed_news(container_name, cnpj, isin, 
+                    create_timed_news(container_name, query_news_value, 
                         Highcharts.dateFormat('%Y-%m-%d', event.xAxis[0].value));
                     }
                 }
@@ -55,13 +64,14 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
     }
 }
 
-function show_news(container_name, news_list, date){
+function show_news(container_name, date, news_by_fonte){
     
     if (date.length > 0){
         date = date.split("-");
         date.reverse();
         date = date.join("/");
     }
+
     var table1 = "<table id='empresa_table' class='table table-bordered table-condensed'>" + 
                     "<thead>" + 
                         "<tr bgcolor='#f5f5f5'>" +
@@ -74,10 +84,27 @@ function show_news(container_name, news_list, date){
                             "<th style='text-align:center'><img src='img/logo_folha.jpg'>  Noticias da Folha de São Paulo - (" + date + ")</th>" + 
                         "</tr>";
 
-    if (news_list.length > 0){
-        for (var i = 0; i < news_list[0].length; i++){
-            table1 += "<tr><td>" + "<a href=" + news_list[0][i][1] + ">" + news_list[0][i][0] +
-                        "</a></td></tr>";
+    folha_index = 0;
+    estadao_index = 1;
+
+    if (news_by_fonte.length >= 2){
+
+        if (news_by_fonte[estadao_index].length > 0){
+            for (var i = 0; i < news_by_fonte[estadao_index].length; i++){
+                table1 += "<tr><td>" + "<a href=" + news_by_fonte[estadao_index][i][1] + ">" + news_by_fonte[estadao_index][i][0] +
+                            "</a></td></tr>";
+            }
+        }else{
+            table1 += "<tr><td><em>Não há notícias nesse dia.</em></td></tr>";
+        }
+
+        if (news_by_fonte[folha_index].length > 0){
+            for (var i = 0; i < news_by_fonte[folha_index].length; i++){
+                table2 += "<tr><td>" + "<a href=" + news_by_fonte[folha_index][i][1] + ">" + news_by_fonte[folha_index][i][0] +
+                            "</a></td></tr>";
+            }
+        }else{
+            table2 += "<tr><td><em>Não há notícias nesse dia.</em></td></tr>";
         }
     }
 

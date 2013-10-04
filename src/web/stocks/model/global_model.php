@@ -99,11 +99,15 @@
 				ORDER BY data_pregao ASC
 			  	) AS acao;',
 
-		// USED BY: model_empresa_news_by_cnpj_and_date.php
+		// USED BY: model_empresa_news_by_col_and_date.php
 		"get_news_by_cnpj_and_date" => 
-			'SELECT  data_noticia,titulo
-		 	FROM Link_Noticias_Empresa
-		 	WHERE cnpj = \'[EMP_CNPJ]\' AND data_noticia = \'[NEWS_DATE]\';'
-	);
+			'SELECT news.fonte, news.titulo, news.link
+			FROM link_noticias_empresa AS news
+			WHERE news.cnpj = \'[EMP_CNPJ]\' AND news.data_noticia = \'[NEWS_DATE]\';',
 
+		"get_news_by_isin_and_date" =>
+			'SELECT news.fonte, news.titulo, news.link
+			FROM link_noticias_empresa AS news INNER JOIN empresa_isin AS emp_isin ON news.cnpj = emp_isin.cnpj
+			WHERE emp_isin.cod_isin = \'[EMP_ISIN]\' AND news.data_noticia = \'[NEWS_DATE]\';'
+	);
 ?>
