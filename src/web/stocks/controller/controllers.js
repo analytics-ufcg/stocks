@@ -75,7 +75,6 @@ function main_controller(){
 		width: 1000,
 		modal: true
 	});
-
 }
 
 /*
@@ -167,7 +166,6 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 
 	return false;
 }
-
 
 function create_time_serie_top(nome_empresa, isin){
 	$("#loading_ts_top").show();

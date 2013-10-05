@@ -1,12 +1,8 @@
 <?php 
-    # =========================================================================
-    # MAIN
-    # =========================================================================
-
     include 'global_model.php';
 
-    // $isin = $_GET['isin'];
-    $isin = "BRPETRACNOR9";
+    $isin = $_GET['isin'];
+    // $isin = "BRPETRACNOR9";
 
     # Connect to the Database
     $conn = odbc_connect($dsn,'','') or die ("CONNECTION ERROR\n");
