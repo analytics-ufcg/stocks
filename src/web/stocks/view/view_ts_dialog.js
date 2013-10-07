@@ -47,6 +47,10 @@ function show_highchart(container_name, nome_pregao, nome_empresa, response, dat
             rangeSelector : {
                 selected : undefined
             },
+            
+            exporting: {
+                enabled: false
+            },
 
             title : {
                 text : nome_empresa
