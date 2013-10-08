@@ -137,7 +137,7 @@ function run_top_acoes(){
 }
 
 function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
-	$("#loading_ts_search").show();
+	$("#ts_news_container_search #loading_ts").show();
 	
 	// Clean the previous time-serie
 	$('#ts_news_container_search #time_serie').html("");
@@ -168,7 +168,7 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 }
 
 function create_time_serie_top(nome_empresa, isin){
-	$("#loading_ts_top").show();
+	$("#ts_news_container_top #loading_ts").show();
 	
 	// Clean the previous time-serie
 	$('#ts_news_container_top #time_serie').html("");

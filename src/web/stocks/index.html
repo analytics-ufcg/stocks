@@ -75,17 +75,29 @@
 			        		</fieldset>
 			        	</form>
 			        	<div id="inner_central_bar" class="container"></div>
-			        	<div id="ts_news_container_search" title="Série Temporal" class="container">
-			        		<div id="loading_ts_search" style="display:none"><center><img src="img/ajax-loader.gif"></center></div>
+			        	<!-- <div id="ts_news_container_search" title="Série Temporal" class="container">
+			        		<div id="loading_ts" style="display:none"><center><img src="img/ajax-loader.gif"></center></div>
 			        		<div id="time_serie"></div>
 			        		<br/>
 			        		<div class="container">
 			        			<div id="correlation_pdf" style="text-align:center"></div>
+							<br/>
 			        			<div class="row" id="news">
 			        				<div class="span5" id="folha_sao_paulo"></div>
 			        				<div class="span5" id="estadao"></div>
 			        			</div>
 			        		</div>
+			        	</div> -->
+			        	<div id="ts_news_container_search" title="Série Temporal" class="container">
+			        		<div id="loading_ts" style="display:none"><center><img src="img/ajax-loader.gif"></center></div>
+			        		<div id="time_serie"></div>
+			        		<br/>
+		        			<div id="correlation_pdf" style="text-align:center"></div>
+							<br/>
+							<div style="width: 100%; overflow: hidden;">
+							    <div id="folha_sao_paulo" style="width: 490px; float: left;"></div>
+							    <div id="estadao" style="margin-left: 510px;"></div>
+							</div>
 			        	</div>
 				    </div>
 
@@ -125,8 +137,8 @@
 							</fieldset>
 						</form>
 						<div id="central_bar_top" class="container"></div>
-						<div id="ts_news_container_top" title="Série Temporal" class="container">
-							<div id="loading_ts_top" style="display:none"><center><img src="img/ajax-loader.gif"><center></div>
+						<!-- <div id="ts_news_container_top" title="Série Temporal" class="container">
+							<div id="loading_ts" style="display:none"><center><img src="img/ajax-loader.gif"><center></div>
 							<div id="time_serie"></div>
 							<div class="container">
 								<div id="correlation_pdf" style="text-align:center"></div>
@@ -135,7 +147,18 @@
 			        				<div class="span5" id="estadao"></div>
 			        			</div>
 			        		</div>
-						</div>
+						</div> -->
+						<div id="ts_news_container_top" title="Série Temporal" class="container">
+			        		<div id="loading_ts" style="display:none"><center><img src="img/ajax-loader.gif"></center></div>
+			        		<div id="time_serie"></div>
+			        		<br/>
+		        			<div id="correlation_pdf" style="text-align:center"></div>
+							<br/>
+							<div style="width: 100%; overflow: hidden;">
+							    <div id="folha_sao_paulo" style="width: 490px; float: left;"></div>
+							    <div id="estadao" style="margin-left: 510px;"></div>
+							</div>
+			        	</div>
 				    </div>
 				</div>
 			</div>
