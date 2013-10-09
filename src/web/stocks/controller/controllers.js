@@ -155,7 +155,7 @@ function create_time_serie_search(nome_empresa, nome_pregao, cnpj){
 		async: true,
 		data: call_data,
 		success: function(response) {
-			$("#loading_ts_search").hide();	
+			$("#ts_news_container_search #loading_ts").hide();	
 
 			show_highchart('ts_news_container_search', nome_pregao, nome_empresa, response[0], 
 				$('#start_date').val(), $('#end_date').val(), cnpj);
@@ -187,7 +187,7 @@ function create_time_serie_top(nome_empresa, isin){
 		async: true,
 		data: call_data,
 		success: function(response) {
-			$("#loading_ts_top").hide();
+			$("#ts_news_container_top #loading_ts").hide();	
 
 			show_highchart('ts_news_container_top', nome_empresa, nome_empresa, response, 
 							$('#start_date').val(), $('#end_date').val(), isin);
