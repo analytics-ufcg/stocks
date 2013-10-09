@@ -69,3 +69,17 @@
 	* src/ts_analytics/analyse_news_correlation.R
 * Desenvolvimento da Interface Web para Exposição das Séries Temporais das Empresas (Javascript, PHP e VerticaSQL)
 	* src/web/stocks/*
+
+## Sprint 06
+
+### Documentação
+ * US 22 - Novo Modelo de Dados - Stocks_DB.png
+ * US 24 - Como analistas de dados o que acreditam que pode ser interessante ser investigado neste trabalho?
+
+### Código
+* Evolução: Script de análise das cotações por segmento (R) (para todas as empresas)
+	* src/ts_analytics/analyse_news_correlation.R
+* Exposição dos solavancos com as Séries Temporais das Empresas (Javascript, PHP e VerticaSQL)
+	* src/web/stocks/*
+* Exposição dos notícias por dia partindo dos cliques nas Séries Temporais das Empresas (Javascript, PHP e VerticaSQL)
+	* src/web/stocks/*

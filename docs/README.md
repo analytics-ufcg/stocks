@@ -33,3 +33,8 @@
  * US 18 - É possível verificar correlações entre notícias e solavancos.pdf
  * US 18 - Séries Temporais com Solavancos e Correlações.pdf
  * US 19 - Atualização do Sketch do produto.pdf
+
+## Sprint 06
+
+ * US 22 - Novo Modelo de Dados - Stocks_DB.png
+ * US 24 - Como analistas de dados o que acreditam que pode ser interessante ser investigado neste trabalho?
